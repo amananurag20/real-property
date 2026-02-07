@@ -152,6 +152,7 @@ export default function MapSearchModal({ isOpen, onClose, onSearch }: MapSearchM
                 setSelectedLocation(newPos);
                 setFlyToLocation(newPos);
                 setIsLocating(false);
+                setLocationError(null); // Clear any previous error on success
             },
             (error) => {
                 console.error('Location error:', error);
@@ -269,7 +270,7 @@ export default function MapSearchModal({ isOpen, onClose, onSearch }: MapSearchM
                         <button
                             onClick={getCurrentLocation}
                             disabled={isLocating}
-                            className={`flex items-center gap-2 px-4 py-2.5 rounded-lg transition-colors whitespace-nowrap ${locationError
+                            className={`flex items-center gap-2 px-4 py-2.5 rounded-lg transition-colors whitespace-nowrap ${locationError && !selectedLocation
                                     ? 'bg-red-100 text-red-700 hover:bg-red-200'
                                     : 'bg-green-600 text-white hover:bg-green-700'
                                 } disabled:opacity-50`}
@@ -285,7 +286,7 @@ export default function MapSearchModal({ isOpen, onClose, onSearch }: MapSearchM
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                     </svg>
-                                    {locationError ? 'Retry' : 'My Location'}
+                                    {locationError && !selectedLocation ? 'Retry' : 'My Location'}
                                 </>
                             )}
                         </button>
@@ -316,8 +317,8 @@ export default function MapSearchModal({ isOpen, onClose, onSearch }: MapSearchM
                         </div>
                     </div>
 
-                    {/* Error Message */}
-                    {locationError && (
+                    {/* Error Message - Only show if no location is selected */}
+                    {locationError && !selectedLocation && (
                         <p className="mt-2 text-sm text-red-600">⚠️ {locationError} - Click on the map instead</p>
                     )}
                 </div>
