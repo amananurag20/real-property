@@ -16,6 +16,7 @@ const HomePage = () => {
         subtitle="Explore premium properties in the city of dreams"
         properties={mumbaiProperties}
         bgColor="bg-white"
+        city="Mumbai"
       />
 
       {/* Bangalore Properties */}
@@ -24,6 +25,7 @@ const HomePage = () => {
         subtitle="Discover homes in India's Silicon Valley"
         properties={bangaloreProperties}
         bgColor="bg-gradient-to-br from-blue-50 to-purple-50"
+        city="Bangalore"
       />
 
       {/* Pune Properties */}
@@ -32,6 +34,7 @@ const HomePage = () => {
         subtitle="Find your perfect home in the Oxford of the East"
         properties={puneProperties}
         bgColor="bg-white"
+        city="Pune"
       />
 
       {/* Delhi Properties */}
@@ -40,6 +43,7 @@ const HomePage = () => {
         subtitle="Explore luxurious properties in the capital city"
         properties={delhiProperties}
         bgColor="bg-gradient-to-br from-purple-50 to-pink-50"
+        city="Delhi"
       />
 
       <Footer />

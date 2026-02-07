@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { allProperties } from '@/data/properties';
 
+import { useRouter } from 'next/navigation';
+
 // Dynamically import MapSearchModal to avoid SSR issues with Leaflet
 const MapSearchModal = dynamic(() => import('./MapSearchModal'), {
     ssr: false,
@@ -15,6 +17,7 @@ interface HeroProps {
 }
 
 const Hero = ({ onMapSearch }: HeroProps) => {
+    const router = useRouter();
     const [location, setLocation] = useState('');
     const [priceMin, setPriceMin] = useState('');
     const [priceMax, setPriceMax] = useState('');
@@ -30,10 +33,23 @@ const Hero = ({ onMapSearch }: HeroProps) => {
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
         console.log('Searching...', { location, priceMin, priceMax });
+        // Navigate to properties page with search term
+        if (location) {
+            // Note: properties page currently doesn't read 'q' param for location search text, 
+            // but we could add it. For now, let's just go to all properties.
+            // Or better: update properties page to read 'search' param too. 
+            // But let's keep it simple as user asked for Map View All.
+            router.push('/properties');
+        }
     };
 
     const handleMapSearch = (properties: typeof allProperties) => {
         console.log('Found properties from map search:', properties);
+        if (properties.length > 0) {
+            const ids = properties.map(p => p.id).join(',');
+            router.push(`/properties?ids=${ids}`);
+        }
+
         if (onMapSearch) {
             onMapSearch(properties);
         }

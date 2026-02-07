@@ -40,7 +40,7 @@ function PropertyContent() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {/* Breadcrumb */}
                 <div className="mb-6">
-                    <Link href="/" className="text-blue-600 hover:text-blue-700 text-sm font-medium">
+                    <Link href="/properties" className="text-blue-600 hover:text-blue-700 text-sm font-medium">
                         ← Back to Properties
                     </Link>
                 </div>
