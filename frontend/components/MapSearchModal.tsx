@@ -1,22 +1,12 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Circle, useMap, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { allProperties } from '@/data/properties';
 
 // Fix for default marker icons in Leaflet with Next.js
-const DefaultIcon = L.icon({
-    iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-    iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-    shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-});
-
 const UserLocationIcon = L.icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
     shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
@@ -35,90 +25,53 @@ const PropertyIcon = L.icon({
     shadowSize: [41, 41]
 });
 
-L.Marker.prototype.options.icon = DefaultIcon;
-
 interface MapSearchModalProps {
     isOpen: boolean;
     onClose: () => void;
     onSearch: (properties: typeof allProperties) => void;
 }
 
-// Component to handle map click and set location
-function LocationMarker({ position, setPosition }: {
-    position: [number, number] | null;
-    setPosition: (pos: [number, number]) => void;
-}) {
+// Component to handle map click
+function ClickHandler({ onLocationSelect }: { onLocationSelect: (pos: [number, number]) => void }) {
     useMapEvents({
         click(e) {
-            setPosition([e.latlng.lat, e.latlng.lng]);
+            onLocationSelect([e.latlng.lat, e.latlng.lng]);
         },
     });
-
-    return position ? (
-        <Marker position={position} icon={UserLocationIcon}>
-            <Popup>Your selected location</Popup>
-        </Marker>
-    ) : null;
+    return null;
 }
 
-// Component to recenter map
-function RecenterMap({ position }: { position: [number, number] }) {
+// Component to fix map size issues in modals
+function MapResizer() {
     const map = useMap();
     useEffect(() => {
-        map.setView(position, map.getZoom());
-    }, [position, map]);
+        setTimeout(() => {
+            map.invalidateSize();
+        }, 100);
+    }, [map]);
     return null;
 }
 
 // Calculate distance between two coordinates in km
 function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
-    const R = 6371; // Earth's radius in km
+    const R = 6371;
     const dLat = (lat2 - lat1) * Math.PI / 180;
     const dLon = (lon2 - lon1) * Math.PI / 180;
-    const a =
-        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
         Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
         Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
 export default function MapSearchModal({ isOpen, onClose, onSearch }: MapSearchModalProps) {
-    const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
     const [selectedLocation, setSelectedLocation] = useState<[number, number] | null>(null);
-    const [radius, setRadius] = useState<number>(5); // Default 5km radius
-    const [isLocating, setIsLocating] = useState(false);
+    const [radius, setRadius] = useState<number>(10);
     const [propertiesInRadius, setPropertiesInRadius] = useState<typeof allProperties>([]);
 
-    // Default center (India)
-    const defaultCenter: [number, number] = [20.5937, 78.9629];
+    // Default center - Mumbai, India
+    const defaultCenter: [number, number] = [19.0760, 72.8777];
 
-    const getCurrentLocation = useCallback(() => {
-        setIsLocating(true);
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const newPos: [number, number] = [position.coords.latitude, position.coords.longitude];
-                    setUserLocation(newPos);
-                    setSelectedLocation(newPos);
-                    setIsLocating(false);
-                },
-                (error) => {
-                    console.error('Error getting location:', error);
-                    setIsLocating(false);
-                    // allow user to manually select
-                },
-                { enableHighAccuracy: true }
-            );
-        } else {
-            setIsLocating(false);
-            console.warn('Geolocation is not supported by your browser');
-        }
-    }, []);
-
-    // Removed auto-location useEffect to prevent errors on load
-
-    // Calculate properties within radius
+    // Calculate properties within radius when location or radius changes
     useEffect(() => {
         if (selectedLocation) {
             const filtered = allProperties.filter(property => {
@@ -131,6 +84,8 @@ export default function MapSearchModal({ isOpen, onClose, onSearch }: MapSearchM
                 return distance <= radius;
             });
             setPropertiesInRadius(filtered);
+        } else {
+            setPropertiesInRadius([]);
         }
     }, [selectedLocation, radius]);
 
@@ -143,17 +98,14 @@ export default function MapSearchModal({ isOpen, onClose, onSearch }: MapSearchM
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl overflow-hidden flex flex-col" style={{ height: '80vh' }}>
                 {/* Header */}
-                <div className="flex items-center justify-between p-4 border-b border-gray-200">
+                <div className="flex items-center justify-between p-4 border-b border-gray-200 shrink-0">
                     <div>
                         <h2 className="text-xl font-bold text-gray-900">Search Properties on Map</h2>
-                        <p className="text-sm text-gray-600">Click on the map or use your location to find nearby properties</p>
+                        <p className="text-sm text-gray-600">Click anywhere on the map to search nearby properties</p>
                     </div>
-                    <button
-                        onClick={onClose}
-                        className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-                    >
+                    <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
                         <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                         </svg>
@@ -161,40 +113,15 @@ export default function MapSearchModal({ isOpen, onClose, onSearch }: MapSearchM
                 </div>
 
                 {/* Controls */}
-                <div className="p-4 bg-gray-50 border-b border-gray-200">
+                <div className="p-4 bg-gray-50 border-b border-gray-200 shrink-0">
                     <div className="flex flex-wrap items-center gap-4">
-                        {/* Get Location Button */}
-                        <button
-                            onClick={getCurrentLocation}
-                            disabled={isLocating}
-                            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
-                        >
-                            {isLocating ? (
-                                <>
-                                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                                    Locating...
-                                </>
-                            ) : (
-                                <>
-                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    </svg>
-                                    Use My Location
-                                </>
-                            )}
-                        </button>
-
-                        {/* Radius Selector */}
                         <div className="flex items-center gap-3">
-                            <label className="text-sm font-medium text-gray-700">Search Radius:</label>
+                            <label className="text-sm font-medium text-gray-700">Radius:</label>
                             <select
                                 value={radius}
                                 onChange={(e) => setRadius(Number(e.target.value))}
                                 className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                             >
-                                <option value={1}>1 km</option>
-                                <option value={2}>2 km</option>
                                 <option value={5}>5 km</option>
                                 <option value={10}>10 km</option>
                                 <option value={25}>25 km</option>
@@ -203,51 +130,49 @@ export default function MapSearchModal({ isOpen, onClose, onSearch }: MapSearchM
                             </select>
                         </div>
 
-                        {/* Properties Found */}
-                        <div className="flex items-center gap-2 px-4 py-2 bg-green-100 text-green-800 rounded-lg">
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                            </svg>
+                        <div className={`flex items-center gap-2 px-4 py-2 rounded-lg ${propertiesInRadius.length > 0 ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}`}>
                             <span className="font-semibold">{propertiesInRadius.length}</span>
                             <span>properties found</span>
                         </div>
+
+                        {selectedLocation && (
+                            <button
+                                onClick={() => setSelectedLocation(null)}
+                                className="px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            >
+                                Clear Selection
+                            </button>
+                        )}
                     </div>
                 </div>
 
                 {/* Map Container */}
-                <div className="flex-1 min-h-[400px] relative">
+                <div className="flex-1 relative" style={{ minHeight: '400px' }}>
                     <MapContainer
-                        center={selectedLocation || userLocation || defaultCenter}
-                        zoom={selectedLocation ? 12 : 5}
-                        style={{ height: '100%', width: '100%' }}
-                        className="z-0"
+                        center={defaultCenter}
+                        zoom={10}
+                        style={{ height: '100%', width: '100%', position: 'absolute', top: 0, left: 0 }}
                     >
+                        <MapResizer />
+                        <ClickHandler onLocationSelect={setSelectedLocation} />
+
                         <TileLayer
-                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         />
 
-                        {/* User/Selected Location Marker */}
-                        <LocationMarker
-                            position={selectedLocation}
-                            setPosition={setSelectedLocation}
-                        />
-
-                        {/* Recenter map when location changes */}
-                        {selectedLocation && <RecenterMap position={selectedLocation} />}
-
-                        {/* Radius Circle */}
+                        {/* Selected Location Marker */}
                         {selectedLocation && (
-                            <Circle
-                                center={selectedLocation}
-                                radius={radius * 1000} // Convert km to meters
-                                pathOptions={{
-                                    color: '#2563eb',
-                                    fillColor: '#3b82f6',
-                                    fillOpacity: 0.1,
-                                    weight: 2
-                                }}
-                            />
+                            <>
+                                <Marker position={selectedLocation} icon={UserLocationIcon}>
+                                    <Popup>Selected Location</Popup>
+                                </Marker>
+                                <Circle
+                                    center={selectedLocation}
+                                    radius={radius * 1000}
+                                    pathOptions={{ color: '#2563eb', fillColor: '#3b82f6', fillOpacity: 0.15, weight: 2 }}
+                                />
+                            </>
                         )}
 
                         {/* Property Markers */}
@@ -258,19 +183,11 @@ export default function MapSearchModal({ isOpen, onClose, onSearch }: MapSearchM
                                 icon={PropertyIcon}
                             >
                                 <Popup>
-                                    <div className="min-w-[200px]">
-                                        <img
-                                            src={property.image}
-                                            alt={property.address}
-                                            className="w-full h-24 object-cover rounded-lg mb-2"
-                                        />
-                                        <h3 className="font-semibold text-gray-900">{property.address}</h3>
-                                        <p className="text-blue-600 font-bold">{property.price}</p>
-                                        <p className="text-sm text-gray-600">{property.beds} beds • {property.baths} baths • {property.sqft} sqft</p>
-                                        <a
-                                            href={`/property?id=${property.id}`}
-                                            className="mt-2 inline-block text-sm text-blue-600 hover:text-blue-700 font-medium"
-                                        >
+                                    <div className="min-w-[180px]">
+                                        <img src={property.image} alt={property.address} className="w-full h-20 object-cover rounded mb-2" />
+                                        <h3 className="font-semibold text-gray-900 text-sm">{property.address}</h3>
+                                        <p className="text-blue-600 font-bold text-sm">{property.price}</p>
+                                        <a href={`/property?id=${property.id}`} className="text-xs text-blue-600 font-medium">
                                             View Details →
                                         </a>
                                     </div>
@@ -279,26 +196,20 @@ export default function MapSearchModal({ isOpen, onClose, onSearch }: MapSearchM
                         ))}
                     </MapContainer>
 
-                    {/* Map Legend */}
-                    <div className="absolute bottom-4 left-4 bg-white rounded-lg shadow-lg p-3 z-[1000]">
-                        <p className="text-xs font-semibold text-gray-700 mb-2">Legend</p>
-                        <div className="flex items-center gap-2 text-xs text-gray-600 mb-1">
-                            <div className="w-4 h-4 bg-blue-500 rounded-full"></div>
-                            <span>Your Location</span>
+                    {/* Instructions Overlay */}
+                    {!selectedLocation && (
+                        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-white px-4 py-2 rounded-lg shadow-lg z-[1000]">
+                            <p className="text-sm text-gray-700 font-medium">👆 Click on the map to select a location</p>
                         </div>
-                        <div className="flex items-center gap-2 text-xs text-gray-600">
-                            <div className="w-4 h-4 bg-red-500 rounded-full"></div>
-                            <span>Properties</span>
-                        </div>
-                    </div>
+                    )}
                 </div>
 
                 {/* Footer */}
-                <div className="p-4 border-t border-gray-200 flex items-center justify-between bg-gray-50">
+                <div className="p-4 border-t border-gray-200 flex items-center justify-between bg-white shrink-0">
                     <p className="text-sm text-gray-600">
                         {selectedLocation
-                            ? `Showing properties within ${radius}km of selected location`
-                            : 'Click on the map to select a location'
+                            ? `Searching within ${radius}km radius`
+                            : 'Select a location on the map to search'
                         }
                     </p>
                     <div className="flex gap-3">
@@ -311,11 +222,8 @@ export default function MapSearchModal({ isOpen, onClose, onSearch }: MapSearchM
                         <button
                             onClick={handleSearch}
                             disabled={propertiesInRadius.length === 0}
-                            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            </svg>
                             Search {propertiesInRadius.length} Properties
                         </button>
                     </div>
