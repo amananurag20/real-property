@@ -1,7 +1,35 @@
-export const mumbaiProperties = [
+export interface Property {
+    id: number;
+    image: string;
+    images: string[];
+    price: string;
+    beds: number;
+    baths: number;
+    sqft: string;
+    address: string;
+    status: string;
+    featured: boolean;
+    description: string;
+    propertyType: string;
+    yearBuilt: number;
+    parking: number;
+    amenities: string[];
+    latitude: number;
+    longitude: number;
+    city: string;
+}
+
+export const allProperties: Property[] = [
+    // Mumbai Properties
     {
         id: 1,
         image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800',
+        images: [
+            'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800',
+            'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800',
+            'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800',
+            'https://images.unsplash.com/photo-1600573472591-ee6b68d14c68?w=800',
+        ],
         price: '₹2.5 Cr',
         beds: 3,
         baths: 2,
@@ -9,10 +37,24 @@ export const mumbaiProperties = [
         address: 'Bandra West, Mumbai',
         status: 'New Listing',
         featured: true,
+        description: 'Luxurious 3BHK apartment in the heart of Bandra West. This stunning property offers modern amenities, premium fixtures, and breathtaking city views. Perfect for families looking for a sophisticated urban lifestyle.',
+        propertyType: 'Apartment',
+        yearBuilt: 2022,
+        parking: 2,
+        amenities: ['Swimming Pool', 'Gym', '24/7 Security', 'Power Backup', 'Clubhouse', 'Garden', 'Children Play Area'],
+        latitude: 19.0596,
+        longitude: 72.8295,
+        city: 'Mumbai',
     },
     {
         id: 2,
         image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800',
+        images: [
+            'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800',
+            'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800',
+            'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800',
+            'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=800',
+        ],
         price: '₹3.2 Cr',
         beds: 4,
         baths: 3,
@@ -20,10 +62,23 @@ export const mumbaiProperties = [
         address: 'Powai, Mumbai',
         status: 'Hot Property',
         featured: false,
+        description: 'Spacious 4BHK apartment with lake views in Powai. Features modern architecture, premium fittings, and access to world-class amenities. Located in a prime residential area with excellent connectivity.',
+        propertyType: 'Apartment',
+        yearBuilt: 2021,
+        parking: 2,
+        amenities: ['Swimming Pool', 'Gym', 'Security', 'Lift', 'Park', 'Clubhouse'],
+        latitude: 19.1197,
+        longitude: 72.9061,
+        city: 'Mumbai',
     },
     {
         id: 3,
         image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800',
+        images: [
+            'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800',
+            'https://images.unsplash.com/photo-1600573472591-ee6b68d14c68?w=800',
+            'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800',
+        ],
         price: '₹1.8 Cr',
         beds: 2,
         baths: 2,
@@ -31,10 +86,24 @@ export const mumbaiProperties = [
         address: 'Andheri East, Mumbai',
         status: 'Price Reduced',
         featured: false,
+        description: 'Affordable 2BHK apartment in Andheri East. Well-maintained property with good ventilation and natural light. Close to metro station, shopping centers, and schools.',
+        propertyType: 'Apartment',
+        yearBuilt: 2019,
+        parking: 1,
+        amenities: ['Gym', 'Security', 'Lift', 'Power Backup'],
+        latitude: 19.1136,
+        longitude: 72.8697,
+        city: 'Mumbai',
     },
     {
         id: 4,
         image: 'https://images.unsplash.com/photo-1600573472591-ee6b68d14c68?w=800',
+        images: [
+            'https://images.unsplash.com/photo-1600573472591-ee6b68d14c68?w=800',
+            'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800',
+            'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800',
+            'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800',
+        ],
         price: '₹4.5 Cr',
         beds: 4,
         baths: 4,
@@ -42,13 +111,24 @@ export const mumbaiProperties = [
         address: 'Juhu, Mumbai',
         status: 'Luxury',
         featured: true,
+        description: 'Ultra-luxury 4BHK apartment near Juhu Beach. Premium lifestyle with top-notch amenities, modern design, and proximity to the sea. Perfect for those seeking an exclusive address.',
+        propertyType: 'Penthouse',
+        yearBuilt: 2023,
+        parking: 3,
+        amenities: ['Infinity Pool', 'Spa', 'Gym', '24/7 Concierge', 'Private Terrace', 'Clubhouse', 'Security'],
+        latitude: 19.0990,
+        longitude: 72.8258,
+        city: 'Mumbai',
     },
-];
-
-export const bangaloreProperties = [
+    // Bangalore Properties
     {
         id: 5,
         image: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800',
+        images: [
+            'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800',
+            'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800',
+            'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=800',
+        ],
         price: '₹1.2 Cr',
         beds: 2,
         baths: 2,
@@ -56,10 +136,24 @@ export const bangaloreProperties = [
         address: 'Whitefield, Bangalore',
         status: 'New Launch',
         featured: false,
+        description: 'Modern 2BHK apartment in Whitefield IT corridor. Excellent for IT professionals with easy access to tech parks, malls, and restaurants. Brand new construction with smart home features.',
+        propertyType: 'Apartment',
+        yearBuilt: 2024,
+        parking: 1,
+        amenities: ['Gym', 'Swimming Pool', 'Security', 'Smart Home', 'Clubhouse'],
+        latitude: 12.9698,
+        longitude: 77.7500,
+        city: 'Bangalore',
     },
     {
         id: 6,
         image: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800',
+        images: [
+            'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800',
+            'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800',
+            'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=800',
+            'https://images.unsplash.com/photo-1601760562234-9814eea6663a?w=800',
+        ],
         price: '₹2.8 Cr',
         beds: 3,
         baths: 3,
@@ -67,10 +161,22 @@ export const bangaloreProperties = [
         address: 'Koramangala, Bangalore',
         status: 'Premium',
         featured: true,
+        description: 'Premium 3BHK apartment in trendy Koramangala. Located in the heart of Bangalore\'s startup ecosystem with vibrant nightlife, cafes, and shopping nearby. Perfect blend of luxury and convenience.',
+        propertyType: 'Apartment',
+        yearBuilt: 2022,
+        parking: 2,
+        amenities: ['Swimming Pool', 'Gym', 'Rooftop Terrace', 'Security', 'Clubhouse', 'EV Charging'],
+        latitude: 12.9352,
+        longitude: 77.6245,
+        city: 'Bangalore',
     },
     {
         id: 7,
         image: 'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=800',
+        images: [
+            'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=800',
+            'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800',
+        ],
         price: '₹95 L',
         beds: 2,
         baths: 2,
@@ -78,10 +184,23 @@ export const bangaloreProperties = [
         address: 'Electronic City, Bangalore',
         status: 'Best Deal',
         featured: false,
+        description: 'Budget-friendly 2BHK apartment in Electronic City. Great for first-time buyers and IT professionals. Well-connected to major tech companies and metro station.',
+        propertyType: 'Apartment',
+        yearBuilt: 2020,
+        parking: 1,
+        amenities: ['Gym', 'Security', 'Lift', 'Power Backup'],
+        latitude: 12.8456,
+        longitude: 77.6603,
+        city: 'Bangalore',
     },
     {
         id: 8,
         image: 'https://images.unsplash.com/photo-1601760562234-9814eea6663a?w=800',
+        images: [
+            'https://images.unsplash.com/photo-1601760562234-9814eea6663a?w=800',
+            'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800',
+            'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800',
+        ],
         price: '₹3.5 Cr',
         beds: 4,
         baths: 3,
@@ -89,13 +208,23 @@ export const bangaloreProperties = [
         address: 'Indiranagar, Bangalore',
         status: 'Luxury Villa',
         featured: true,
+        description: 'Exquisite independent villa in posh Indiranagar. Spacious layout with private garden, perfect for families seeking space and luxury in the city center.',
+        propertyType: 'Villa',
+        yearBuilt: 2023,
+        parking: 3,
+        amenities: ['Private Garden', 'Security', 'Home Automation', 'Solar Panels', 'EV Charging'],
+        latitude: 12.9716,
+        longitude: 77.6412,
+        city: 'Bangalore',
     },
-];
-
-export const puneProperties = [
+    // Pune Properties
     {
         id: 9,
         image: 'https://images.unsplash.com/photo-1605146769289-440113cc3d00?w=800',
+        images: [
+            'https://images.unsplash.com/photo-1605146769289-440113cc3d00?w=800',
+            'https://images.unsplash.com/photo-1613977257363-707ba9348227?w=800',
+        ],
         price: '₹1.5 Cr',
         beds: 3,
         baths: 2,
@@ -103,10 +232,23 @@ export const puneProperties = [
         address: 'Hinjewadi, Pune',
         status: 'New Project',
         featured: false,
+        description: 'New construction 3BHK in IT hub Hinjewadi. Close to Rajiv Gandhi Infotech Park with excellent amenities and modern design.',
+        propertyType: 'Apartment',
+        yearBuilt: 2024,
+        parking: 2,
+        amenities: ['Swimming Pool', 'Gym', 'Clubhouse', 'Security', 'Kids Play Area'],
+        latitude: 18.5913,
+        longitude: 73.7389,
+        city: 'Pune',
     },
     {
         id: 10,
         image: 'https://images.unsplash.com/photo-1613977257363-707ba9348227?w=800',
+        images: [
+            'https://images.unsplash.com/photo-1613977257363-707ba9348227?w=800',
+            'https://images.unsplash.com/photo-1605146769289-440113cc3d00?w=800',
+            'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800',
+        ],
         price: '₹2.1 Cr',
         beds: 3,
         baths: 3,
@@ -114,10 +256,22 @@ export const puneProperties = [
         address: 'Wakad, Pune',
         status: 'Ready to Move',
         featured: true,
+        description: 'Ready-to-move 3BHK apartment in Wakad. Well-developed area with schools, hospitals, and shopping centers nearby. Perfect for immediate occupancy.',
+        propertyType: 'Apartment',
+        yearBuilt: 2023,
+        parking: 2,
+        amenities: ['Gym', 'Swimming Pool', 'Security', 'Clubhouse', 'Garden'],
+        latitude: 18.5979,
+        longitude: 73.7654,
+        city: 'Pune',
     },
     {
         id: 11,
         image: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800',
+        images: [
+            'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800',
+            'https://images.unsplash.com/photo-1605146769289-440113cc3d00?w=800',
+        ],
         price: '₹85 L',
         beds: 2,
         baths: 2,
@@ -125,10 +279,23 @@ export const puneProperties = [
         address: 'Pimple Saudagar, Pune',
         status: 'Affordable',
         featured: false,
+        description: 'Economical 2BHK apartment in Pimple Saudagar. Perfect for first-time home buyers with basic amenities and good connectivity.',
+        propertyType: 'Apartment',
+        yearBuilt: 2021,
+        parking: 1,
+        amenities: ['Security', 'Lift', 'Power Backup'],
+        latitude: 18.5925,
+        longitude: 73.8087,
+        city: 'Pune',
     },
     {
         id: 12,
         image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800',
+        images: [
+            'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800',
+            'https://images.unsplash.com/photo-1613977257363-707ba9348227?w=800',
+            'https://images.unsplash.com/photo-1605146769289-440113cc3d00?w=800',
+        ],
         price: '₹3.8 Cr',
         beds: 4,
         baths: 4,
@@ -136,13 +303,23 @@ export const puneProperties = [
         address: 'Koregaon Park, Pune',
         status: 'Premium',
         featured: true,
+        description: 'Luxury 4BHK apartment in upscale Koregaon Park. Premium location with high-end amenities, close to pubs, restaurants, and boutiques.',
+        propertyType: 'Apartment',
+        yearBuilt: 2023,
+        parking: 3,
+        amenities: ['Infinity Pool', 'Spa', 'Gym', 'Concierge Service', 'Private Lift', 'Security'],
+        latitude: 18.5362,
+        longitude: 73.8958,
+        city: 'Pune',
     },
-];
-
-export const delhiProperties = [
+    // Delhi Properties
     {
         id: 13,
         image: 'https://images.unsplash.com/photo-1572120360610-d971b9d7767c?w=800',
+        images: [
+            'https://images.unsplash.com/photo-1572120360610-d971b9d7767c?w=800',
+            'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800',
+        ],
         price: '₹2.8 Cr',
         beds: 3,
         baths: 2,
@@ -150,10 +327,23 @@ export const delhiProperties = [
         address: 'Dwarka, New Delhi',
         status: 'New Listing',
         featured: false,
+        description: 'Spacious 3BHK apartment in Dwarka. Well-planned sector with metro connectivity, schools, and shopping complexes nearby.',
+        propertyType: 'Apartment',
+        yearBuilt: 2022,
+        parking: 2,
+        amenities: ['Gym', 'Security', 'Park', 'Clubhouse', 'Power Backup'],
+        latitude: 28.5921,
+        longitude: 77.0460,
+        city: 'Delhi',
     },
     {
         id: 14,
         image: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800',
+        images: [
+            'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800',
+            'https://images.unsplash.com/photo-1572120360610-d971b9d7767c?w=800',
+            'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=800',
+        ],
         price: '₹5.2 Cr',
         beds: 4,
         baths: 4,
@@ -161,10 +351,22 @@ export const delhiProperties = [
         address: 'Greater Kailash, Delhi',
         status: 'Luxury',
         featured: true,
+        description: 'Prestigious 4BHK apartment in Greater Kailash. Prime South Delhi location with upscale amenities and elegant interiors.',
+        propertyType: 'Apartment',
+        yearBuilt: 2023,
+        parking: 3,
+        amenities: ['Swimming Pool', 'Gym', 'Clubhouse', 'Security', '24/7 Concierge', 'Terrace Garden'],
+        latitude: 28.5494,
+        longitude: 77.2466,
+        city: 'Delhi',
     },
     {
         id: 15,
         image: 'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=800',
+        images: [
+            'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=800',
+            'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800',
+        ],
         price: '₹1.9 Cr',
         beds: 2,
         baths: 2,
@@ -172,10 +374,24 @@ export const delhiProperties = [
         address: 'Rohini, Delhi',
         status: 'Hot Deal',
         featured: false,
+        description: 'Value-for-money 2BHK apartment in Rohini. Well-connected to metro and great for families with schools and markets nearby.',
+        propertyType: 'Apartment',
+        yearBuilt: 2021,
+        parking: 1,
+        amenities: ['Security', 'Lift', 'Park', 'Power Backup'],
+        latitude: 28.7489,
+        longitude: 77.0674,
+        city: 'Delhi',
     },
     {
         id: 16,
         image: 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800',
+        images: [
+            'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800',
+            'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800',
+            'https://images.unsplash.com/photo-1572120360610-d971b9d7767c?w=800',
+            'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=800',
+        ],
         price: '₹6.5 Cr',
         beds: 5,
         baths: 5,
@@ -183,5 +399,19 @@ export const delhiProperties = [
         address: 'Vasant Vihar, Delhi',
         status: 'Ultra Luxury',
         featured: true,
+        description: 'Ultra-luxurious 5BHK penthouse in Vasant Vihar. Prestigious address with world-class amenities, private terrace, and designer interiors.',
+        propertyType: 'Penthouse',
+        yearBuilt: 2024,
+        parking: 4,
+        amenities: ['Private Pool', 'Home Theater', 'Gym', 'Spa', '24/7 Concierge', 'Private Elevator', 'Security'],
+        latitude: 28.5672,
+        longitude: 77.1587,
+        city: 'Delhi',
     },
 ];
+
+// Export city-wise arrays for backward compatibility
+export const mumbaiProperties = allProperties.filter(p => p.city === 'Mumbai');
+export const bangaloreProperties = allProperties.filter(p => p.city === 'Bangalore');
+export const puneProperties = allProperties.filter(p => p.city === 'Pune');
+export const delhiProperties = allProperties.filter(p => p.city === 'Delhi');
