@@ -1,5 +1,6 @@
 'use client';
 
+import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -7,7 +8,7 @@ import { allProperties } from '@/data/properties';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
-export default function PropertyDetailsPage() {
+function PropertyContent() {
     const searchParams = useSearchParams();
     const propertyId = searchParams.get('id');
     const property = allProperties.find(p => p.id === parseInt(propertyId || '0'));
@@ -59,8 +60,8 @@ export default function PropertyDetailsPage() {
                                 {/* Status Badge */}
                                 <div className="absolute top-4 left-4">
                                     <span className={`px-4 py-2 rounded-lg text-sm font-semibold ${property.featured
-                                            ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white'
-                                            : 'bg-blue-600 text-white'
+                                        ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white'
+                                        : 'bg-blue-600 text-white'
                                         } shadow-lg`}>
                                         {property.status}
                                     </span>
@@ -74,8 +75,8 @@ export default function PropertyDetailsPage() {
                                         key={index}
                                         onClick={() => setSelectedImage(index)}
                                         className={`relative h-20 rounded-lg overflow-hidden border-2 transition-all ${selectedImage === index
-                                                ? 'border-blue-600 ring-2 ring-blue-200'
-                                                : 'border-gray-200 hover:border-blue-400'
+                                            ? 'border-blue-600 ring-2 ring-blue-200'
+                                            : 'border-gray-200 hover:border-blue-400'
                                             }`}
                                     >
                                         <img
@@ -273,5 +274,17 @@ export default function PropertyDetailsPage() {
 
             <Footer />
         </div>
+    );
+}
+
+export default function PropertyDetailsPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+            </div>
+        }>
+            <PropertyContent />
+        </Suspense>
     );
 }
