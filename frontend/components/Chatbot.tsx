@@ -7,11 +7,13 @@ interface Message {
     text: string;
     isBot: boolean;
     timestamp: Date;
+    questionId?: number; // Track which question was asked
 }
 
 const Chatbot = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [showContactForm, setShowContactForm] = useState(false);
+    const [lastAskedQuestionId, setLastAskedQuestionId] = useState<number | null>(null);
     const [messages, setMessages] = useState<Message[]>([
         {
             id: 1,
@@ -42,12 +44,18 @@ const Chatbot = () => {
         scrollToBottom();
     }, [messages]);
 
-    const handleQuickQuestion = (question: string, answer: string) => {
+    // Get follow-up questions (exclude the one just asked)
+    const getFollowUpQuestions = () => {
+        return quickQuestions.filter(q => q.id !== lastAskedQuestionId);
+    };
+
+    const handleQuickQuestion = (questionId: number, question: string, answer: string) => {
         const userMessage: Message = {
             id: messages.length + 1,
             text: question,
             isBot: false,
             timestamp: new Date(),
+            questionId: questionId,
         };
 
         const botMessage: Message = {
@@ -58,6 +66,7 @@ const Chatbot = () => {
         };
 
         setMessages([...messages, userMessage, botMessage]);
+        setLastAskedQuestionId(questionId);
     };
 
     const handleSendMessage = (e: React.FormEvent) => {
@@ -73,18 +82,24 @@ const Chatbot = () => {
 
         // Simple keyword-based responses
         let botResponse = "I understand your question. Let me connect you with our support team for the best assistance. Please use the 'Contact Support' button below!";
+        let matchedQuestionId: number | null = null;
 
         const lowerInput = inputValue.toLowerCase();
         if (lowerInput.includes('price') || lowerInput.includes('cost') || lowerInput.includes('fee')) {
             botResponse = quickQuestions[1].answer;
+            matchedQuestionId = 2;
         } else if (lowerInput.includes('list') || lowerInput.includes('post') || lowerInput.includes('sell')) {
             botResponse = quickQuestions[0].answer;
+            matchedQuestionId = 1;
         } else if (lowerInput.includes('visit') || lowerInput.includes('schedule') || lowerInput.includes('viewing')) {
             botResponse = quickQuestions[2].answer;
+            matchedQuestionId = 3;
         } else if (lowerInput.includes('safe') || lowerInput.includes('security') || lowerInput.includes('privacy')) {
             botResponse = quickQuestions[3].answer;
+            matchedQuestionId = 4;
         } else if (lowerInput.includes('contact') || lowerInput.includes('support') || lowerInput.includes('help')) {
             botResponse = quickQuestions[4].answer;
+            matchedQuestionId = 5;
         }
 
         const botMessage: Message = {
@@ -95,6 +110,7 @@ const Chatbot = () => {
         };
 
         setMessages([...messages, userMessage, botMessage]);
+        setLastAskedQuestionId(matchedQuestionId);
         setInputValue('');
     };
 
@@ -111,15 +127,16 @@ const Chatbot = () => {
         setContactName('');
         setContactEmail('');
         setContactMessage('');
+        setLastAskedQuestionId(null);
     };
 
     return (
         <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
             {/* Chat Window */}
             {isOpen && (
-                <div className="mb-2 w-96 h-[500px] bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col overflow-hidden animate-in slide-in-from-bottom-5 duration-300">
+                <div className="mb-2 w-96 h-[520px] bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col overflow-hidden">
                     {/* Header */}
-                    <div className="bg-gradient-to-r from-blue-600 to-blue-700 p-4 text-white flex items-center justify-between cursor-pointer" onClick={() => setIsOpen(false)}>
+                    <div className="bg-gradient-to-r from-blue-600 to-blue-700 p-4 text-white flex items-center justify-between">
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -132,7 +149,7 @@ const Chatbot = () => {
                             </div>
                         </div>
                         <button
-                            onClick={(e) => { e.stopPropagation(); setIsOpen(false); }}
+                            onClick={() => setIsOpen(false)}
                             className="hover:bg-white/20 p-2 rounded-full transition-colors"
                         >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -162,18 +179,36 @@ const Chatbot = () => {
                             </div>
                         ))}
 
-                        {/* Quick Questions */}
-                        {messages.length <= 2 && (
+                        {/* Initial Quick Questions (only when first opened) */}
+                        {messages.length === 1 && (
                             <div className="space-y-2">
-                                <p className="text-xs text-gray-500 font-medium text-center">Quick Questions:</p>
+                                <p className="text-xs text-gray-500 font-medium text-center">How can I help you?</p>
                                 <div className="grid grid-cols-1 gap-2">
                                     {quickQuestions.map((q) => (
                                         <button
                                             key={q.id}
-                                            onClick={() => handleQuickQuestion(q.question, q.answer)}
+                                            onClick={() => handleQuickQuestion(q.id, q.question, q.answer)}
                                             className="text-left text-sm px-4 py-3 bg-white hover:bg-blue-50 border border-gray-200 hover:border-blue-300 rounded-xl transition-all duration-200 text-gray-700 hover:text-blue-600 shadow-sm"
                                         >
                                             💡 {q.question}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Follow-up Questions (after each answer) */}
+                        {messages.length > 1 && getFollowUpQuestions().length > 0 && (
+                            <div className="space-y-2 pt-2">
+                                <p className="text-xs text-gray-500 font-medium text-center">You might also want to know:</p>
+                                <div className="grid grid-cols-1 gap-2">
+                                    {getFollowUpQuestions().slice(0, 3).map((q) => (
+                                        <button
+                                            key={q.id}
+                                            onClick={() => handleQuickQuestion(q.id, q.question, q.answer)}
+                                            className="text-left text-xs px-3 py-2 bg-blue-50 hover:bg-blue-100 border border-blue-200 hover:border-blue-300 rounded-lg transition-all duration-200 text-blue-700 hover:text-blue-800"
+                                        >
+                                            → {q.question}
                                         </button>
                                     ))}
                                 </div>
