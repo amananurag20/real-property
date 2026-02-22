@@ -9,6 +9,7 @@ import { HealthModule } from './health/health.module';
 import { RedisModule } from './redis';
 import { BullMQModule } from './bullmq/bullmq.module';
 import { LoggingModule } from './logging/logging.module';
+import { PrismaModule } from './prisma';
 import { redisConfig } from './config';
 
 @Module({
@@ -28,6 +29,9 @@ import { redisConfig } from './config';
         REDIS_PASSWORD: Joi.string().optional().allow('').default(''),
         REDIS_DB: Joi.number().default(0),
         REDIS_KEY_PREFIX: Joi.string().default('max-shipping:'),
+
+        // Database (Prisma)
+        DATABASE_URL: Joi.string().required(),
       }),
     }),
 
@@ -39,6 +43,7 @@ import { redisConfig } from './config';
       },
     ]),
 
+    PrismaModule,
     RedisModule,
     BullMQModule,
     LoggingModule,
@@ -53,4 +58,4 @@ import { redisConfig } from './config';
     },
   ],
 })
-export class AppModule {}
+export class AppModule { }
