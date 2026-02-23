@@ -3,18 +3,18 @@ import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import * as Joi from 'joi';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { HealthModule } from './health/health.module';
-import { RedisModule } from './redis';
-import { BullMQModule } from './bullmq/bullmq.module';
-import { LoggingModule } from './logging/logging.module';
-import { PrismaModule } from './prisma';
-import { redisConfig } from './config';
-import { UploadModule } from './upload/upload.module';
-import { SocketModule } from './socket/socket.module';
-import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './users/users.module';
+import { AppController } from '@app/app.controller';
+import { AppService } from '@app/app.service';
+import { HealthModule } from '@health/health.module';
+import { RedisModule } from '@redis';
+import { BullMQModule } from '@bullmq/bullmq.module';
+import { LoggingModule } from '@logging/logging.module';
+import { PrismaModule } from '@prisma';
+import { redisConfig } from '@config';
+import { UploadModule } from '@upload/upload.module';
+import { SocketModule } from '@socket/socket.module';
+import { AuthModule } from '@auth/auth.module';
+import { UsersModule } from '@users/users.module';
 
 @Module({
   imports: [
@@ -77,4 +77,3 @@ import { UsersModule } from './users/users.module';
   ],
 })
 export class AppModule { }
-

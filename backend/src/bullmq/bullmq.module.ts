@@ -1,8 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { BullModule } from '@nestjs/bullmq';
-import { RedisConfig } from '../config';
-import { QUEUE_NAMES } from '../config';
+import { RedisConfig, QUEUE_NAMES } from '@config';
 
 /**
  * BullMQ module.
@@ -33,6 +32,7 @@ import { QUEUE_NAMES } from '../config';
             removeOnComplete: { count: 1000 },
             removeOnFail: { count: 5000 },
             attempts: 3,
+            retryDelay: 5000,
             backoff: { type: 'exponential', delay: 5000 },
           },
         };
@@ -47,4 +47,4 @@ import { QUEUE_NAMES } from '../config';
   ],
   exports: [BullModule],
 })
-export class BullMQModule {}
+export class BullMQModule { }

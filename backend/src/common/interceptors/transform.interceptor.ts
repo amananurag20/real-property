@@ -8,9 +8,7 @@ import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Response } from 'express';
-import { ApiResponse } from '../interfaces/api-response.interface';
-import { RESPONSE_MESSAGE_KEY } from '../decorators/response-message.decorator';
-import { nowISO } from '../utils/timezone.util';
+import { ApiResponse, RESPONSE_MESSAGE_KEY, nowISO } from '@common';
 
 /**
  * Global interceptor that wraps every controller response in a standard

@@ -5,9 +5,8 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { IoAdapter } from '@nestjs/platform-socket.io';
 import { Logger } from 'nestjs-pino';
 import helmet from 'helmet';
-import { AppModule } from './app.module';
-import { HttpExceptionFilter } from './common/filters/http-exception.filter';
-import { TransformInterceptor } from './common/interceptors/transform.interceptor';
+import { AppModule } from '@app';
+import { HttpExceptionFilter, TransformInterceptor } from '@common';
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
@@ -81,4 +80,3 @@ async function bootstrap(): Promise<void> {
   logger.log(`Environment: ${nodeEnv}`);
 }
 void bootstrap();
-

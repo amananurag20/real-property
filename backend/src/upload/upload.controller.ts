@@ -7,10 +7,10 @@ import {
     Version,
 } from '@nestjs/common';
 import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
-import { UploadService } from './upload.service';
-import { SingleFileInterceptor } from './interceptors/single-upload.interceptor';
-import { MultipleFilesInterceptor } from './interceptors/multi-upload.interceptor';
-import { ResponseMessage } from '../common/decorators/response-message.decorator';
+import { UploadService } from '@upload/upload.service';
+import { SingleFileInterceptor } from '@upload/interceptors/single-upload.interceptor';
+import { MultipleFilesInterceptor } from '@upload/interceptors/multi-upload.interceptor';
+import { ResponseMessage } from '@common';
 
 @ApiTags('Upload')
 @Controller('upload')

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { HealthCheckService, HealthCheckResult } from '@nestjs/terminus';
-import { RedisHealthIndicator } from '../redis';
-import { PrismaService } from '../prisma';
+import { RedisHealthIndicator } from '@redis';
+import { PrismaService } from '@prisma';
 
 @Injectable()
 export class HealthService {
@@ -24,4 +24,3 @@ export class HealthService {
     ]);
   }
 }
-

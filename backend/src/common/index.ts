@@ -1,19 +1,19 @@
 // Interfaces
-export * from './interfaces/api-response.interface';
+export * from '@common/interfaces/api-response.interface';
 
 // Interceptors
-export * from './interceptors/transform.interceptor';
+export * from '@common/interceptors/transform.interceptor';
 
 // Decorators
-export * from './decorators/response-message.decorator';
-export * from './decorators/api-responses.decorator';
+export * from '@common/decorators/response-message.decorator';
+export * from '@common/decorators/api-responses.decorator';
 
 // Filters
-export * from './filters/http-exception.filter';
+export * from '@common/filters/http-exception.filter';
 
 // Utils
-export * from './utils/timezone.util';
-export * from './utils/user-select.util';
+export * from '@common/utils/timezone.util';
+export * from '@common/utils/user-select.util';
 
 // Constants
-export * from './constants';
+export * from '@common/constants';

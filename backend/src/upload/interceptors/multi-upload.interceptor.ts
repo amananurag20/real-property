@@ -1,7 +1,7 @@
 import { mixin, Injectable, Type } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer-options.interface';
-import { buildMulterOptions } from '../upload.config';
+import { buildMulterOptions } from '@upload/upload.config';
 
 /**
  * Creates a multiple-files upload interceptor for the given form field.
