@@ -177,7 +177,21 @@ export class AuthService {
 
     // ── Logout ─────────────────────────────────────────────────────────────
     async logout(userId: string): Promise<{ message: string }> {
+        // Revoke refresh token
         await this.redis.del(`refresh:${userId}`);
+
+        // Invalidate all current access tokens for this user:
+        // Any token with iat <= now will be rejected by JwtStrategy.
+        // TTL matches access token lifetime so the key self-cleans.
+        const nowSeconds = Math.floor(Date.now() / 1000);
+        const accessTokenTtl = 60 * 16; // 16 min — slightly longer than 15m token lifetime
+        await this.redis.set(
+            `invalidated_before:${userId}`,
+            String(nowSeconds),
+            'EX',
+            accessTokenTtl,
+        );
+
         return { message: 'Logged out successfully.' };
     }
 

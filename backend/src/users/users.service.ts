@@ -1,15 +1,23 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Inject } from '@nestjs/common';
+import Redis from 'ioredis';
 import { PrismaService } from '../prisma';
+import { REDIS_CLIENT } from '../redis';
 import { UpdateProfileDto } from './dto/update-profile.dto';
+import { getUserSelect } from '../common/utils/user-select.util';
 
 @Injectable()
 export class UsersService {
-    constructor(private readonly prisma: PrismaService) { }
+    constructor(
+        private readonly prisma: PrismaService,
+        @Inject(REDIS_CLIENT) private readonly redis: Redis,
+    ) { }
 
-    /** Get own profile */
-    async findMe(userId: string) {
+    /** Get own profile — role-aware field selection (no id for non-admins) */
+    async findMe(userId: string, requesterRole: string) {
+        const select = getUserSelect(requesterRole);
         const user = await this.prisma.client.user.findUnique({
             where: { id: userId },
+            select,
         });
         if (!user) throw new NotFoundException('User not found.');
         return user;
@@ -23,11 +31,24 @@ export class UsersService {
         });
     }
 
-    /** [ADMIN] List all users */
+    /** [ADMIN] List all users — full field access */
     async findAll() {
+        const select = getUserSelect('ADMIN');
         return this.prisma.client.user.findMany({
             orderBy: { createdAt: 'desc' },
+            select,
         });
+    }
+
+    /** [ADMIN] Get a single user by id — full field access */
+    async findOne(targetId: string) {
+        const select = getUserSelect('ADMIN');
+        const user = await this.prisma.client.user.findUnique({
+            where: { id: targetId },
+            select,
+        });
+        if (!user) throw new NotFoundException('User not found.');
+        return user;
     }
 
     /** [ADMIN] Suspend / unsuspend a user */
@@ -35,9 +56,24 @@ export class UsersService {
         const user = await this.prisma.client.user.findUnique({ where: { id: targetId } });
         if (!user) throw new NotFoundException('User not found.');
 
-        return this.prisma.client.user.update({
+        const updated = await this.prisma.client.user.update({
             where: { id: targetId },
             data: { isSuspended: suspended },
         });
+
+        // When suspending, immediately invalidate all active access tokens
+        if (suspended) {
+            const nowSeconds = Math.floor(Date.now() / 1000);
+            await this.redis.set(
+                `invalidated_before:${targetId}`,
+                String(nowSeconds),
+                'EX',
+                60 * 16, // 16 min — covers any in-flight 15m access token
+            );
+            // Also revoke the refresh token so they can't re-login silently
+            await this.redis.del(`refresh:${targetId}`);
+        }
+
+        return updated;
     }
 }

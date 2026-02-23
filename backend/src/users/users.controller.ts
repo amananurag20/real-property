@@ -24,8 +24,8 @@ export class UsersController {
     /** GET /users/me — authenticated user's own profile */
     @Get('me')
     @ApiOperation({ summary: "Get own profile" })
-    getMe(@CurrentUser() user: { id: string }) {
-        return this.usersService.findMe(user.id);
+    getMe(@CurrentUser() user: { id: string; role: string }) {
+        return this.usersService.findMe(user.id, user.role);
     }
 
     /** PATCH /users/me — update own profile */
