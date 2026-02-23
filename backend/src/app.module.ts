@@ -11,6 +11,8 @@ import { BullMQModule } from './bullmq/bullmq.module';
 import { LoggingModule } from './logging/logging.module';
 import { PrismaModule } from './prisma';
 import { redisConfig } from './config';
+import { UploadModule } from './upload/upload.module';
+import { SocketModule } from './socket/socket.module';
 
 @Module({
   imports: [
@@ -32,6 +34,11 @@ import { redisConfig } from './config';
 
         // Database (Prisma)
         DATABASE_URL: Joi.string().required(),
+
+        // File uploads
+        UPLOAD_DEST: Joi.string().default('uploads'),
+        MAX_FILE_SIZE_MB: Joi.number().default(10),
+        MAX_FILES: Joi.number().default(10),
       }),
     }),
 
@@ -48,6 +55,8 @@ import { redisConfig } from './config';
     BullMQModule,
     LoggingModule,
     HealthModule,
+    UploadModule,
+    SocketModule,
   ],
   controllers: [AppController],
   providers: [
@@ -59,3 +68,4 @@ import { redisConfig } from './config';
   ],
 })
 export class AppModule { }
+
