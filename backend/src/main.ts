@@ -1,11 +1,13 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { IoAdapter } from '@nestjs/platform-socket.io';
 import { Logger } from 'nestjs-pino';
 import helmet from 'helmet';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
@@ -27,6 +29,10 @@ async function bootstrap(): Promise<void> {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
+
+  // ── Socket.IO adapter ─────────────────────────────────────
+  // Must be applied before any module initialises the gateway.
+  app.useWebSocketAdapter(new IoAdapter(app));
 
   // ── Global prefix & versioning ────────────────────────────
   // All routes live under /api/v1/…
@@ -52,11 +58,15 @@ async function bootstrap(): Promise<void> {
   // ── Global filters ────────────────────────────────────────
   app.useGlobalFilters(new HttpExceptionFilter());
 
+  // ── Global interceptors ───────────────────────────────────
+  // Wraps every success response in: { success, statusCode, message, data, timestamp }
+  app.useGlobalInterceptors(new TransformInterceptor(app.get(Reflector)));
+
   // ── Swagger / OpenAPI ─────────────────────────────────────
   if (nodeEnv !== 'production') {
     const config = new DocumentBuilder()
-      .setTitle('Max Shipping API')
-      .setDescription('Max Shipping Node Service API documentation')
+      .setTitle('Real Property API')
+      .setDescription('Real Property Service API documentation')
       .setVersion('1.0')
       .addBearerAuth()
       .build();
@@ -71,3 +81,4 @@ async function bootstrap(): Promise<void> {
   logger.log(`Environment: ${nodeEnv}`);
 }
 void bootstrap();
+

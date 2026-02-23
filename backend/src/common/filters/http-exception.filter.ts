@@ -7,6 +7,8 @@ import {
   Logger,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { ApiErrorResponse } from '../interfaces/api-response.interface';
+import { nowISO } from '../utils/timezone.util';
 
 /**
  * Global HTTP exception filter.
@@ -16,10 +18,11 @@ import { Request, Response } from 'express';
  *
  * ```json
  * {
+ *   "success": false,
  *   "statusCode": 400,
  *   "message": "Validation failed",
  *   "error": "Bad Request",
- *   "timestamp": "2026-02-16T12:00:00.000Z",
+ *   "timestamp": "2026-02-23T12:00:00.000Z",
  *   "path": "/api/v1/users"
  * }
  * ```
@@ -62,12 +65,15 @@ export class HttpExceptionFilter implements ExceptionFilter {
       );
     }
 
-    response.status(status).json({
+    const body: ApiErrorResponse = {
+      success: false,
       statusCode: status,
       message,
       error,
-      timestamp: new Date().toISOString(),
+      timestamp: nowISO(),
       path: request.url,
-    });
+    };
+
+    response.status(status).json(body);
   }
 }
