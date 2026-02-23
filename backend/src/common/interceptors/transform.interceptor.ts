@@ -10,6 +10,7 @@ import { map } from 'rxjs/operators';
 import { Response } from 'express';
 import { ApiResponse } from '../interfaces/api-response.interface';
 import { RESPONSE_MESSAGE_KEY } from '../decorators/response-message.decorator';
+import { nowISO } from '../utils/timezone.util';
 
 /**
  * Global interceptor that wraps every controller response in a standard
@@ -50,7 +51,7 @@ export class TransformInterceptor<T>
                     statusCode: httpResponse.statusCode,
                     message,
                     data,
-                    timestamp: new Date().toISOString(),
+                    timestamp: nowISO(),
                 };
             }),
         );

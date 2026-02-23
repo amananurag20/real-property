@@ -13,6 +13,9 @@ const ALLOWED_MIME_TYPES = [
     'image/gif',
     'image/webp',
     'image/svg+xml',
+    'image/avif',
+    'image/heic',
+    'image/heif',
     // Documents
     'application/pdf',
     'application/msword',
@@ -61,7 +64,7 @@ export function buildMulterOptions(
                 cb(
                     new BadRequestException(
                         `File type "${file.mimetype}" is not allowed. ` +
-                        `Accepted: images (jpeg, png, gif, webp, svg) and documents (pdf, doc, docx, xls, xlsx, txt, csv).`,
+                        `Accepted: images (jpeg, png, gif, webp, svg, avif, heic) and documents (pdf, doc, docx, xls, xlsx, txt, csv).`,
                     ),
                     false,
                 );

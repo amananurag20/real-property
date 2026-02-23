@@ -24,6 +24,7 @@ import { SocketModule } from './socket/socket.module';
         NODE_ENV: Joi.string()
           .valid('development', 'production', 'test', 'provision')
           .default('development'),
+        APP_TIMEZONE: Joi.string().default('Asia/Kolkata'),
 
         // Redis
         REDIS_HOST: Joi.string().default('localhost'),

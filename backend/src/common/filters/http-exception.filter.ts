@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { ApiErrorResponse } from '../interfaces/api-response.interface';
+import { nowISO } from '../utils/timezone.util';
 
 /**
  * Global HTTP exception filter.
@@ -69,7 +70,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       statusCode: status,
       message,
       error,
-      timestamp: new Date().toISOString(),
+      timestamp: nowISO(),
       path: request.url,
     };
 
