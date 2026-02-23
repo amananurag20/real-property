@@ -9,7 +9,7 @@
  * APP_TIMEZONE=Asia/Kolkata
  *
  * // In code:
- * import { nowISO, APP_TIMEZONE } from '@common';
+ * import { nowISO, APP_TIMEZONE } from '../common/utils/timezone.util';
  * const ts = nowISO(); // "2026-02-23T20:34:28.232+05:30"
  */
 

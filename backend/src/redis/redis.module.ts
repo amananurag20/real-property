@@ -1,9 +1,9 @@
 import { Global, Inject, Module, OnModuleDestroy } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import Redis from 'ioredis';
-import { REDIS_CLIENT } from '@redis/redis.constants';
-import { RedisClientFactory } from '@redis/redis-client.factory';
-import { RedisHealthIndicator } from '@redis/redis.health';
+import { REDIS_CLIENT } from './redis.constants';
+import { RedisClientFactory } from './redis-client.factory';
+import { RedisHealthIndicator } from './redis.health';
 
 /**
  * Global Redis module.
@@ -16,7 +16,7 @@ import { RedisHealthIndicator } from '@redis/redis.health';
  * ```ts
  * import { Inject } from '@nestjs/common';
  * import Redis from 'ioredis';
- * import { REDIS_CLIENT } from '@redis';
+ * import { REDIS_CLIENT } from '../redis/redis.constants';
  *
  * @Inject(REDIS_CLIENT) private readonly redis: Redis
  * ```
@@ -36,7 +36,7 @@ import { RedisHealthIndicator } from '@redis/redis.health';
   exports: [REDIS_CLIENT, RedisHealthIndicator],
 })
 export class RedisModule implements OnModuleDestroy {
-  constructor(@Inject(REDIS_CLIENT) private readonly redis: Redis) { }
+  constructor(@Inject(REDIS_CLIENT) private readonly redis: Redis) {}
 
   async onModuleDestroy(): Promise<void> {
     await this.redis.quit();

@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import Redis from 'ioredis';
-import { RedisConfig } from '@config';
+import { RedisConfig } from '../config';
 
 /**
  * Factory responsible for creating and configuring the ioredis client.
@@ -13,7 +13,7 @@ import { RedisConfig } from '@config';
 export class RedisClientFactory {
   private readonly logger = new Logger(RedisClientFactory.name);
 
-  constructor(private readonly configService: ConfigService) { }
+  constructor(private readonly configService: ConfigService) {}
 
   create(): Redis {
     const cfg = this.configService.get<RedisConfig>('redis');

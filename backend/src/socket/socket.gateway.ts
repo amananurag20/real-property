@@ -10,8 +10,8 @@ import {
     ConnectedSocket,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { SocketService } from '@socket/socket.service';
-import { SOCKET_EVENTS } from '@socket/socket.types';
+import { SocketService } from './socket.service';
+import { SOCKET_EVENTS } from './socket.types';
 
 /**
  * Main Socket.IO gateway.

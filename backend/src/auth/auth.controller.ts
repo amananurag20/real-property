@@ -7,12 +7,13 @@ import {
     HttpStatus,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import { AuthService } from '@auth/auth.service';
-import { RegisterDto } from '@auth/dto/register.dto';
-import { SendOtpDto } from '@auth/dto/send-otp.dto';
-import { VerifyOtpDto } from '@auth/dto/verify-otp.dto';
-import { RefreshTokenDto } from '@auth/dto/refresh-token.dto';
-import { JwtAuthGuard, CurrentUser } from '@auth';
+import { AuthService } from './auth.service';
+import { RegisterDto } from './dto/register.dto';
+import { SendOtpDto } from './dto/send-otp.dto';
+import { VerifyOtpDto } from './dto/verify-otp.dto';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { CurrentUser } from './decorators/current-user.decorator';
 
 @ApiTags('Auth')
 @Controller('auth')

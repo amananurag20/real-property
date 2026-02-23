@@ -1,2 +1,2 @@
-export { redisConfig, type RedisConfig } from '@config/redis.config';
-export { QUEUE_NAMES } from '@config/bullmq.config';
+export { redisConfig, type RedisConfig } from './redis.config';
+export { QUEUE_NAMES } from './bullmq.config';

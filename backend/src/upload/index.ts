@@ -1,7 +1,7 @@
 // Module & Service
-export * from '@upload/upload.module';
-export * from '@upload/upload.service';
+export * from './upload.module';
+export * from './upload.service';
 
 // Interceptor factories
-export * from '@upload/interceptors/single-upload.interceptor';
-export * from '@upload/interceptors/multi-upload.interceptor';
+export * from './interceptors/single-upload.interceptor';
+export * from './interceptors/multi-upload.interceptor';

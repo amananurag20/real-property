@@ -1,9 +1,9 @@
 import { Global, Module } from '@nestjs/common';
 import { MulterModule } from '@nestjs/platform-express';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { UploadService } from '@upload/upload.service';
-import { UploadController } from '@upload/upload.controller';
-import { buildMulterOptions } from '@upload/upload.config';
+import { UploadService } from './upload.service';
+import { UploadController } from './upload.controller';
+import { buildMulterOptions } from './upload.config';
 
 @Global()
 @Module({

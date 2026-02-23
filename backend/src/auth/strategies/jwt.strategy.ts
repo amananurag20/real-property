@@ -3,12 +3,13 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
 import Redis from 'ioredis';
-import { REDIS_CLIENT } from '@redis';
+import { REDIS_CLIENT } from '../../redis';
+
 
 export interface JwtPayload {
     sub: string;
     role: string;
-    iat: number;
+    iat: number; // issued-at (Unix seconds) — included by default by @nestjs/jwt
 }
 
 @Injectable()
@@ -24,6 +25,12 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
         });
     }
 
+    /**
+     * Called after the token signature is verified.
+     * Checks Redis for an invalidation timestamp — rejects the token if it was
+     * issued before the stored `invalidated_before:<userId>` value.
+     * This makes logout and account suspension take effect immediately.
+     */
     async validate(payload: JwtPayload) {
         const invalidatedAt = await this.redis.get(`invalidated_before:${payload.sub}`);
 

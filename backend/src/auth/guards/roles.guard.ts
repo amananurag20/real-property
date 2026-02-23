@@ -5,7 +5,7 @@ import {
     ForbiddenException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { ROLES_KEY } from '@auth/decorators/roles.decorator';
+import { ROLES_KEY } from '../decorators/roles.decorator';
 
 // Re-declare the Role enum here so we don't depend on generated Prisma types
 // (generated types are only available after `prisma generate` is run)

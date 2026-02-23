@@ -5,7 +5,7 @@ import {
   HealthCheckError,
 } from '@nestjs/terminus';
 import Redis from 'ioredis';
-import { REDIS_CLIENT } from '@redis/redis.constants';
+import { REDIS_CLIENT } from './redis.constants';
 
 /**
  * Terminus health indicator for the Redis connection.

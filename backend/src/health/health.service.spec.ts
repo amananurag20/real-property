@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { HealthCheckService, HealthCheckResult } from '@nestjs/terminus';
-import { HealthService } from '@health/health.service';
-import { RedisHealthIndicator } from '@redis';
+import { HealthService } from './health.service';
+import { RedisHealthIndicator } from '../redis';
 
 describe('HealthService', () => {
   let service: HealthService;

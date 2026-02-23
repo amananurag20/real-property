@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException, Inject } from '@nestjs/common';
 import Redis from 'ioredis';
-import { PrismaService } from '@prisma';
-import { REDIS_CLIENT } from '@redis';
-import { UpdateProfileDto } from '@users/dto/update-profile.dto';
-import { getUserSelect } from '@common';
+import { PrismaService } from '../prisma';
+import { REDIS_CLIENT } from '../redis';
+import { UpdateProfileDto } from './dto/update-profile.dto';
+import { getUserSelect } from '../common/utils/user-select.util';
 
 @Injectable()
 export class UsersService {
@@ -12,7 +12,7 @@ export class UsersService {
         @Inject(REDIS_CLIENT) private readonly redis: Redis,
     ) { }
 
-    /** Get own profile — role-aware field selection */
+    /** Get own profile — role-aware field selection (no id for non-admins) */
     async findMe(userId: string, requesterRole: string) {
         const select = getUserSelect(requesterRole);
         const user = await this.prisma.client.user.findUnique({
@@ -31,7 +31,7 @@ export class UsersService {
         });
     }
 
-    /** [ADMIN] List all users */
+    /** [ADMIN] List all users — full field access */
     async findAll() {
         const select = getUserSelect('ADMIN');
         return this.prisma.client.user.findMany({
@@ -40,7 +40,7 @@ export class UsersService {
         });
     }
 
-    /** [ADMIN] Get a single user by id */
+    /** [ADMIN] Get a single user by id — full field access */
     async findOne(targetId: string) {
         const select = getUserSelect('ADMIN');
         const user = await this.prisma.client.user.findUnique({
@@ -61,14 +61,16 @@ export class UsersService {
             data: { isSuspended: suspended },
         });
 
+        // When suspending, immediately invalidate all active access tokens
         if (suspended) {
             const nowSeconds = Math.floor(Date.now() / 1000);
             await this.redis.set(
                 `invalidated_before:${targetId}`,
                 String(nowSeconds),
                 'EX',
-                60 * 16,
+                60 * 16, // 16 min — covers any in-flight 15m access token
             );
+            // Also revoke the refresh token so they can't re-login silently
             await this.redis.del(`refresh:${targetId}`);
         }
 
