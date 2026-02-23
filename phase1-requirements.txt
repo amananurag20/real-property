@@ -1,0 +1,283 @@
+📘 PRODUCT REQUIREMENTS DOCUMENT (PRD)
+Real Estate Triangle Platform – Phase 1 (Core MVP)
+________________________________________
+1. PRODUCT OVERVIEW
+Working Title
+(To be defined)
+Vision
+Build a structured real estate ecosystem platform that connects:
+1.	Property Requests (Buyers / Tenants / Investors)
+2.	Property Listings (Owners / Developers / Agencies)
+3.	Real Estate Agents
+The platform enables structured interaction between these three entities using a Triangle Connection Logic, forming a closed transaction loop.
+The objective of Phase 1 is to build a scalable and modular core system.
+________________________________________
+2. PHASE 1 OBJECTIVE
+Phase 1 focuses on delivering:
+•	Core backend architecture
+•	Role-based access system
+•	Property and request posting system
+•	Agent profiles
+•	Triangle linking logic
+•	Interactive map
+•	Professional services directory
+•	Payment infrastructure (test mode)
+•	Admin dashboard
+•	Modular, scalable architecture
+Phase 1 is not focused on monetization activation yet.
+It focuses on a stable, scalable foundation.
+________________________________________
+3. USER ROLES
+3.1 Visitor (No Login)
+•	Browse properties
+•	Browse requests
+•	Browse agents
+•	Browse service providers
+•	View interactive map
+•	Submit contact inquiry
+3.2 Registered User
+•	Register (email + phone OTP preferred)
+•	Post property
+•	Post request
+•	Create agent profile (if applicable)
+•	Edit own content
+•	Delete own content
+3.3 Agent (Registered User Type)
+•	Public agent profile
+•	Link properties to requests
+•	Respond to requests
+•	View linked matches
+•	Contact via WhatsApp (Phase 1)
+3.4 Service Provider
+•	Public profile listing
+•	Display services
+•	Direct contact (no booking system in Phase 1)
+3.5 Admin
+•	Approve/reject properties
+•	Approve/reject requests
+•	Approve service providers
+•	Suspend users
+•	Edit any content
+•	View dashboard metrics
+•	Export data (CSV)
+•	View payment test records
+________________________________________
+4. FUNCTIONAL MODULES
+________________________________________
+MODULE 1 – PROPERTY LISTINGS
+Required Fields
+•	Title
+•	Property type
+•	Category (Sale / Rent)
+•	Price
+•	Area size
+•	Location (State, City, Locality)
+•	Latitude / Longitude
+•	Description
+•	Multiple image upload
+•	Listed by (Owner / Agent / Developer)
+•	Contact details
+•	Status (Available / Under Discussion / Closed)
+•	Admin approval flag
+Features
+•	Search by location, price, type
+•	Sorting by price / latest
+•	Display on interactive map
+•	Public detail page
+________________________________________
+MODULE 2 – REQUESTS
+Required Fields
+•	Request type (Buy / Rent / Investment)
+•	Budget range
+•	Preferred property type
+•	Preferred location
+•	Timeline
+•	Notes
+•	Posted by (user reference)
+•	Status (Open / Matched / Closed)
+•	Admin approval flag
+Features
+•	Public listing
+•	Searchable
+•	Linkable to property via agent
+________________________________________
+MODULE 3 – AGENT PROFILES
+Required Fields
+•	Name
+•	Agency name
+•	Service areas
+•	Experience
+•	Specialization
+•	Contact
+•	Profile photo
+•	Rating (admin-managed in Phase 1)
+•	Verified badge (boolean)
+Features
+•	Public profile page
+•	Display agent’s properties
+•	Display linked matches
+________________________________________
+MODULE 4 – TRIANGLE CONNECTION LOGIC (CORE DIFFERENTIATOR)
+Entities
+•	Request
+•	Property
+•	Agent
+Workflow
+1.	Agent selects a property.
+2.	Agent links property to an open request.
+3.	System creates link record (Status = Pending).
+4.	Buyer receives notification.
+5.	Buyer confirms interest.
+6.	Status becomes Connected.
+UI must visually reflect when triangle becomes complete.
+Full chat system is excluded from Phase 1.
+________________________________________
+MODULE 5 – INTERACTIVE MAP
+Requirements:
+•	Google Maps or Mapbox integration
+•	Property pins
+•	Optional request pins
+•	Zoom clustering
+•	Filter by area
+•	Clicking pin opens summary card
+•	Show average price per sq ft per selected area (if feasible)
+If 3D map is complex, Phase 1 uses optimized 2D styled map.
+________________________________________
+MODULE 6 – PROFESSIONAL SERVICES DIRECTORY
+Service types:
+•	CA
+•	Lawyer
+•	CS
+•	Notary
+•	Loan Advisor
+Features
+•	Public directory page
+•	Filter by service type
+•	Filter by location
+•	Individual profile page
+•	Direct contact
+No booking or payment logic in Phase 1.
+________________________________________
+MODULE 7 – PAYMENT INFRASTRUCTURE (BACKEND READY)
+Purpose: Future monetization activation without refactoring.
+Requirements
+•	Razorpay integration (test mode)
+•	Payment API route
+•	Payment database model
+•	Store:
+o	User ID
+o	Amount
+o	Payment type
+o	Status
+o	Transaction ID
+o	Timestamp
+•	Admin payment record visibility
+No live monetization in Phase 1.
+________________________________________
+MODULE 8 – AI SUPPORT CHATBOT
+Purpose:
+•	FAQ assistance
+•	Guide posting
+•	Collect leads
+Not a negotiation system.
+________________________________________
+MODULE 9 – ADMIN DASHBOARD
+Admin must be able to:
+•	View totals (users, properties, requests, agents)
+•	Approve/reject submissions
+•	Manage service providers
+•	Monitor links
+•	View payment test logs
+•	Export CSV data
+•	View activity metrics
+________________________________________
+MODULE 10 – STATIC PAGES
+•	Homepage
+•	About
+•	Contact
+•	Privacy Policy
+•	Terms & Conditions
+Homepage must include:
+•	Search section
+•	Requests
+•	Properties
+•	Agents
+•	Professional Services
+________________________________________
+5. DATABASE STRUCTURE (SUMMARY)
+Core tables:
+•	Users
+•	Roles
+•	Properties
+•	PropertyImages
+•	Requests
+•	AgentProfile
+•	ServiceProviders
+•	PropertyRequestLink
+•	Payments
+•	Reviews
+•	Notifications
+•	AdminLogs
+Architecture must be relational and indexed.
+________________________________________
+6. TECHNICAL REQUIREMENTS
+•	API-first architecture
+•	Modular backend structure
+•	Scalable relational database
+•	Clean documentation
+•	Git repository access
+•	Deployment under founder-owned accounts
+•	Cloud deployment (AWS / DigitalOcean / similar)
+•	Dev / Staging / Production separation
+•	Automated database backup
+________________________________________
+7. NON-FUNCTIONAL REQUIREMENTS
+•	Page load < 3 seconds
+•	Mobile-first design
+•	SEO-ready structure
+•	Secure authentication
+•	Anti-spam protection
+•	Logging system
+•	Email notification system
+•	Basic analytics tracking
+________________________________________
+8. PHASE 1 EXCLUSIONS
+Not included:
+•	Escrow system
+•	Investment crowdfunding
+•	Automated commission system
+•	Full in-app messaging
+•	Legal KYC automation
+•	Subscription activation logic
+•	Service booking system
+________________________________________
+9. SUCCESS CRITERIA (PHASE 1 COMPLETE WHEN)
+•	Users can register
+•	Users can post properties
+•	Users can post requests
+•	Agents can link property to request
+•	Map displays correctly
+•	Admin moderation works
+•	Payment test infrastructure works
+•	Service provider directory works
+________________________________________
+10. DELIVERY STRUCTURE
+Milestone Payment Model:
+20% – Project Kickoff
+30% – Backend & Architecture Ready
+30% – Core Features Demo
+20% – Final Delivery & Deployment
+Weekly working demo required.
+Full source code ownership required.
+________________________________________
+11. FUTURE ROADMAP (HIGH LEVEL)
+Phase 2:
+•	In-app messaging
+•	Paid featured listings
+•	Agent subscriptions
+Phase 3:
+•	Developer project section
+•	Investment module
+•	Escrow system
+________________________________________
+

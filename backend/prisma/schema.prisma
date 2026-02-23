@@ -11,13 +11,26 @@ datasource db {
   provider = "postgresql"
 }
 
-// ── Starter model (validates the migration pipeline) ─────────
+// ── Enums ─────────────────────────────────────────────────────────────
+enum Role {
+  VISITOR
+  USER
+  AGENT
+  SERVICE_PROVIDER
+  ADMIN
+}
+
+// ── User ──────────────────────────────────────────────────────────────
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  name      String?
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id          String   @id @default(uuid())
+  name        String?
+  email       String?  @unique
+  phone       String   @unique
+  role        Role     @default(USER)
+  isActive    Boolean  @default(true)  @map("is_active")
+  isSuspended Boolean  @default(false) @map("is_suspended")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt      @map("updated_at")
 
   @@map("users")
 }

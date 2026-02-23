@@ -13,6 +13,8 @@ import { PrismaModule } from './prisma';
 import { redisConfig } from './config';
 import { UploadModule } from './upload/upload.module';
 import { SocketModule } from './socket/socket.module';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -40,6 +42,10 @@ import { SocketModule } from './socket/socket.module';
         UPLOAD_DEST: Joi.string().default('uploads'),
         MAX_FILE_SIZE_MB: Joi.number().default(10),
         MAX_FILES: Joi.number().default(10),
+
+        // Auth / JWT
+        JWT_ACCESS_SECRET: Joi.string().required(),
+        JWT_ACCESS_EXPIRES_IN: Joi.string().default('15m'),
       }),
     }),
 
@@ -58,6 +64,8 @@ import { SocketModule } from './socket/socket.module';
     HealthModule,
     UploadModule,
     SocketModule,
+    AuthModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [
