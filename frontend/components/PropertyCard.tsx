@@ -1,6 +1,9 @@
 'use client';
 
 import Link from 'next/link';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 
 interface PropertyCardProps {
     id: number;
@@ -28,7 +31,7 @@ const PropertyCard = ({ id, image, price, beds, baths, sqft, address, status, fe
 
     return (
         <Link href={`/properties/${id}`} className="block">
-            <div className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
+            <Card className="group rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-gray-100 border p-0 bg-white">
                 {/* Image Section */}
                 <div className="relative h-56 overflow-hidden bg-gray-200">
                     <img
@@ -38,26 +41,30 @@ const PropertyCard = ({ id, image, price, beds, baths, sqft, address, status, fe
                     />
                     {/* Status Badge */}
                     <div className="absolute top-4 left-4">
-                        <span className={`px-3 py-1.5 rounded-lg text-xs font-semibold ${featured
-                            ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white'
-                            : 'bg-blue-600 text-white'
-                            } shadow-lg`}>
+                        <Badge
+                            className={`px-3 py-1 text-xs font-semibold shadow-lg ${featured
+                                    ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white hover:from-orange-500 hover:to-red-500'
+                                    : 'bg-blue-600 text-white hover:bg-blue-600'
+                                }`}
+                        >
                             {status}
-                        </span>
+                        </Badge>
                     </div>
                     {/* Favorite Button */}
-                    <button
+                    <Button
+                        variant="secondary"
+                        size="icon"
                         onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
                         className="absolute top-4 right-4 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-colors shadow-lg group/heart"
                     >
                         <svg className="w-5 h-5 text-gray-700 group-hover/heart:text-red-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                         </svg>
-                    </button>
+                    </Button>
                 </div>
 
                 {/* Content Section */}
-                <div className="p-5 space-y-3">
+                <CardContent className="p-5 space-y-3">
                     {/* Price and Sqft Row */}
                     <div className="flex justify-between items-center">
                         <h3 className="text-xl md:text-2xl font-bold text-gray-900">{price}</h3>
@@ -110,8 +117,8 @@ const PropertyCard = ({ id, image, price, beds, baths, sqft, address, status, fe
                         </svg>
                         <p className="text-sm text-gray-600 group-hover/location:text-blue-600 font-medium truncate transition-colors">{address}</p>
                     </button>
-                </div>
-            </div>
+                </CardContent>
+            </Card>
         </Link>
     );
 };

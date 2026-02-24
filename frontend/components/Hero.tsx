@@ -3,8 +3,11 @@
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { allProperties } from '@/data/properties';
-
 import { useRouter } from 'next/navigation';
+
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 // Dynamically import MapSearchModal to avoid SSR issues with Leaflet
 const MapSearchModal = dynamic(() => import('./MapSearchModal'), {
@@ -86,86 +89,75 @@ const Hero = ({ onMapSearch }: HeroProps) => {
                                 <div className="space-y-3">
                                     {/* Location Input with Map Icon */}
                                     <div className="relative">
-                                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                            <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
+                                            <svg className="h-4 w-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                             </svg>
                                         </div>
-                                        <input
+                                        <Input
                                             type="text"
                                             placeholder="City, Locality, Project"
                                             value={location}
                                             onChange={(e) => setLocation(e.target.value)}
-                                            className="w-full pl-12 pr-14 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all duration-200"
+                                            className="pl-10 pr-12 w-full"
                                         />
                                         {/* Map Search Button */}
-                                        <button
+                                        <Button
                                             type="button"
+                                            variant="ghost"
+                                            size="icon"
                                             onClick={() => setIsMapModalOpen(true)}
-                                            className="absolute inset-y-0 right-0 pr-3 flex items-center group"
+                                            className="absolute inset-y-0 right-0 h-full px-3 text-blue-600 hover:text-blue-700 hover:bg-blue-50 z-10 rounded-l-none"
                                             title="Search on Map"
                                         >
-                                            <div className="p-2 rounded-lg bg-blue-50 hover:bg-blue-100 group-hover:scale-110 transition-all duration-200">
-                                                <svg className="h-5 w-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-                                                </svg>
-                                            </div>
-                                        </button>
+                                            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                                            </svg>
+                                        </Button>
                                     </div>
 
                                     {/* Price Range */}
                                     <div className="grid grid-cols-2 gap-3">
-                                        <div className="relative">
-                                            <select
-                                                value={priceMin}
-                                                onChange={(e) => setPriceMin(e.target.value)}
-                                                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all duration-200 appearance-none bg-white"
-                                            >
-                                                <option value="">Min Price</option>
-                                                <option value="25L">₹25 L</option>
-                                                <option value="50L">₹50 L</option>
-                                                <option value="75L">₹75 L</option>
-                                                <option value="1Cr">₹1 Cr</option>
-                                                <option value="2Cr">₹2 Cr</option>
-                                                <option value="5Cr">₹5 Cr</option>
-                                            </select>
-                                            <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
-                                                <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                                                </svg>
-                                            </div>
-                                        </div>
+                                        <Select value={priceMin} onValueChange={setPriceMin}>
+                                            <SelectTrigger className="w-full">
+                                                <SelectValue placeholder="Min Price" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="none">Min Price</SelectItem>
+                                                <SelectItem value="25L">₹25 L</SelectItem>
+                                                <SelectItem value="50L">₹50 L</SelectItem>
+                                                <SelectItem value="75L">₹75 L</SelectItem>
+                                                <SelectItem value="1Cr">₹1 Cr</SelectItem>
+                                                <SelectItem value="2Cr">₹2 Cr</SelectItem>
+                                                <SelectItem value="5Cr">₹5 Cr</SelectItem>
+                                            </SelectContent>
+                                        </Select>
 
-                                        <div className="relative">
-                                            <select
-                                                value={priceMax}
-                                                onChange={(e) => setPriceMax(e.target.value)}
-                                                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all duration-200 appearance-none bg-white"
-                                            >
-                                                <option value="">Max Price</option>
-                                                <option value="50L">₹50 L</option>
-                                                <option value="1Cr">₹1 Cr</option>
-                                                <option value="2Cr">₹2 Cr</option>
-                                                <option value="5Cr">₹5 Cr</option>
-                                                <option value="10Cr">₹10 Cr</option>
-                                                <option value="10Cr+">₹10 Cr+</option>
-                                            </select>
-                                            <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
-                                                <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                                                </svg>
-                                            </div>
-                                        </div>
+                                        <Select value={priceMax} onValueChange={setPriceMax}>
+                                            <SelectTrigger className="w-full">
+                                                <SelectValue placeholder="Max Price" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="none">Max Price</SelectItem>
+                                                <SelectItem value="50L">₹50 L</SelectItem>
+                                                <SelectItem value="1Cr">₹1 Cr</SelectItem>
+                                                <SelectItem value="2Cr">₹2 Cr</SelectItem>
+                                                <SelectItem value="5Cr">₹5 Cr</SelectItem>
+                                                <SelectItem value="10Cr">₹10 Cr</SelectItem>
+                                                <SelectItem value="10Cr+">₹10 Cr+</SelectItem>
+                                            </SelectContent>
+                                        </Select>
                                     </div>
                                 </div>
 
-                                <button
+                                <Button
                                     type="submit"
-                                    className="w-full py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl font-semibold hover:from-blue-700 hover:to-blue-800 shadow-lg shadow-blue-500/40 hover:shadow-xl hover:shadow-blue-500/50 transition-all duration-300 transform hover:-translate-y-1"
+                                    className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold hover:from-blue-700 hover:to-blue-800 shadow-lg shadow-blue-500/40 hover:shadow-xl hover:shadow-blue-500/50 transition-all duration-300 transform hover:-translate-y-1"
+                                    size="lg"
                                 >
                                     Search Properties
-                                </button>
+                                </Button>
                             </form>
 
                             {/* Popular Cities */}
@@ -173,12 +165,14 @@ const Hero = ({ onMapSearch }: HeroProps) => {
                                 <p className="text-xs text-gray-500 font-medium">Popular Cities:</p>
                                 <div className="flex flex-wrap gap-2">
                                     {popularCities.map((city) => (
-                                        <button
+                                        <Button
                                             key={city}
-                                            className="px-3 py-1.5 bg-white border border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 hover:text-blue-600 text-xs font-medium transition-all duration-200 shadow-sm hover:shadow"
+                                            variant="outline"
+                                            size="sm"
+                                            className="text-xs font-medium bg-white hover:bg-blue-50 hover:text-blue-600"
                                         >
                                             {city}
-                                        </button>
+                                        </Button>
                                     ))}
                                 </div>
                             </div>

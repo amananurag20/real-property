@@ -15,6 +15,7 @@ interface Property {
 }
 
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 interface PropertySectionProps {
     title: string;
@@ -33,15 +34,14 @@ const PropertySection = ({ title, subtitle, properties, bgColor = 'bg-white', ci
                         <h2 className="text-3xl font-bold text-gray-900 mb-2">{title}</h2>
                         <p className="text-gray-600">{subtitle}</p>
                     </div>
-                    <Link
-                        href={city ? `/properties?city=${city}` : '/properties'}
-                        className="text-blue-600 hover:text-blue-700 font-semibold flex items-center space-x-2 group"
-                    >
-                        <span>View All</span>
-                        <svg className="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                    </Link>
+                    <Button variant="ghost" className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 font-semibold flex items-center gap-2 group" asChild>
+                        <Link href={city ? `/properties?city=${city}` : '/properties'}>
+                            <span>View All</span>
+                            <svg className="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                        </Link>
+                    </Button>
                 </div>
 
                 <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">

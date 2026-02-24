@@ -6,6 +6,10 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { allProperties } from '@/data/properties';
 
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+
 // Fix for default marker icons in Leaflet with Next.js
 const UserLocationIcon = L.icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
@@ -209,11 +213,11 @@ export default function MapSearchModal({ isOpen, onClose, onSearch }: MapSearchM
                         <h2 className="text-xl font-bold text-white">🗺️ Search Properties on Map</h2>
                         <p className="text-sm text-blue-100">Search a location, use your current location, or click on the map</p>
                     </div>
-                    <button onClick={onClose} className="p-2 hover:bg-white/20 rounded-full transition-colors">
-                        <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <Button variant="ghost" size="icon" onClick={onClose} className="text-white hover:bg-white/20 hover:text-white rounded-full">
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                         </svg>
-                    </button>
+                    </Button>
                 </div>
 
                 {/* Controls */}
@@ -223,25 +227,25 @@ export default function MapSearchModal({ isOpen, onClose, onSearch }: MapSearchM
                         <div className="flex-1 min-w-[250px] relative" ref={searchRef}>
                             <div className="flex gap-2">
                                 <div className="relative flex-1">
-                                    <input
+                                    <Input
                                         type="text"
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
                                         onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                                         placeholder="Search city, locality, or address..."
-                                        className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        className="pl-10"
                                     />
-                                    <svg className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg className="w-5 h-5 text-muted-foreground absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                     </svg>
                                 </div>
-                                <button
+                                <Button
                                     onClick={handleSearch}
                                     disabled={isSearching}
-                                    className="px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+                                    className="bg-blue-600 text-white hover:bg-blue-700 transition-colors"
                                 >
                                     {isSearching ? 'Searching...' : 'Search'}
-                                </button>
+                                </Button>
                             </div>
 
                             {/* Search Results Dropdown */}
@@ -267,13 +271,12 @@ export default function MapSearchModal({ isOpen, onClose, onSearch }: MapSearchM
                         </div>
 
                         {/* Current Location Button */}
-                        <button
+                        <Button
+                            variant={locationError && !selectedLocation ? 'destructive' : 'default'}
                             onClick={getCurrentLocation}
                             disabled={isLocating}
-                            className={`flex items-center gap-2 px-4 py-2.5 rounded-lg transition-colors whitespace-nowrap ${locationError && !selectedLocation
-                                ? 'bg-red-100 text-red-700 hover:bg-red-200'
-                                : 'bg-green-600 text-white hover:bg-green-700'
-                                } disabled:opacity-50`}
+                            className={`flex items-center gap-2 whitespace-nowrap ${!locationError || selectedLocation ? 'bg-green-600 hover:bg-green-700 text-white' : ''
+                                }`}
                         >
                             {isLocating ? (
                                 <>
@@ -289,22 +292,23 @@ export default function MapSearchModal({ isOpen, onClose, onSearch }: MapSearchM
                                     {locationError && !selectedLocation ? 'Retry' : 'My Location'}
                                 </>
                             )}
-                        </button>
+                        </Button>
 
                         {/* Radius Selector */}
                         <div className="flex items-center gap-2">
                             <label className="text-sm font-medium text-gray-700">Radius:</label>
-                            <select
-                                value={radius}
-                                onChange={(e) => setRadius(Number(e.target.value))}
-                                className="px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-                            >
-                                <option value={5}>5 km</option>
-                                <option value={10}>10 km</option>
-                                <option value={25}>25 km</option>
-                                <option value={50}>50 km</option>
-                                <option value={100}>100 km</option>
-                            </select>
+                            <Select value={radius.toString()} onValueChange={(val) => setRadius(Number(val))}>
+                                <SelectTrigger className="w-[110px]">
+                                    <SelectValue placeholder="Select radius" />
+                                </SelectTrigger>
+                                <SelectContent className="z-[1001]">
+                                    <SelectItem value="5">5 km</SelectItem>
+                                    <SelectItem value="10">10 km</SelectItem>
+                                    <SelectItem value="25">25 km</SelectItem>
+                                    <SelectItem value="50">50 km</SelectItem>
+                                    <SelectItem value="100">100 km</SelectItem>
+                                </SelectContent>
+                            </Select>
                         </div>
 
                         {/* Properties Count */}
@@ -405,29 +409,29 @@ export default function MapSearchModal({ isOpen, onClose, onSearch }: MapSearchM
                     </p>
                     <div className="flex gap-3">
                         {selectedLocation && (
-                            <button
+                            <Button
+                                variant="secondary"
                                 onClick={() => {
                                     setSelectedLocation(null);
                                     setFlyToLocation(null);
                                 }}
-                                className="px-4 py-2.5 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
                             >
                                 Clear Selection
-                            </button>
+                            </Button>
                         )}
-                        <button
+                        <Button
+                            variant="outline"
                             onClick={onClose}
-                            className="px-4 py-2.5 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
                         >
                             Cancel
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                             onClick={handleSearchProperties}
                             disabled={propertiesInRadius.length === 0}
-                            className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blue-500/30"
+                            className="bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 transition-all shadow-lg shadow-blue-500/30"
                         >
                             🔍 Search {propertiesInRadius.length} Properties
-                        </button>
+                        </Button>
                     </div>
                 </div>
             </div>
