@@ -271,8 +271,8 @@ export default function MapSearchModal({ isOpen, onClose, onSearch }: MapSearchM
                             onClick={getCurrentLocation}
                             disabled={isLocating}
                             className={`flex items-center gap-2 px-4 py-2.5 rounded-lg transition-colors whitespace-nowrap ${locationError && !selectedLocation
-                                    ? 'bg-red-100 text-red-700 hover:bg-red-200'
-                                    : 'bg-green-600 text-white hover:bg-green-700'
+                                ? 'bg-red-100 text-red-700 hover:bg-red-200'
+                                : 'bg-green-600 text-white hover:bg-green-700'
                                 } disabled:opacity-50`}
                         >
                             {isLocating ? (
@@ -365,7 +365,7 @@ export default function MapSearchModal({ isOpen, onClose, onSearch }: MapSearchM
                                         <h3 className="font-semibold text-gray-900">{property.address}</h3>
                                         <p className="text-blue-600 font-bold">{property.price}</p>
                                         <p className="text-sm text-gray-500">{property.beds} beds • {property.baths} baths</p>
-                                        <a href={`/property?id=${property.id}`} className="mt-2 inline-block text-sm text-blue-600 font-medium hover:underline">
+                                        <a href={`/properties/${property.id}`} className="mt-2 inline-block text-sm text-blue-600 font-medium hover:underline">
                                             View Details →
                                         </a>
                                     </div>

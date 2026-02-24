@@ -1,9 +1,11 @@
 'use client';
 
 import Link from 'next/link';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Header = () => {
     const propertyTypes = ['Buy', 'Rent', 'Sell', 'PG/Co-living'];
+    const { user, isAuthenticated, logout } = useAuth();
 
     return (
         <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-200 shadow-sm">
@@ -40,12 +42,28 @@ const Header = () => {
 
                     {/* CTA Buttons */}
                     <div className="flex items-center space-x-4">
-                        <Link href="/signin" className="hidden sm:block px-4 py-2 text-blue-600 hover:text-blue-700 font-medium transition-colors">
-                            Sign In
-                        </Link>
-                        <Link href="/signup" className="px-6 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 font-medium shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-300 transform hover:-translate-y-0.5">
-                            Post Property
-                        </Link>
+                        {isAuthenticated ? (
+                            <div className="flex items-center space-x-4">
+                                <span className="hidden sm:block text-sm font-medium text-gray-700">
+                                    {user?.fullName || 'User'}
+                                </span>
+                                <Link href="/dashboard" className="text-blue-600 hover:text-blue-700 font-medium transition-colors">
+                                    Dashboard
+                                </Link>
+                                <button onClick={logout} className="px-4 py-2 text-red-600 hover:text-red-700 font-medium transition-colors">
+                                    Logout
+                                </button>
+                            </div>
+                        ) : (
+                            <>
+                                <Link href="/signin" className="hidden sm:block px-4 py-2 text-blue-600 hover:text-blue-700 font-medium transition-colors">
+                                    Sign In
+                                </Link>
+                                <Link href="/signup" className="px-6 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 font-medium shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-300 transform hover:-translate-y-0.5">
+                                    Post Property
+                                </Link>
+                            </>
+                        )}
                     </div>
                 </div>
             </div>

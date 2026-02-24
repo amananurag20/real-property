@@ -2,29 +2,22 @@
 
 import { Suspense, useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import PropertyCard from '@/components/PropertyCard';
 import { allProperties } from '@/data/properties';
+import { normalizeCity } from '@/utils/string';
 
 function PropertiesContent() {
     const searchParams = useSearchParams();
     const cityParam = searchParams.get('city');
     const idsParam = searchParams.get('ids');
 
-    // Normalize city param or default to 'All'
-    // This allows linking like /properties?city=Mumbai
-    const initialCity = cityParam
-        ? cityParam.charAt(0).toUpperCase() + cityParam.slice(1).toLowerCase()
-        : 'All';
-
     const [searchTerm, setSearchTerm] = useState('');
-    const [selectedCity, setSelectedCity] = useState(initialCity);
+    const [selectedCity, setSelectedCity] = useState(normalizeCity(cityParam));
 
     // Update if URL changes
     useEffect(() => {
         if (cityParam) {
-            setSelectedCity(cityParam.charAt(0).toUpperCase() + cityParam.slice(1).toLowerCase());
+            setSelectedCity(normalizeCity(cityParam));
         }
     }, [cityParam]);
 
@@ -121,11 +114,9 @@ function PropertiesContent() {
 export default function PropertiesPage() {
     return (
         <div className="min-h-screen bg-gray-50">
-            <Header />
             <Suspense fallback={<div className="pt-24 text-center">Loading properties...</div>}>
                 <PropertiesContent />
             </Suspense>
-            <Footer />
         </div>
     );
 }

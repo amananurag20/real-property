@@ -1,18 +1,11 @@
 'use client';
 
-import { Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { use, useState } from 'react';
 import Link from 'next/link';
-import { useState } from 'react';
 import { allProperties } from '@/data/properties';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 
-function PropertyContent() {
-    const searchParams = useSearchParams();
-    const propertyId = searchParams.get('id');
-    const property = allProperties.find(p => p.id === parseInt(propertyId || '0'));
-
+function PropertyContent({ id }: { id: string }) {
+    const property = allProperties.find(p => p.id === parseInt(id || '0'));
     const [selectedImage, setSelectedImage] = useState(0);
 
     if (!property) {
@@ -34,9 +27,7 @@ function PropertyContent() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
-            <Header />
-
+        <div className="bg-gradient-to-br from-slate-50 via-white to-blue-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {/* Breadcrumb */}
                 <div className="mb-6">
@@ -271,20 +262,13 @@ function PropertyContent() {
                     </div>
                 </div>
             </div>
-
-            <Footer />
         </div>
     );
 }
 
-export default function PropertyDetailsPage() {
+export default function PropertyDetailsPage({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = use(params);
     return (
-        <Suspense fallback={
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-            </div>
-        }>
-            <PropertyContent />
-        </Suspense>
+        <PropertyContent id={id} />
     );
 }

@@ -27,7 +27,7 @@ const PropertyCard = ({ id, image, price, beds, baths, sqft, address, status, fe
     };
 
     return (
-        <Link href={`/property?id=${id}`} className="block">
+        <Link href={`/properties/${id}`} className="block">
             <div className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
                 {/* Image Section */}
                 <div className="relative h-56 overflow-hidden bg-gray-200">

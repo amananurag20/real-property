@@ -2,15 +2,26 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/contexts/AuthContext';
 
 const SignInPage = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const router = useRouter();
+    const { login } = useAuth();
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         console.log('Sign in:', { email, password });
+        login({
+            id: '1',
+            email,
+            fullName: email.split('@')[0], // Mock name from email
+            userType: 'owner' // Default user type for mock
+        }, 'dummy-auth-token');
+        router.push('/dashboard');
     };
 
     return (

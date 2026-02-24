@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/contexts/AuthContext';
 
 type UserType = 'owner' | 'broker' | 'tenant' | 'developer' | '';
 
@@ -16,6 +18,8 @@ const SignUpPage = () => {
     const [companyName, setCompanyName] = useState('');
     const [licenseNumber, setLicenseNumber] = useState('');
     const [agreeTerms, setAgreeTerms] = useState(false);
+    const router = useRouter();
+    const { login } = useAuth();
 
     const userTypes = [
         {
@@ -63,6 +67,13 @@ const SignUpPage = () => {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         console.log('Sign up:', { userType, fullName, email, phone, password, companyName, licenseNumber });
+        login({
+            id: '2',
+            email,
+            fullName,
+            userType: userType as any,
+        }, 'dummy-auth-token');
+        router.push('/dashboard');
     };
 
     return (
