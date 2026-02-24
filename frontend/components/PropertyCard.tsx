@@ -19,6 +19,8 @@ interface PropertyCardProps {
     longitude?: number;
 }
 
+import Image from 'next/image';
+
 const PropertyCard = ({ id, image, price, beds, baths, sqft, address, status, featured, latitude, longitude }: PropertyCardProps) => {
     const openGoogleMaps = (e: React.MouseEvent) => {
         e.preventDefault();
@@ -34,17 +36,19 @@ const PropertyCard = ({ id, image, price, beds, baths, sqft, address, status, fe
             <Card className="group rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-gray-100 border p-0 bg-white">
                 {/* Image Section */}
                 <div className="relative h-56 overflow-hidden bg-gray-200">
-                    <img
+                    <Image
                         src={image}
                         alt={address}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        className="object-cover group-hover:scale-110 transition-transform duration-500"
                     />
                     {/* Status Badge */}
                     <div className="absolute top-4 left-4">
                         <Badge
                             className={`px-3 py-1 text-xs font-semibold shadow-lg ${featured
-                                    ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white hover:from-orange-500 hover:to-red-500'
-                                    : 'bg-blue-600 text-white hover:bg-blue-600'
+                                ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white hover:from-orange-500 hover:to-red-500'
+                                : 'bg-blue-600 text-white hover:bg-blue-600'
                                 }`}
                         >
                             {status}

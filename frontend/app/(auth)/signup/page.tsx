@@ -8,22 +8,31 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import api from '@/lib/api-client';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { signupDetailsSchema, otpVerificationSchema } from '@/constants/validations';
+import { authServiceApi } from '@/services/auth.service';
 import { Role } from '@/constants/roles';
 
 type UserType = 'owner' | 'broker' | 'tenant' | 'developer' | '';
 
 const SignUpPage = () => {
     const [step, setStep] = useState<'type' | 'details' | 'otp'>('type');
-    const [userType, setUserType] = useState<UserType>('');
-    const [fullName, setFullName] = useState('');
-    const [email, setEmail] = useState('');
-    const [phone, setPhone] = useState('');
-    const [otp, setOtp] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [agreeTerms, setAgreeTerms] = useState(false);
     const router = useRouter();
     const { login, isAuthenticated, isLoading: authLoading } = useAuth();
+
+    // Form for Details Step
+    const detailsForm = useForm({
+        resolver: yupResolver(signupDetailsSchema),
+        defaultValues: { phone: '', name: '', email: '', userType: '', agreeTerms: false }
+    });
+
+    // Form for OTP Step
+    const otpForm = useForm({
+        resolver: yupResolver(otpVerificationSchema),
+        defaultValues: { phone: '', otp: '' }
+    });
 
     // Redirect if already authenticated
     useEffect(() => {
@@ -75,8 +84,7 @@ const SignUpPage = () => {
         },
     ];
 
-    const handleDetailsSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleDetailsSubmit = detailsForm.handleSubmit(async (data) => {
         setIsLoading(true);
 
         // Map frontend UserType to backend Role
@@ -89,12 +97,13 @@ const SignUpPage = () => {
         };
 
         try {
-            await api.post('/auth/register', {
-                phone,
-                name: fullName,
-                email,
-                role: roleMap[userType]
+            await authServiceApi.register({
+                phone: data.phone,
+                name: data.name,
+                email: data.email,
+                role: roleMap[data.userType as UserType]
             });
+            otpForm.setValue('phone', data.phone); // Pass phone to next step
             setStep('otp');
         } catch (error: any) {
             console.error('Failed to initiate signup:', error);
@@ -102,13 +111,12 @@ const SignUpPage = () => {
         } finally {
             setIsLoading(false);
         }
-    };
+    });
 
-    const handleOtpVerify = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleOtpVerify = otpForm.handleSubmit(async (data) => {
         setIsLoading(true);
         try {
-            const response = await api.post('/auth/verify-otp', { phone, otp });
+            const response = await authServiceApi.verifyOtp({ phone: data.phone, otp: data.otp });
             // Extract from nested data wrapper
             const { accessToken, user } = response.data.data;
 
@@ -120,7 +128,7 @@ const SignUpPage = () => {
         } finally {
             setIsLoading(false);
         }
-    };
+    });
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 flex items-center justify-center p-4 py-12">
@@ -152,8 +160,9 @@ const SignUpPage = () => {
                                     <Button
                                         key={type.id}
                                         variant="outline"
+                                        type="button"
                                         onClick={() => {
-                                            setUserType(type.id);
+                                            detailsForm.setValue('userType', type.id, { shouldValidate: true });
                                             setStep('details');
                                         }}
                                         className="h-auto p-6 flex flex-col items-center text-center space-y-3 hover:border-blue-500 hover:bg-blue-50 transition-all duration-200 group relative"
@@ -176,18 +185,20 @@ const SignUpPage = () => {
 
                     {step === 'details' && (
                         <form onSubmit={handleDetailsSubmit} className="space-y-6">
+                            <input type="hidden" {...detailsForm.register('userType')} />
                             <div className="flex items-center justify-between p-4 bg-blue-50 rounded-xl border border-blue-200">
                                 <div className="flex items-center gap-3">
                                     <div className="p-2 bg-blue-600 rounded-lg text-white">
-                                        {userTypes.find(t => t.id === userType)?.icon}
+                                        {userTypes.find(t => t.id === detailsForm.watch('userType'))?.icon}
                                     </div>
                                     <div>
                                         <p className="text-sm text-gray-600">Signing up as</p>
-                                        <p className="font-semibold text-gray-900">{userTypes.find(t => t.id === userType)?.title}</p>
+                                        <p className="font-semibold text-gray-900">{userTypes.find(t => t.id === detailsForm.watch('userType'))?.title}</p>
                                     </div>
                                 </div>
                                 <Button
                                     variant="ghost"
+                                    type="button"
                                     size="sm"
                                     onClick={() => setStep('type')}
                                     className="text-blue-600 hover:text-blue-700 hover:bg-blue-100/50"
@@ -197,15 +208,17 @@ const SignUpPage = () => {
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="fullName">Full Name</Label>
+                                <Label htmlFor="name">Full Name</Label>
                                 <Input
                                     type="text"
-                                    id="fullName"
-                                    value={fullName}
-                                    onChange={(e) => setFullName(e.target.value)}
+                                    id="name"
                                     placeholder="John Doe"
-                                    required
+                                    className={detailsForm.formState.errors.name ? 'border-red-500' : ''}
+                                    {...detailsForm.register('name')}
                                 />
+                                {detailsForm.formState.errors.name && (
+                                    <p className="text-sm text-red-500 mt-1">{detailsForm.formState.errors.name.message}</p>
+                                )}
                             </div>
 
                             <div className="space-y-2">
@@ -213,11 +226,13 @@ const SignUpPage = () => {
                                 <Input
                                     type="email"
                                     id="email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
                                     placeholder="you@example.com"
-                                    required
+                                    className={detailsForm.formState.errors.email ? 'border-red-500' : ''}
+                                    {...detailsForm.register('email')}
                                 />
+                                {detailsForm.formState.errors.email && (
+                                    <p className="text-sm text-red-500 mt-1">{detailsForm.formState.errors.email.message}</p>
+                                )}
                             </div>
 
                             <div className="space-y-2">
@@ -229,29 +244,35 @@ const SignUpPage = () => {
                                     <Input
                                         type="tel"
                                         id="phone"
-                                        value={phone}
-                                        onChange={(e) => setPhone(e.target.value)}
                                         placeholder="98765 43210"
-                                        className="pl-12"
-                                        required
-                                        pattern="[0-9]{10}"
+                                        className={`pl-12 ${detailsForm.formState.errors.phone ? 'border-red-500' : ''}`}
                                         maxLength={10}
+                                        {...detailsForm.register('phone')}
                                     />
                                 </div>
+                                {detailsForm.formState.errors.phone && (
+                                    <p className="text-sm text-red-500 mt-1">{detailsForm.formState.errors.phone.message}</p>
+                                )}
                             </div>
 
-                            <div className="flex items-start space-x-2 mt-2">
-                                <Checkbox
-                                    id="terms"
-                                    checked={agreeTerms}
-                                    onCheckedChange={(c) => setAgreeTerms(c as boolean)}
-                                    required
-                                />
-                                <Label htmlFor="terms" className="font-normal text-muted-foreground leading-snug">
-                                    I agree to the{' '}
-                                    <Link href="#" className="text-blue-600 hover:text-blue-700 font-medium">Terms of Service</Link> and{' '}
-                                    <Link href="#" className="text-blue-600 hover:text-blue-700 font-medium">Privacy Policy</Link>
-                                </Label>
+                            <div className="flex flex-col space-y-1 mt-2">
+                                <div className="flex items-start space-x-2">
+                                    <Checkbox
+                                        id="agreeTerms"
+                                        checked={detailsForm.watch('agreeTerms')}
+                                        onCheckedChange={(checked) => {
+                                            detailsForm.setValue('agreeTerms', checked as boolean, { shouldValidate: true });
+                                        }}
+                                    />
+                                    <Label htmlFor="agreeTerms" className="font-normal text-muted-foreground leading-snug">
+                                        I agree to the{' '}
+                                        <Link href="#" className="text-blue-600 hover:text-blue-700 font-medium">Terms of Service</Link> and{' '}
+                                        <Link href="#" className="text-blue-600 hover:text-blue-700 font-medium">Privacy Policy</Link>
+                                    </Label>
+                                </div>
+                                {detailsForm.formState.errors.agreeTerms && (
+                                    <p className="text-sm text-red-500 ml-6">{detailsForm.formState.errors.agreeTerms.message}</p>
+                                )}
                             </div>
 
                             <Button
@@ -270,7 +291,7 @@ const SignUpPage = () => {
                             <div className="text-center space-y-2">
                                 <h2 className="text-xl font-bold text-gray-900">Enter OTP</h2>
                                 <p className="text-sm text-gray-600">
-                                    Verification code sent to <span className="font-semibold">+91 {phone}</span>
+                                    Verification code sent to <span className="font-semibold">+91 {otpForm.getValues('phone')}</span>
                                 </p>
                                 <button
                                     type="button"
@@ -285,13 +306,14 @@ const SignUpPage = () => {
                                 <Input
                                     type="text"
                                     id="otp"
-                                    value={otp}
-                                    onChange={(e) => setOtp(e.target.value)}
-                                    placeholder="••••••"
-                                    className="text-center text-3xl tracking-[1em] font-bold h-16"
-                                    required
-                                    maxLength={6}
+                                    placeholder="••••"
+                                    className={`text-center text-3xl tracking-[1em] font-bold h-16 ${otpForm.formState.errors.otp ? 'border-red-500' : ''}`}
+                                    maxLength={4}
+                                    {...otpForm.register('otp')}
                                 />
+                                {otpForm.formState.errors.otp && (
+                                    <p className="text-sm text-red-500 text-center">{otpForm.formState.errors.otp.message}</p>
+                                )}
                             </div>
 
                             <Button

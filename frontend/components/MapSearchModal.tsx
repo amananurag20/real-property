@@ -9,6 +9,13 @@ import { allProperties } from '@/data/properties';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import Image from 'next/image';
+
+interface NominatimResult {
+    lat: string;
+    lon: string;
+    display_name: string;
+}
 
 // Fix for default marker icons in Leaflet with Next.js
 const UserLocationIcon = L.icon({
@@ -83,7 +90,7 @@ export default function MapSearchModal({ isOpen, onClose, onSearch }: MapSearchM
 
     // Search states
     const [searchQuery, setSearchQuery] = useState('');
-    const [searchResults, setSearchResults] = useState<any[]>([]);
+    const [searchResults, setSearchResults] = useState<NominatimResult[]>([]);
     const [isSearching, setIsSearching] = useState(false);
     const [showResults, setShowResults] = useState(false);
 
@@ -129,7 +136,7 @@ export default function MapSearchModal({ isOpen, onClose, onSearch }: MapSearchM
     };
 
     // Handle search result selection
-    const handleResultSelect = (result: any) => {
+    const handleResultSelect = (result: NominatimResult) => {
         const lat = parseFloat(result.lat);
         const lon = parseFloat(result.lon);
         const newLocation: [number, number] = [lat, lon];
@@ -365,7 +372,9 @@ export default function MapSearchModal({ isOpen, onClose, onSearch }: MapSearchM
                             >
                                 <Popup>
                                     <div className="min-w-[200px]">
-                                        <img src={property.image} alt={property.address} className="w-full h-24 object-cover rounded mb-2" />
+                                        <div className="relative w-full h-24 mb-2">
+                                            <Image src={property.image} alt={property.address} fill className="object-cover rounded" sizes="200px" />
+                                        </div>
                                         <h3 className="font-semibold text-gray-900">{property.address}</h3>
                                         <p className="text-blue-600 font-bold">{property.price}</p>
                                         <p className="text-sm text-gray-500">{property.beds} beds • {property.baths} baths</p>

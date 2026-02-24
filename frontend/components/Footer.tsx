@@ -15,7 +15,7 @@ const Footer = () => {
                             <span className="text-xl font-bold">EstateIndia</span>
                         </div>
                         <p className="text-gray-400 text-sm">
-                            India's most trusted real estate platform. Find your dream home today.
+                            India&apos;s most trusted real estate platform. Find your dream home today.
                         </p>
                     </div>
 

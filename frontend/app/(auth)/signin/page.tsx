@@ -7,16 +7,28 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import api from '@/lib/api-client';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { signinPhoneSchema, otpVerificationSchema } from '@/constants/validations';
+import { authServiceApi } from '@/services/auth.service';
 
 const SignInPage = () => {
-    const [phone, setPhone] = useState('');
-    const [otp, setOtp] = useState('');
     const [step, setStep] = useState<'phone' | 'otp'>('phone');
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
     const { login, isAuthenticated, isLoading: authLoading } = useAuth();
+
+    // Form for Phone Step
+    const phoneForm = useForm({
+        resolver: yupResolver(signinPhoneSchema),
+        defaultValues: { phone: '' }
+    });
+
+    // Form for OTP Step
+    const otpForm = useForm({
+        resolver: yupResolver(otpVerificationSchema),
+        defaultValues: { phone: '', otp: '' }
+    });
 
     // Redirect if already authenticated
     useEffect(() => {
@@ -25,11 +37,11 @@ const SignInPage = () => {
         }
     }, [isAuthenticated, authLoading, router]);
 
-    const handlePhoneSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const handlePhoneSubmit = phoneForm.handleSubmit(async (data) => {
         setIsLoading(true);
         try {
-            await api.post('/auth/send-otp', { phone });
+            await authServiceApi.sendOtp({ phone: data.phone });
+            otpForm.setValue('phone', data.phone); // Pass phone to next step
             setStep('otp');
         } catch (error: any) {
             console.error('Failed to send OTP:', error);
@@ -37,14 +49,12 @@ const SignInPage = () => {
         } finally {
             setIsLoading(false);
         }
-    };
+    });
 
-    const handleOtpSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleOtpSubmit = otpForm.handleSubmit(async (data) => {
         setIsLoading(true);
         try {
-            const response = await api.post('/auth/verify-otp', { phone, otp });
-            // Extract from nested data wrapper
+            const response = await authServiceApi.verifyOtp({ phone: data.phone, otp: data.otp });
             const { accessToken, user } = response.data.data;
 
             login(user, accessToken);
@@ -55,7 +65,7 @@ const SignInPage = () => {
         } finally {
             setIsLoading(false);
         }
-    };
+    });
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 flex items-center justify-center p-4">
@@ -90,15 +100,15 @@ const SignInPage = () => {
                                     <Input
                                         type="tel"
                                         id="phone"
-                                        value={phone}
-                                        onChange={(e) => setPhone(e.target.value)}
                                         placeholder="98765 43210"
-                                        className="pl-12"
-                                        required
-                                        pattern="[0-9]{10}"
+                                        className={`pl-12 ${phoneForm.formState.errors.phone ? 'border-red-500' : ''}`}
                                         maxLength={10}
+                                        {...phoneForm.register('phone')}
                                     />
                                 </div>
+                                {phoneForm.formState.errors.phone && (
+                                    <p className="text-sm text-red-500">{phoneForm.formState.errors.phone.message}</p>
+                                )}
                                 <p className="text-xs text-gray-500">We'll send you an OTP for verification</p>
                             </div>
 
@@ -127,14 +137,15 @@ const SignInPage = () => {
                                 <Input
                                     type="text"
                                     id="otp"
-                                    value={otp}
-                                    onChange={(e) => setOtp(e.target.value)}
-                                    placeholder="••••••"
-                                    className="text-center text-2xl tracking-[1em] font-bold"
-                                    required
-                                    maxLength={6}
+                                    placeholder="••••"
+                                    className={`text-center text-2xl tracking-[1em] font-bold ${otpForm.formState.errors.otp ? 'border-red-500' : ''}`}
+                                    maxLength={4}
+                                    {...otpForm.register('otp')}
                                 />
-                                <p className="text-xs text-center text-gray-500">OTP sent to +91 {phone}</p>
+                                {otpForm.formState.errors.otp && (
+                                    <p className="text-sm text-red-500 mt-1">{otpForm.formState.errors.otp.message}</p>
+                                )}
+                                <p className="text-xs text-center text-gray-500">OTP sent to +91 {otpForm.getValues('phone')}</p>
                             </div>
 
                             <Button

@@ -5,7 +5,6 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 
 const Header = () => {
-    const propertyTypes = ['Buy', 'Rent', 'Sell', 'PG/Co-living'];
     const { user, isAuthenticated, logout } = useAuth();
 
     return (

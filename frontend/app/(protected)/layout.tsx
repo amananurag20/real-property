@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
+import Link from 'next/link';
 
 export default function ProtectedLayout({
     children,
@@ -38,18 +39,18 @@ export default function ProtectedLayout({
                     <h2 className="text-xl font-bold text-blue-600">User Dashboard</h2>
                 </div>
                 <nav className="px-4 space-y-1">
-                    <a href="/dashboard" className="block px-4 py-2 text-blue-600 bg-blue-50 rounded-lg font-medium">
+                    <Link href="/dashboard" className="block px-4 py-2 text-blue-600 bg-blue-50 rounded-lg font-medium">
                         Overview
-                    </a>
-                    <a href="/properties" className="block px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-lg font-medium transition-colors">
+                    </Link>
+                    <Link href="/properties" className="block px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-lg font-medium transition-colors">
                         My Listings
-                    </a>
-                    <a href="#" className="block px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-lg font-medium transition-colors">
+                    </Link>
+                    <Link href="#" className="block px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-lg font-medium transition-colors">
                         Saved Properties
-                    </a>
-                    <a href="#" className="block px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-lg font-medium transition-colors">
+                    </Link>
+                    <Link href="#" className="block px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-lg font-medium transition-colors">
                         Settings
-                    </a>
+                    </Link>
                 </nav>
             </aside>
 
