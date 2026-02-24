@@ -55,7 +55,7 @@ export default function ProtectedLayout({
 
             <main className="flex-1 flex flex-col">
                 <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8">
-                    <h1 className="text-lg font-semibold text-gray-800">Welcome Back{user?.fullName ? `, ${user.fullName}` : ''}!</h1>
+                    <h1 className="text-lg font-semibold text-gray-800">Welcome Back{user?.name ? `, ${user.name}` : ''}!</h1>
                     <button
                         onClick={logout}
                         className="text-sm text-red-600 hover:text-red-700 font-medium"

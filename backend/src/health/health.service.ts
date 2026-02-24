@@ -9,7 +9,7 @@ export class HealthService {
     private readonly health: HealthCheckService,
     private readonly redisHealth: RedisHealthIndicator,
     private readonly prisma: PrismaService,
-  ) { }
+  ) {}
 
   async check(): Promise<HealthCheckResult> {
     return this.health.check([
@@ -24,4 +24,3 @@ export class HealthService {
     ]);
   }
 }
-

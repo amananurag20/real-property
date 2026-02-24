@@ -13,14 +13,14 @@ import { buildMulterOptions } from '../upload.config';
  * uploadAvatar(\@UploadedFile() file: Express.Multer.File) { ... }
  */
 export function SingleFileInterceptor(
-    fieldName: string,
-    localOptions?: MulterOptions,
+  fieldName: string,
+  localOptions?: MulterOptions,
 ): Type<unknown> {
-    @Injectable()
-    class MixinInterceptor extends FileInterceptor(
-        fieldName,
-        localOptions ?? buildMulterOptions(),
-    ) { }
+  @Injectable()
+  class MixinInterceptor extends FileInterceptor(
+    fieldName,
+    localOptions ?? buildMulterOptions(),
+  ) {}
 
-    return mixin(MixinInterceptor);
+  return mixin(MixinInterceptor);
 }

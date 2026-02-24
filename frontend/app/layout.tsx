@@ -4,6 +4,7 @@ import "./globals.css";
 import Chatbot from "@/components/Chatbot";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import QueryProvider from "@/components/providers/query-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,10 +32,12 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <AuthProvider>
-          <TooltipProvider>
-            {children}
-            <Chatbot />
-          </TooltipProvider>
+          <QueryProvider>
+            <TooltipProvider>
+              {children}
+              <Chatbot />
+            </TooltipProvider>
+          </QueryProvider>
         </AuthProvider>
       </body>
     </html>

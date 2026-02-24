@@ -81,4 +81,3 @@ async function bootstrap(): Promise<void> {
   logger.log(`Environment: ${nodeEnv}`);
 }
 void bootstrap();
-

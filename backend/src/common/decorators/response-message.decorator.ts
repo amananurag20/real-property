@@ -11,4 +11,4 @@ export const RESPONSE_MESSAGE_KEY = 'responseMessage';
  * create() { ... }
  */
 export const ResponseMessage = (message: string) =>
-    SetMetadata(RESPONSE_MESSAGE_KEY, message);
+  SetMetadata(RESPONSE_MESSAGE_KEY, message);

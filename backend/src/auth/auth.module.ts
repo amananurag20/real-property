@@ -7,15 +7,15 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { PrismaModule } from '../prisma';
 
 @Module({
-    imports: [
-        PassportModule.register({ defaultStrategy: 'jwt' }),
-        // JwtModule registered without a global secret so each sign() call
-        // passes its own secret (supports future multi-key rotation)
-        JwtModule.register({}),
-        PrismaModule,
-    ],
-    controllers: [AuthController],
-    providers: [AuthService, JwtStrategy],
-    exports: [AuthService, JwtStrategy, PassportModule],
+  imports: [
+    PassportModule.register({ defaultStrategy: 'jwt' }),
+    // JwtModule registered without a global secret so each sign() call
+    // passes its own secret (supports future multi-key rotation)
+    JwtModule.register({}),
+    PrismaModule,
+  ],
+  controllers: [AuthController],
+  providers: [AuthService, JwtStrategy],
+  exports: [AuthService, JwtStrategy, PassportModule],
 })
-export class AuthModule { }
+export class AuthModule {}

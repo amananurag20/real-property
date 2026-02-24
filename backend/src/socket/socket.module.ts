@@ -4,7 +4,7 @@ import { SocketService } from './socket.service';
 
 @Global()
 @Module({
-    providers: [SocketGateway, SocketService],
-    exports: [SocketService],
+  providers: [SocketGateway, SocketService],
+  exports: [SocketService],
 })
-export class SocketModule { }
+export class SocketModule {}

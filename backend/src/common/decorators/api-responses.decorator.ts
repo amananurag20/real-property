@@ -1,14 +1,14 @@
 import { applyDecorators, Type } from '@nestjs/common';
 import {
-    ApiExtraModels,
-    ApiOkResponse,
-    ApiCreatedResponse,
-    ApiUnauthorizedResponse,
-    ApiForbiddenResponse,
-    ApiNotFoundResponse,
-    ApiUnprocessableEntityResponse,
-    ApiInternalServerErrorResponse,
-    getSchemaPath,
+  ApiExtraModels,
+  ApiOkResponse,
+  ApiCreatedResponse,
+  ApiUnauthorizedResponse,
+  ApiForbiddenResponse,
+  ApiNotFoundResponse,
+  ApiUnprocessableEntityResponse,
+  ApiInternalServerErrorResponse,
+  getSchemaPath,
 } from '@nestjs/swagger';
 
 /**
@@ -21,62 +21,62 @@ import {
  * findOne() { ... }
  */
 export function ApiSuccessResponse<T>(
-    dto: Type<T>,
-    description = 'Request succeeded',
+  dto: Type<T>,
+  description = 'Request succeeded',
 ) {
-    return applyDecorators(
-        ApiExtraModels(dto),
-        ApiOkResponse({
-            description,
-            schema: {
-                allOf: [
-                    {
-                        properties: {
-                            success: { type: 'boolean', example: true },
-                            statusCode: { type: 'number', example: 200 },
-                            message: { type: 'string', example: 'OK' },
-                            timestamp: {
-                                type: 'string',
-                                example: '2026-02-23T14:00:00.000Z',
-                            },
-                            data: { $ref: getSchemaPath(dto) },
-                        },
-                    },
-                ],
+  return applyDecorators(
+    ApiExtraModels(dto),
+    ApiOkResponse({
+      description,
+      schema: {
+        allOf: [
+          {
+            properties: {
+              success: { type: 'boolean', example: true },
+              statusCode: { type: 'number', example: 200 },
+              message: { type: 'string', example: 'OK' },
+              timestamp: {
+                type: 'string',
+                example: '2026-02-23T14:00:00.000Z',
+              },
+              data: { $ref: getSchemaPath(dto) },
             },
-        }),
-    );
+          },
+        ],
+      },
+    }),
+  );
 }
 
 /**
  * Swagger decorator that documents a `201 Created` response.
  */
 export function ApiCreatedSuccessResponse<T>(
-    dto: Type<T>,
-    description = 'Resource created',
+  dto: Type<T>,
+  description = 'Resource created',
 ) {
-    return applyDecorators(
-        ApiExtraModels(dto),
-        ApiCreatedResponse({
-            description,
-            schema: {
-                allOf: [
-                    {
-                        properties: {
-                            success: { type: 'boolean', example: true },
-                            statusCode: { type: 'number', example: 201 },
-                            message: { type: 'string', example: 'Created' },
-                            timestamp: {
-                                type: 'string',
-                                example: '2026-02-23T14:00:00.000Z',
-                            },
-                            data: { $ref: getSchemaPath(dto) },
-                        },
-                    },
-                ],
+  return applyDecorators(
+    ApiExtraModels(dto),
+    ApiCreatedResponse({
+      description,
+      schema: {
+        allOf: [
+          {
+            properties: {
+              success: { type: 'boolean', example: true },
+              statusCode: { type: 'number', example: 201 },
+              message: { type: 'string', example: 'Created' },
+              timestamp: {
+                type: 'string',
+                example: '2026-02-23T14:00:00.000Z',
+              },
+              data: { $ref: getSchemaPath(dto) },
             },
-        }),
-    );
+          },
+        ],
+      },
+    }),
+  );
 }
 
 /**
@@ -84,11 +84,11 @@ export function ApiCreatedSuccessResponse<T>(
  * to the Swagger docs for a route.
  */
 export function ApiErrorResponses() {
-    return applyDecorators(
-        ApiUnauthorizedResponse({ description: 'Unauthorized' }),
-        ApiForbiddenResponse({ description: 'Forbidden' }),
-        ApiNotFoundResponse({ description: 'Not Found' }),
-        ApiUnprocessableEntityResponse({ description: 'Validation Error' }),
-        ApiInternalServerErrorResponse({ description: 'Internal Server Error' }),
-    );
+  return applyDecorators(
+    ApiUnauthorizedResponse({ description: 'Unauthorized' }),
+    ApiForbiddenResponse({ description: 'Forbidden' }),
+    ApiNotFoundResponse({ description: 'Not Found' }),
+    ApiUnprocessableEntityResponse({ description: 'Validation Error' }),
+    ApiInternalServerErrorResponse({ description: 'Internal Server Error' }),
+  );
 }

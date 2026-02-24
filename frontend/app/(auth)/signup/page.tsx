@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
@@ -8,22 +8,29 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
+import api from '@/lib/api-client';
+import { Role } from '@/constants/roles';
 
 type UserType = 'owner' | 'broker' | 'tenant' | 'developer' | '';
 
 const SignUpPage = () => {
+    const [step, setStep] = useState<'type' | 'details' | 'otp'>('type');
     const [userType, setUserType] = useState<UserType>('');
     const [fullName, setFullName] = useState('');
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [showPassword, setShowPassword] = useState(false);
-    const [companyName, setCompanyName] = useState('');
-    const [licenseNumber, setLicenseNumber] = useState('');
+    const [otp, setOtp] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
     const [agreeTerms, setAgreeTerms] = useState(false);
     const router = useRouter();
-    const { login } = useAuth();
+    const { login, isAuthenticated, isLoading: authLoading } = useAuth();
+
+    // Redirect if already authenticated
+    useEffect(() => {
+        if (!authLoading && isAuthenticated) {
+            router.push('/dashboard');
+        }
+    }, [isAuthenticated, authLoading, router]);
 
     const userTypes = [
         {
@@ -68,16 +75,51 @@ const SignUpPage = () => {
         },
     ];
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleDetailsSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log('Sign up:', { userType, fullName, email, phone, password, companyName, licenseNumber });
-        login({
-            id: '2',
-            email,
-            fullName,
-            userType: userType as any,
-        }, 'dummy-auth-token');
-        router.push('/dashboard');
+        setIsLoading(true);
+
+        // Map frontend UserType to backend Role
+        const roleMap: Record<UserType, Role> = {
+            'owner': Role.USER,
+            'tenant': Role.USER,
+            'broker': Role.AGENT,
+            'developer': Role.SERVICE_PROVIDER,
+            '': Role.USER
+        };
+
+        try {
+            await api.post('/auth/register', {
+                phone,
+                name: fullName,
+                email,
+                role: roleMap[userType]
+            });
+            setStep('otp');
+        } catch (error: any) {
+            console.error('Failed to initiate signup:', error);
+            alert(error.response?.data?.message || 'Failed to initiate signup. Please try again.');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleOtpVerify = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsLoading(true);
+        try {
+            const response = await api.post('/auth/verify-otp', { phone, otp });
+            // Extract from nested data wrapper
+            const { accessToken, user } = response.data.data;
+
+            login(user, accessToken);
+            router.push('/dashboard');
+        } catch (error: any) {
+            console.error('Failed to verify OTP:', error);
+            alert(error.response?.data?.message || 'Invalid OTP. Please try again.');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -95,254 +137,190 @@ const SignUpPage = () => {
                             EstateIndia
                         </span>
                     </Link>
-                    <p className="mt-3 text-gray-600">Create your account and get started</p>
+                    <p className="mt-3 text-gray-600">
+                        {step === 'type' ? 'Choose your account type' : step === 'details' ? 'Complete your registration' : 'Verify your phone number'}
+                    </p>
                 </div>
 
                 {/* Sign Up Card */}
                 <div className="bg-white rounded-2xl shadow-2xl shadow-gray-300/50 p-8 border border-gray-100">
-                    <form onSubmit={handleSubmit} className="space-y-6">
-                        {/* User Type Selection */}
-                        {!userType ? (
-                            <div>
-                                <h2 className="text-xl font-bold text-gray-900 mb-4 text-center">I am a...</h2>
-                                <div className="grid sm:grid-cols-2 gap-4">
-                                    {userTypes.map((type) => (
-                                        <Button
-                                            key={type.id}
-                                            variant="outline"
-                                            onClick={() => setUserType(type.id)}
-                                            className="h-auto p-6 flex flex-col items-center text-center space-y-3 hover:border-blue-500 hover:bg-blue-50 transition-all duration-200 group relative"
-                                        >
-                                            <div className="absolute inset-x-0 top-0 h-1 bg-transparent group-hover:bg-blue-500 rounded-t-lg transition-colors" />
-                                            <div className="p-3 bg-blue-100 rounded-full text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors">
-                                                {type.icon}
-                                            </div>
-                                            <div>
-                                                <h3 className="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
-                                                    {type.title}
-                                                </h3>
-                                                <p className="text-sm text-gray-500 mt-1">{type.description}</p>
-                                            </div>
-                                        </Button>
-                                    ))}
-                                </div>
-                            </div>
-                        ) : (
-                            <>
-                                {/* Selected User Type Badge */}
-                                <div className="flex items-center justify-between p-4 bg-blue-50 rounded-xl border border-blue-200">
-                                    <div className="flex items-center gap-3">
-                                        <div className="p-2 bg-blue-600 rounded-lg text-white">
-                                            {userTypes.find(t => t.id === userType)?.icon}
+                    {step === 'type' && (
+                        <div className="space-y-6">
+                            <h2 className="text-xl font-bold text-gray-900 mb-4 text-center">I am a...</h2>
+                            <div className="grid sm:grid-cols-2 gap-4">
+                                {userTypes.map((type) => (
+                                    <Button
+                                        key={type.id}
+                                        variant="outline"
+                                        onClick={() => {
+                                            setUserType(type.id);
+                                            setStep('details');
+                                        }}
+                                        className="h-auto p-6 flex flex-col items-center text-center space-y-3 hover:border-blue-500 hover:bg-blue-50 transition-all duration-200 group relative"
+                                    >
+                                        <div className="absolute inset-x-0 top-0 h-1 bg-transparent group-hover:bg-blue-500 rounded-t-lg transition-colors" />
+                                        <div className="p-3 bg-blue-100 rounded-full text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                                            {type.icon}
                                         </div>
                                         <div>
-                                            <p className="text-sm text-gray-600">Signing up as</p>
-                                            <p className="font-semibold text-gray-900">{userTypes.find(t => t.id === userType)?.title}</p>
+                                            <h3 className="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
+                                                {type.title}
+                                            </h3>
+                                            <p className="text-sm text-gray-500 mt-1">{type.description}</p>
                                         </div>
-                                    </div>
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={() => setUserType('')}
-                                        className="text-blue-600 hover:text-blue-700 hover:bg-blue-100/50"
-                                    >
-                                        Change
                                     </Button>
-                                </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
 
-                                {/* Full Name */}
-                                <div className="space-y-2">
-                                    <Label htmlFor="fullName">Full Name</Label>
-                                    <Input
-                                        type="text"
-                                        id="fullName"
-                                        value={fullName}
-                                        onChange={(e) => setFullName(e.target.value)}
-                                        placeholder="John Doe"
-                                        required
-                                    />
-                                </div>
-
-                                <div className="grid sm:grid-cols-2 gap-4">
-                                    {/* Email */}
-                                    <div className="space-y-2">
-                                        <Label htmlFor="email">Email Address</Label>
-                                        <Input
-                                            type="email"
-                                            id="email"
-                                            value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
-                                            placeholder="you@example.com"
-                                            required
-                                        />
+                    {step === 'details' && (
+                        <form onSubmit={handleDetailsSubmit} className="space-y-6">
+                            <div className="flex items-center justify-between p-4 bg-blue-50 rounded-xl border border-blue-200">
+                                <div className="flex items-center gap-3">
+                                    <div className="p-2 bg-blue-600 rounded-lg text-white">
+                                        {userTypes.find(t => t.id === userType)?.icon}
                                     </div>
-
-                                    {/* Phone */}
-                                    <div className="space-y-2">
-                                        <Label htmlFor="phone">Phone Number</Label>
-                                        <Input
-                                            type="tel"
-                                            id="phone"
-                                            value={phone}
-                                            onChange={(e) => setPhone(e.target.value)}
-                                            placeholder="+91 98765 43210"
-                                            required
-                                        />
+                                    <div>
+                                        <p className="text-sm text-gray-600">Signing up as</p>
+                                        <p className="font-semibold text-gray-900">{userTypes.find(t => t.id === userType)?.title}</p>
                                     </div>
                                 </div>
-
-                                {/* Conditional Fields for Broker/Developer */}
-                                {(userType === 'broker' || userType === 'developer') && (
-                                    <div className="grid sm:grid-cols-2 gap-4">
-                                        <div className="space-y-2">
-                                            <Label htmlFor="companyName">
-                                                {userType === 'broker' ? 'Agency Name' : 'Company Name'}
-                                            </Label>
-                                            <Input
-                                                type="text"
-                                                id="companyName"
-                                                value={companyName}
-                                                onChange={(e) => setCompanyName(e.target.value)}
-                                                placeholder={userType === 'broker' ? 'ABC Realty' : 'XYZ Developers'}
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label htmlFor="license">
-                                                {userType === 'broker' ? 'License Number' : 'RERA Registration'}
-                                            </Label>
-                                            <Input
-                                                type="text"
-                                                id="license"
-                                                value={licenseNumber}
-                                                onChange={(e) => setLicenseNumber(e.target.value)}
-                                                placeholder="Optional"
-                                            />
-                                        </div>
-                                    </div>
-                                )}
-
-                                <div className="grid sm:grid-cols-2 gap-4">
-                                    {/* Password */}
-                                    <div className="space-y-2">
-                                        <Label htmlFor="password">Password</Label>
-                                        <div className="relative">
-                                            <Input
-                                                type={showPassword ? "text" : "password"}
-                                                id="password"
-                                                value={password}
-                                                onChange={(e) => setPassword(e.target.value)}
-                                                placeholder="••••••••"
-                                                className="pr-10"
-                                                required
-                                            />
-                                            <button
-                                                type="button"
-                                                onClick={() => setShowPassword(!showPassword)}
-                                                className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                                            >
-                                                {showPassword ? (
-                                                    <svg className="h-4 w-4 text-muted-foreground hover:text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
-                                                    </svg>
-                                                ) : (
-                                                    <svg className="h-4 w-4 text-muted-foreground hover:text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                                    </svg>
-                                                )}
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    {/* Confirm Password */}
-                                    <div className="space-y-2">
-                                        <Label htmlFor="confirmPassword">Confirm Password</Label>
-                                        <Input
-                                            type={showPassword ? "text" : "password"}
-                                            id="confirmPassword"
-                                            value={confirmPassword}
-                                            onChange={(e) => setConfirmPassword(e.target.value)}
-                                            placeholder="••••••••"
-                                            required
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* Terms Checkbox */}
-                                <div className="flex items-start space-x-2 mt-2">
-                                    <Checkbox
-                                        id="terms"
-                                        checked={agreeTerms}
-                                        onCheckedChange={(c) => setAgreeTerms(c as boolean)}
-                                        required
-                                    />
-                                    <Label htmlFor="terms" className="font-normal text-muted-foreground leading-snug">
-                                        I agree to the{' '}
-                                        <Link href="#" className="text-blue-600 hover:text-blue-700 font-medium">
-                                            Terms of Service
-                                        </Link>{' '}
-                                        and{' '}
-                                        <Link href="#" className="text-blue-600 hover:text-blue-700 font-medium">
-                                            Privacy Policy
-                                        </Link>
-                                    </Label>
-                                </div>
-
-                                {/* Submit Button */}
                                 <Button
-                                    type="submit"
-                                    className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold hover:from-blue-700 hover:to-blue-800 shadow-lg shadow-blue-500/40 hover:shadow-xl hover:shadow-blue-500/50 transition-all duration-300 transform hover:-translate-y-1"
-                                    size="lg"
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => setStep('type')}
+                                    className="text-blue-600 hover:text-blue-700 hover:bg-blue-100/50"
                                 >
-                                    Create Account
+                                    Change
                                 </Button>
+                            </div>
 
-                                {/* Divider */}
+                            <div className="space-y-2">
+                                <Label htmlFor="fullName">Full Name</Label>
+                                <Input
+                                    type="text"
+                                    id="fullName"
+                                    value={fullName}
+                                    onChange={(e) => setFullName(e.target.value)}
+                                    placeholder="John Doe"
+                                    required
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label htmlFor="email">Email Address</Label>
+                                <Input
+                                    type="email"
+                                    id="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    placeholder="you@example.com"
+                                    required
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label htmlFor="phone">Phone Number</Label>
                                 <div className="relative">
-                                    <div className="absolute inset-0 flex items-center">
-                                        <div className="w-full border-t border-gray-200"></div>
+                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500 font-medium">
+                                        +91
                                     </div>
-                                    <div className="relative flex justify-center text-sm">
-                                        <span className="px-4 bg-white text-gray-500">Or sign up with</span>
-                                    </div>
+                                    <Input
+                                        type="tel"
+                                        id="phone"
+                                        value={phone}
+                                        onChange={(e) => setPhone(e.target.value)}
+                                        placeholder="98765 43210"
+                                        className="pl-12"
+                                        required
+                                        pattern="[0-9]{10}"
+                                        maxLength={10}
+                                    />
                                 </div>
+                            </div>
 
-                                {/* Social Login */}
-                                <div className="grid grid-cols-2 gap-3">
-                                    <Button variant="outline" type="button" className="w-full">
-                                        <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
-                                            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                                            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                                            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
-                                            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
-                                        </svg>
-                                        Google
-                                    </Button>
-                                    <Button variant="outline" type="button" className="w-full">
-                                        <svg className="w-5 h-5 mr-2" fill="#1877F2" viewBox="0 0 24 24">
-                                            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-                                        </svg>
-                                        Facebook
-                                    </Button>
-                                </div>
-                            </>
-                        )}
+                            <div className="flex items-start space-x-2 mt-2">
+                                <Checkbox
+                                    id="terms"
+                                    checked={agreeTerms}
+                                    onCheckedChange={(c) => setAgreeTerms(c as boolean)}
+                                    required
+                                />
+                                <Label htmlFor="terms" className="font-normal text-muted-foreground leading-snug">
+                                    I agree to the{' '}
+                                    <Link href="#" className="text-blue-600 hover:text-blue-700 font-medium">Terms of Service</Link> and{' '}
+                                    <Link href="#" className="text-blue-600 hover:text-blue-700 font-medium">Privacy Policy</Link>
+                                </Label>
+                            </div>
 
-                        {/* Sign In Link */}
-                        <p className="text-center text-sm text-gray-600">
-                            Already have an account?{' '}
-                            <Link href="/signin" className="text-blue-600 hover:text-blue-700 font-semibold">
-                                Sign in
-                            </Link>
-                        </p>
-                    </form>
+                            <Button
+                                type="submit"
+                                className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold hover:from-blue-700 hover:to-blue-800 shadow-lg"
+                                size="lg"
+                                disabled={isLoading}
+                            >
+                                {isLoading ? 'Sending OTP...' : 'Get OTP'}
+                            </Button>
+                        </form>
+                    )}
+
+                    {step === 'otp' && (
+                        <form onSubmit={handleOtpVerify} className="space-y-6">
+                            <div className="text-center space-y-2">
+                                <h2 className="text-xl font-bold text-gray-900">Enter OTP</h2>
+                                <p className="text-sm text-gray-600">
+                                    Verification code sent to <span className="font-semibold">+91 {phone}</span>
+                                </p>
+                                <button
+                                    type="button"
+                                    onClick={() => setStep('details')}
+                                    className="text-xs text-blue-600 hover:underline"
+                                >
+                                    Change details
+                                </button>
+                            </div>
+
+                            <div className="space-y-2">
+                                <Input
+                                    type="text"
+                                    id="otp"
+                                    value={otp}
+                                    onChange={(e) => setOtp(e.target.value)}
+                                    placeholder="••••••"
+                                    className="text-center text-3xl tracking-[1em] font-bold h-16"
+                                    required
+                                    maxLength={6}
+                                />
+                            </div>
+
+                            <Button
+                                type="submit"
+                                className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold hover:from-blue-700 hover:to-blue-800 shadow-lg"
+                                size="lg"
+                                disabled={isLoading}
+                            >
+                                {isLoading ? 'Verifying...' : 'Complete Registration'}
+                            </Button>
+
+                            <div className="text-center">
+                                <button type="button" className="text-sm text-gray-600 hover:text-blue-600 font-medium">
+                                    Didn't receive code? <span className="font-bold">Resend OTP</span>
+                                </button>
+                            </div>
+                        </form>
+                    )}
+
+
+
+                    <p className="text-center text-sm text-gray-600 mt-6">
+                        Already have an account?{' '}
+                        <Link href="/signin" className="text-blue-600 hover:text-blue-700 font-semibold">Sign in</Link>
+                    </p>
                 </div>
 
-                {/* Back to Home */}
                 <div className="text-center mt-6">
-                    <Link href="/" className="text-sm text-gray-600 hover:text-gray-900 font-medium">
-                        ← Back to Home
-                    </Link>
+                    <Link href="/" className="text-sm text-gray-600 hover:text-gray-900 font-medium">← Back to Home</Link>
                 </div>
             </div>
         </div>

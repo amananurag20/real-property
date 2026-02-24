@@ -45,15 +45,17 @@ const Header = () => {
                     <div className="flex items-center space-x-2 sm:space-x-4">
                         {isAuthenticated ? (
                             <div className="flex items-center space-x-2 sm:space-x-4">
-                                <span className="hidden sm:block text-sm font-medium text-gray-700">
-                                    {user?.fullName || 'User'}
-                                </span>
-                                <Button variant="outline" asChild>
-                                    <Link href="/dashboard">
-                                        Dashboard
-                                    </Link>
-                                </Button>
-                                <Button variant="destructive" onClick={logout}>
+                                <Link href="/dashboard" className="flex items-center gap-2 hover:bg-gray-50 p-1.5 rounded-full transition-colors group">
+                                    <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 border border-blue-200 shadow-sm group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                        </svg>
+                                    </div>
+                                    <span className="hidden sm:block text-sm font-medium text-gray-700">
+                                        {user?.name || 'User'}
+                                    </span>
+                                </Link>
+                                <Button variant="ghost" size="sm" onClick={logout} className="text-gray-500 hover:text-red-600 hover:bg-red-50">
                                     Logout
                                 </Button>
                             </div>

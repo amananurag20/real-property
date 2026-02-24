@@ -14,8 +14,7 @@
  */
 
 /** The configured timezone for the entire application. */
-export const APP_TIMEZONE: string =
-    process.env.APP_TIMEZONE ?? 'Asia/Kolkata';
+export const APP_TIMEZONE: string = process.env.APP_TIMEZONE ?? 'Asia/Kolkata';
 
 /**
  * Returns the current date/time as an ISO 8601 string with the
@@ -27,7 +26,7 @@ export const APP_TIMEZONE: string =
  * @param timezone - IANA timezone name (default: `APP_TIMEZONE`)
  */
 export function nowISO(timezone: string = APP_TIMEZONE): string {
-    return toISO(new Date(), timezone);
+  return toISO(new Date(), timezone);
 }
 
 /**
@@ -38,39 +37,39 @@ export function nowISO(timezone: string = APP_TIMEZONE): string {
  * @param timezone - IANA timezone name (default: `APP_TIMEZONE`)
  */
 export function toISO(date: Date, timezone: string = APP_TIMEZONE): string {
-    // Extract date/time components rendered in the target timezone
-    const parts = new Intl.DateTimeFormat('en-CA', {
-        timeZone: timezone,
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false,
-    }).formatToParts(date);
+  // Extract date/time components rendered in the target timezone
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: timezone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+  }).formatToParts(date);
 
-    const get = (type: Intl.DateTimeFormatPartTypes): string =>
-        parts.find((p) => p.type === type)?.value ?? '00';
+  const get = (type: Intl.DateTimeFormatPartTypes): string =>
+    parts.find((p) => p.type === type)?.value ?? '00';
 
-    // Extract the UTC offset string, e.g. "GMT+05:30" → "+05:30"
-    const offsetParts = new Intl.DateTimeFormat('en-US', {
-        timeZone: timezone,
-        timeZoneName: 'longOffset',
-    }).formatToParts(date);
+  // Extract the UTC offset string, e.g. "GMT+05:30" → "+05:30"
+  const offsetParts = new Intl.DateTimeFormat('en-US', {
+    timeZone: timezone,
+    timeZoneName: 'longOffset',
+  }).formatToParts(date);
 
-    const rawOffset =
-        offsetParts.find((p) => p.type === 'timeZoneName')?.value ?? 'GMT+00:00';
+  const rawOffset =
+    offsetParts.find((p) => p.type === 'timeZoneName')?.value ?? 'GMT+00:00';
 
-    // "GMT+05:30" → "+05:30" | "GMT" (UTC) → "+00:00"
-    const offset = rawOffset === 'GMT' ? '+00:00' : rawOffset.replace('GMT', '');
+  // "GMT+05:30" → "+05:30" | "GMT" (UTC) → "+00:00"
+  const offset = rawOffset === 'GMT' ? '+00:00' : rawOffset.replace('GMT', '');
 
-    const ms = String(date.getMilliseconds()).padStart(3, '0');
+  const ms = String(date.getMilliseconds()).padStart(3, '0');
 
-    return (
-        `${get('year')}-${get('month')}-${get('day')}` +
-        `T${get('hour')}:${get('minute')}:${get('second')}.${ms}${offset}`
-    );
+  return (
+    `${get('year')}-${get('month')}-${get('day')}` +
+    `T${get('hour')}:${get('minute')}:${get('second')}.${ms}${offset}`
+  );
 }
 
 /**
@@ -78,12 +77,12 @@ export function toISO(date: Date, timezone: string = APP_TIMEZONE): string {
  * E.g. "+05:30" for Asia/Kolkata.
  */
 export function getTimezoneOffset(timezone: string = APP_TIMEZONE): string {
-    const parts = new Intl.DateTimeFormat('en-US', {
-        timeZone: timezone,
-        timeZoneName: 'longOffset',
-    }).formatToParts(new Date());
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: timezone,
+    timeZoneName: 'longOffset',
+  }).formatToParts(new Date());
 
-    const raw =
-        parts.find((p) => p.type === 'timeZoneName')?.value ?? 'GMT+00:00';
-    return raw === 'GMT' ? '+00:00' : raw.replace('GMT', '');
+  const raw =
+    parts.find((p) => p.type === 'timeZoneName')?.value ?? 'GMT+00:00';
+  return raw === 'GMT' ? '+00:00' : raw.replace('GMT', '');
 }

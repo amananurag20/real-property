@@ -13,18 +13,18 @@ import { buildMulterOptions } from '../upload.config';
  * uploadDocs(\@UploadedFiles() files: Express.Multer.File[]) { ... }
  */
 export function MultipleFilesInterceptor(
-    fieldName: string,
-    maxCount?: number,
-    localOptions?: MulterOptions,
+  fieldName: string,
+  maxCount?: number,
+  localOptions?: MulterOptions,
 ): Type<unknown> {
-    const maxFiles = maxCount ?? Number(process.env.MAX_FILES ?? 10);
+  const maxFiles = maxCount ?? Number(process.env.MAX_FILES ?? 10);
 
-    @Injectable()
-    class MixinInterceptor extends FilesInterceptor(
-        fieldName,
-        maxFiles,
-        localOptions ?? buildMulterOptions(),
-    ) { }
+  @Injectable()
+  class MixinInterceptor extends FilesInterceptor(
+    fieldName,
+    maxFiles,
+    localOptions ?? buildMulterOptions(),
+  ) {}
 
-    return mixin(MixinInterceptor);
+  return mixin(MixinInterceptor);
 }

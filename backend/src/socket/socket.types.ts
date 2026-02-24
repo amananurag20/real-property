@@ -4,20 +4,20 @@
  * to avoid typos and keep events in sync.
  */
 export const SOCKET_EVENTS = {
-    // ── Connection lifecycle ─────────────────────────────────────
-    CONNECT: 'connect',
-    DISCONNECT: 'disconnect',
+  // ── Connection lifecycle ─────────────────────────────────────
+  CONNECT: 'connect',
+  DISCONNECT: 'disconnect',
 
-    // ── Heartbeat ────────────────────────────────────────────────
-    PING: 'ping',
-    PONG: 'pong',
+  // ── Heartbeat ────────────────────────────────────────────────
+  PING: 'ping',
+  PONG: 'pong',
 
-    // ── Notifications (server → client) ─────────────────────────
-    NOTIFICATION: 'notification',
-    BROADCAST: 'broadcast',
+  // ── Notifications (server → client) ─────────────────────────
+  NOTIFICATION: 'notification',
+  BROADCAST: 'broadcast',
 
-    // ── Error ────────────────────────────────────────────────────
-    ERROR: 'error',
+  // ── Error ────────────────────────────────────────────────────
+  ERROR: 'error',
 } as const;
 
 export type SocketEventKey = keyof typeof SOCKET_EVENTS;

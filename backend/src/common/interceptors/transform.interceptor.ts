@@ -1,8 +1,8 @@
 import {
-    Injectable,
-    NestInterceptor,
-    ExecutionContext,
-    CallHandler,
+  Injectable,
+  NestInterceptor,
+  ExecutionContext,
+  CallHandler,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
@@ -30,30 +30,32 @@ import { nowISO } from '../utils/timezone.util';
  * `@ResponseMessage('...')` decorator.
  */
 @Injectable()
-export class TransformInterceptor<T>
-    implements NestInterceptor<T, ApiResponse<T>> {
-    constructor(private readonly reflector: Reflector) { }
+export class TransformInterceptor<T> implements NestInterceptor<
+  T,
+  ApiResponse<T>
+> {
+  constructor(private readonly reflector: Reflector) {}
 
-    intercept(
-        context: ExecutionContext,
-        next: CallHandler,
-    ): Observable<ApiResponse<T>> {
-        const message =
-            this.reflector.get<string>(RESPONSE_MESSAGE_KEY, context.getHandler()) ??
-            'OK';
+  intercept(
+    context: ExecutionContext,
+    next: CallHandler,
+  ): Observable<ApiResponse<T>> {
+    const message =
+      this.reflector.get<string>(RESPONSE_MESSAGE_KEY, context.getHandler()) ??
+      'OK';
 
-        const httpResponse = context.switchToHttp().getResponse<Response>();
+    const httpResponse = context.switchToHttp().getResponse<Response>();
 
-        return next.handle().pipe(
-            map((data: T): ApiResponse<T> => {
-                return {
-                    success: true,
-                    statusCode: httpResponse.statusCode,
-                    message,
-                    data,
-                    timestamp: nowISO(),
-                };
-            }),
-        );
-    }
+    return next.handle().pipe(
+      map((data: T): ApiResponse<T> => {
+        return {
+          success: true,
+          statusCode: httpResponse.statusCode,
+          message,
+          data,
+          timestamp: nowISO(),
+        };
+      }),
+    );
+  }
 }

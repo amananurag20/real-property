@@ -13,37 +13,37 @@ type UserSelectMap = Record<string, boolean>;
 
 /** Fields any authenticated user can see about themselves */
 const USER_SELECT: UserSelectMap = {
-    name: true,
-    email: true,
-    phone: true,
-    role: true,
-    isActive: true,
-    createdAt: true,
-    // id        → hidden for self-access (prevents enumeration)
-    // isSuspended → admin-only
-    // updatedAt   → admin-only
+  name: true,
+  email: true,
+  phone: true,
+  role: true,
+  isActive: true,
+  createdAt: true,
+  // id        → hidden for self-access (prevents enumeration)
+  // isSuspended → admin-only
+  // updatedAt   → admin-only
 };
 
 /** Fields visible to ADMIN — full record */
 const ADMIN_SELECT: UserSelectMap = {
-    id: true,
-    name: true,
-    email: true,
-    phone: true,
-    role: true,
-    isActive: true,
-    isSuspended: true,
-    createdAt: true,
-    updatedAt: true,
+  id: true,
+  name: true,
+  email: true,
+  phone: true,
+  role: true,
+  isActive: true,
+  isSuspended: true,
+  createdAt: true,
+  updatedAt: true,
 };
 
 /** Role → default select map */
 const ROLE_SELECT: Record<string, UserSelectMap> = {
-    USER: USER_SELECT,
-    AGENT: USER_SELECT,
-    SERVICE_PROVIDER: USER_SELECT,
-    VISITOR: USER_SELECT,
-    ADMIN: ADMIN_SELECT,
+  USER: USER_SELECT,
+  AGENT: USER_SELECT,
+  SERVICE_PROVIDER: USER_SELECT,
+  VISITOR: USER_SELECT,
+  ADMIN: ADMIN_SELECT,
 };
 
 // ── Builder ──────────────────────────────────────────────────────────────────
@@ -67,10 +67,10 @@ const ROLE_SELECT: Record<string, UserSelectMap> = {
  *   const select = getUserSelect('ADMIN', { updatedAt: false });
  */
 export function getUserSelect(
-    role: string,
-    overrides?: UserSelectMap,
+  role: string,
+  overrides?: UserSelectMap,
 ): UserSelectMap {
-    const base = ROLE_SELECT[role] ?? USER_SELECT; // safe fallback
-    if (!overrides) return base;
-    return { ...base, ...overrides };
+  const base = ROLE_SELECT[role] ?? USER_SELECT; // safe fallback
+  if (!overrides) return base;
+  return { ...base, ...overrides };
 }

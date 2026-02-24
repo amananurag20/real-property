@@ -23,8 +23,8 @@ enum Role {
 // ── User ──────────────────────────────────────────────────────────────
 model User {
   id          String   @id @default(uuid())
-  name        String?
-  email       String?  @unique
+  name        String
+  email       String   @unique
   phone       String   @unique
   role        Role     @default(USER)
   isActive    Boolean  @default(true)  @map("is_active")
