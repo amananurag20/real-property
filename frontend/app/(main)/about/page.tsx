@@ -11,13 +11,16 @@ export default function AboutPage() {
 
     return (
         <div className="container mx-auto px-4 py-12">
+            {/* Hero */}
             <div className="text-center mb-16">
                 <h1 className="text-4xl font-bold text-gray-900 mb-4">About EstateIndia</h1>
                 <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                    Connecting buyers, sellers, and agents through our innovative triangle connection platform.
+                    Connecting buyers, sellers, and agents through our innovative triangle connection platform. 
+                    We make real estate transactions seamless and transparent.
                 </p>
             </div>
 
+            {/* Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
                 {stats.map((stat) => (
                     <Card key={stat.label}>
@@ -28,6 +31,44 @@ export default function AboutPage() {
                         </CardContent>
                     </Card>
                 ))}
+            </div>
+
+            {/* Mission */}
+            <div className="max-w-3xl mx-auto mb-16">
+                <h2 className="text-2xl font-bold text-gray-900 mb-4 text-center">Our Mission</h2>
+                <p className="text-gray-600 leading-relaxed text-center">
+                    To revolutionize the real estate industry by creating a transparent, efficient, and 
+                    user-friendly platform that connects property seekers with verified agents and property owners. 
+                    We believe in making property transactions hassle-free and accessible to everyone.
+                </p>
+            </div>
+
+            {/* How It Works */}
+            <div className="max-w-4xl mx-auto">
+                <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">How It Works</h2>
+                <div className="grid md:grid-cols-3 gap-8">
+                    <div className="text-center">
+                        <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <span className="text-2xl font-bold text-blue-600">1</span>
+                        </div>
+                        <h3 className="font-semibold text-lg mb-2">Post Your Requirement</h3>
+                        <p className="text-gray-500">List your property or post your buying/renting requirements</p>
+                    </div>
+                    <div className="text-center">
+                        <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <span className="text-2xl font-bold text-blue-600">2</span>
+                        </div>
+                        <h3 className="font-semibold text-lg mb-2">Connect with Agents</h3>
+                        <p className="text-gray-500">Our verified agents match properties with your requirements</p>
+                    </div>
+                    <div className="text-center">
+                        <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <span className="text-2xl font-bold text-blue-600">3</span>
+                        </div>
+                        <h3 className="font-semibold text-lg mb-2">Close the Deal</h3>
+                        <p className="text-gray-500">Connect directly and complete your property transaction</p>
+                    </div>
+                </div>
             </div>
         </div>
     );

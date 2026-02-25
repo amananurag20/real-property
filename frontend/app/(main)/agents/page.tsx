@@ -15,69 +15,75 @@ export default function AgentsPage() {
     ];
 
     return (
-        <div className="container mx-auto px-4 py-8">
-            {/* Header */}
-            <div className="text-center mb-8">
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">Find Real Estate Agents</h1>
-                <p className="text-gray-600">Connect with verified agents in your area</p>
-            </div>
-
-            {/* Search */}
-            <div className="max-w-2xl mx-auto mb-8">
-                <div className="flex gap-2">
-                    <div className="relative flex-1">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                        <Input placeholder="Search by name, agency, or location..." className="pl-9" />
-                    </div>
-                    <Button>Search</Button>
+        <div className="min-h-screen bg-neutral-50/50 dark:bg-neutral-900/50">
+            <div className="max-w-6xl mx-auto px-4 md:px-6 py-12">
+                {/* Header */}
+                <div className="text-center mb-12">
+                    <h1 className="text-4xl font-bold text-neutral-900 dark:text-white mb-3">Real Estate Agents</h1>
+                    <p className="text-neutral-600 dark:text-neutral-400 max-w-xl mx-auto">Connect with verified, experienced agents across India</p>
                 </div>
-            </div>
 
-            {/* Agents Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {agents.map((agent) => (
-                    <Card key={agent.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-                        <CardContent className="p-6">
-                            <div className="flex items-start gap-4">
-                                <img
-                                    src={agent.image}
-                                    alt={agent.name}
-                                    className="w-20 h-20 rounded-full object-cover"
-                                />
-                                <div className="flex-1">
-                                    <div className="flex items-center gap-2 mb-1">
-                                        <h3 className="font-semibold text-lg text-gray-900">{agent.name}</h3>
-                                        {agent.verified && (
-                                            <Badge variant="default" className="text-xs">Verified</Badge>
-                                        )}
+                {/* Search */}
+                <div className="max-w-2xl mx-auto mb-12">
+                    <div className="flex gap-3">
+                        <div className="relative flex-1">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
+                            <Input placeholder="Search by name, agency, or location..." className="pl-10 h-11" />
+                        </div>
+                        <Button size="lg" className="px-6">Search</Button>
+                    </div>
+                </div>
+
+                {/* Agents Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {agents.map((agent) => (
+                        <Card key={agent.id} className="overflow-hidden hover:shadow-lg hover:border-primary-200 dark:hover:border-primary-900/50 transition-all duration-200 border-neutral-100 dark:border-neutral-700">
+                            <CardContent className="p-5">
+                                <div className="flex items-start gap-3 mb-4">
+                                    <img
+                                        src={agent.image}
+                                        alt={agent.name}
+                                        className="w-14 h-14 rounded-xl object-cover flex-shrink-0"
+                                    />
+                                    <div className="flex-1 min-w-0">
+                                        <div className="flex items-center gap-2 mb-1">
+                                            <h3 className="font-semibold text-neutral-900 dark:text-white truncate">{agent.name}</h3>
+                                            {agent.verified && (
+                                                <span className="flex-shrink-0 px-2 py-0.5 bg-secondary-100 dark:bg-secondary-900/20 text-secondary-700 dark:text-secondary-400 rounded text-xs font-medium">Verified</span>
+                                            )}
+                                        </div>
+                                        <p className="text-xs text-neutral-500 dark:text-neutral-400 flex items-center gap-1 truncate">
+                                            <Building2 className="w-3 h-3 flex-shrink-0" />
+                                            {agent.agency}
+                                        </p>
+                                        <p className="text-xs text-neutral-500 dark:text-neutral-400 flex items-center gap-1 truncate">
+                                            <MapPin className="w-3 h-3 flex-shrink-0" />
+                                            {agent.location}
+                                        </p>
                                     </div>
-                                    <p className="text-sm text-gray-500 flex items-center gap-1">
-                                        <Building2 className="w-3 h-3" />
-                                        {agent.agency}
-                                    </p>
-                                    <p className="text-sm text-gray-500 flex items-center gap-1">
-                                        <MapPin className="w-3 h-3" />
-                                        {agent.location}
-                                    </p>
-                                    <div className="flex items-center gap-4 mt-2">
-                                        <span className="text-sm text-gray-500">{agent.experience} years exp.</span>
-                                        <span className="flex items-center gap-1 text-sm">
-                                            <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                                </div>
+                                
+                                <div className="space-y-3 border-t border-neutral-100 dark:border-neutral-700 pt-4">
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-xs text-neutral-600 dark:text-neutral-400">{agent.experience} years experience</span>
+                                        <span className="flex items-center gap-1 text-sm font-medium text-neutral-900 dark:text-white">
+                                            <Star className="w-4 h-4 fill-accent-400 text-accent-400" />
                                             {agent.rating}
                                         </span>
                                     </div>
+                                    
+                                    <div className="flex gap-2 pt-2">
+                                        <Button variant="outline" className="flex-1" size="sm" className="gap-2">
+                                            <Phone className="w-4 h-4" />
+                                            Contact
+                                        </Button>
+                                        <Button className="flex-1" size="sm">View Profile</Button>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="flex gap-2 mt-4">
-                                <Button variant="outline" className="flex-1" size="sm">
-                                    <Phone className="w-4 h-4 mr-2" />
-                                    Contact
-                                </Button>
-                                <Button className="flex-1" size="sm">View Profile</Button>
-                            </div>
-                        </CardContent>
-                    </Card>
-                ))}
+                            </CardContent>
+                        </Card>
+                    ))}
+                </div>
             </div>
         </div>
     );

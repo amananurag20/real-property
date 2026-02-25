@@ -1,31 +1,45 @@
 import Hero from '@/components/Hero';
+import SearchBar from '@/components/SearchBar';
+import Categories from '@/components/Categories';
 import PropertySection from '@/components/PropertySection';
+import FeaturesSection from '@/components/FeaturesSection';
+import Testimonials from '@/components/Testimonials';
+import StatsSection from '@/components/StatsSection';
 import { mumbaiProperties, bangaloreProperties, puneProperties, delhiProperties } from '@/data/properties';
 
 const HomePage = () => {
     return (
-        <div className="bg-gradient-to-br from-slate-50 via-white to-blue-50">
+        <div className="bg-white">
             <Hero />
 
-            {/* Mumbai Properties */}
+            <SearchBar />
+
+            <Categories />
+
+            {/* Featured Properties */}
             <PropertySection
-                title="Properties in Mumbai"
-                subtitle="Explore premium properties in the city of dreams"
+                title="Featured Properties"
+                subtitle="Explore our handpicked premium properties"
                 properties={mumbaiProperties}
                 bgColor="bg-white"
                 city="Mumbai"
             />
 
-            {/* Bangalore Properties */}
+            <FeaturesSection />
+
+            <Testimonials />
+
+            <StatsSection />
+
+            {/* Property Listings by City */}
             <PropertySection
                 title="Properties in Bangalore"
                 subtitle="Discover homes in India's Silicon Valley"
                 properties={bangaloreProperties}
-                bgColor="bg-gradient-to-br from-blue-50 to-purple-50"
+                bgColor="bg-gray-50"
                 city="Bangalore"
             />
 
-            {/* Pune Properties */}
             <PropertySection
                 title="Properties in Pune"
                 subtitle="Find your perfect home in the Oxford of the East"
@@ -34,12 +48,11 @@ const HomePage = () => {
                 city="Pune"
             />
 
-            {/* Delhi Properties */}
             <PropertySection
                 title="Properties in Delhi"
                 subtitle="Explore luxurious properties in the capital city"
                 properties={delhiProperties}
-                bgColor="bg-gradient-to-br from-purple-50 to-pink-50"
+                bgColor="bg-gray-50"
                 city="Delhi"
             />
         </div>

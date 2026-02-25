@@ -212,27 +212,29 @@ export default function MapSearchModal({ isOpen, onClose, onSearch }: MapSearchM
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 bg-black/60 backdrop-blur-sm">
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-6xl overflow-hidden flex flex-col" style={{ height: '95vh' }}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm">
+            <div className="bg-card rounded-xl shadow-2xl w-full max-w-6xl overflow-hidden flex flex-col border border-border" style={{ height: '95vh', maxHeight: '900px' }}>
                 {/* Header */}
-                <div className="flex items-center justify-between p-4 border-b border-gray-200 shrink-0 bg-gradient-to-r from-blue-600 to-blue-700">
+                <div className="flex items-center justify-between p-5 border-b border-border shrink-0 bg-background">
                     <div>
-                        <h2 className="text-xl font-bold text-white">🗺️ Search Properties on Map</h2>
-                        <p className="text-sm text-blue-100">Search a location, use your current location, or click on the map</p>
+                        <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
+                            <span className="opacity-80">🗺️</span> Search Properties on Map
+                        </h2>
+                        <p className="text-sm text-muted-foreground mt-1">Search a location, use your current location, or click on the map</p>
                     </div>
-                    <Button variant="ghost" size="icon" onClick={onClose} className="text-white hover:bg-white/20 hover:text-white rounded-full">
-                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <Button variant="ghost" size="icon" onClick={onClose} className="rounded-md shrink-0 text-muted-foreground hover:text-foreground">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </Button>
                 </div>
 
                 {/* Controls */}
-                <div className="p-4 bg-gray-50 border-b border-gray-200 shrink-0">
+                <div className="p-5 bg-muted/20 border-b border-border shrink-0">
                     <div className="flex flex-wrap items-center gap-4">
                         {/* Search Input */}
                         <div className="flex-1 min-w-[250px] relative" ref={searchRef}>
-                            <div className="flex gap-2">
+                            <div className="flex gap-3">
                                 <div className="relative flex-1">
                                     <Input
                                         type="text"
@@ -240,16 +242,16 @@ export default function MapSearchModal({ isOpen, onClose, onSearch }: MapSearchM
                                         onChange={(e) => setSearchQuery(e.target.value)}
                                         onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                                         placeholder="Search city, locality, or address..."
-                                        className="pl-10"
+                                        className="pl-10 h-10 bg-background"
                                     />
-                                    <svg className="w-5 h-5 text-muted-foreground absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg className="w-4 h-4 text-muted-foreground absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                     </svg>
                                 </div>
                                 <Button
                                     onClick={handleSearch}
                                     disabled={isSearching}
-                                    className="bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+                                    className="h-10 px-6"
                                 >
                                     {isSearching ? 'Searching...' : 'Search'}
                                 </Button>
@@ -257,21 +259,21 @@ export default function MapSearchModal({ isOpen, onClose, onSearch }: MapSearchM
 
                             {/* Search Results Dropdown */}
                             {showResults && searchResults.length > 0 && (
-                                <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-60 overflow-y-auto">
+                                <div className="absolute top-full left-0 right-0 mt-2 bg-popover border border-border rounded-lg shadow-md z-50 max-h-60 overflow-y-auto">
                                     {searchResults.map((result, index) => (
                                         <button
                                             key={index}
                                             onClick={() => handleResultSelect(result)}
-                                            className="w-full px-4 py-3 text-left hover:bg-blue-50 border-b border-gray-100 last:border-0 transition-colors"
+                                            className="w-full px-4 py-3 text-left hover:bg-muted border-b border-border/50 last:border-0 transition-colors"
                                         >
-                                            <p className="font-medium text-gray-900 text-sm">{result.display_name.split(',')[0]}</p>
-                                            <p className="text-xs text-gray-500 truncate">{result.display_name}</p>
+                                            <p className="font-medium text-foreground text-sm">{result.display_name.split(',')[0]}</p>
+                                            <p className="text-xs text-muted-foreground truncate leading-relaxed mt-0.5">{result.display_name}</p>
                                         </button>
                                     ))}
                                 </div>
                             )}
                             {showResults && searchResults.length === 0 && !isSearching && (
-                                <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 p-4 text-center text-gray-500">
+                                <div className="absolute top-full left-0 right-0 mt-2 bg-popover border border-border rounded-lg shadow-md z-50 p-4 text-center text-muted-foreground text-sm">
                                     No results found
                                 </div>
                             )}
@@ -279,11 +281,10 @@ export default function MapSearchModal({ isOpen, onClose, onSearch }: MapSearchM
 
                         {/* Current Location Button */}
                         <Button
-                            variant={locationError && !selectedLocation ? 'destructive' : 'default'}
+                            variant={locationError && !selectedLocation ? 'destructive' : 'outline'}
                             onClick={getCurrentLocation}
                             disabled={isLocating}
-                            className={`flex items-center gap-2 whitespace-nowrap ${!locationError || selectedLocation ? 'bg-green-600 hover:bg-green-700 text-white' : ''
-                                }`}
+                            className={`flex items-center gap-2 whitespace-nowrap h-10 bg-background ${!locationError || selectedLocation ? 'hover:bg-accent hover:text-accent-foreground' : ''}`}
                         >
                             {isLocating ? (
                                 <>
@@ -292,7 +293,7 @@ export default function MapSearchModal({ isOpen, onClose, onSearch }: MapSearchM
                                 </>
                             ) : (
                                 <>
-                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                     </svg>
@@ -302,10 +303,10 @@ export default function MapSearchModal({ isOpen, onClose, onSearch }: MapSearchM
                         </Button>
 
                         {/* Radius Selector */}
-                        <div className="flex items-center gap-2">
-                            <label className="text-sm font-medium text-gray-700">Radius:</label>
+                        <div className="flex items-center gap-3">
+                            <label className="text-sm font-medium text-muted-foreground whitespace-nowrap">Radius:</label>
                             <Select value={radius.toString()} onValueChange={(val) => setRadius(Number(val))}>
-                                <SelectTrigger className="w-[110px]">
+                                <SelectTrigger className="w-[120px] h-10 bg-background">
                                     <SelectValue placeholder="Select radius" />
                                 </SelectTrigger>
                                 <SelectContent className="z-[1001]">
@@ -319,9 +320,9 @@ export default function MapSearchModal({ isOpen, onClose, onSearch }: MapSearchM
                         </div>
 
                         {/* Properties Count */}
-                        <div className={`flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium ${propertiesInRadius.length > 0 ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'
+                        <div className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium border ${propertiesInRadius.length > 0 ? 'bg-primary/10 text-primary border-primary/20' : 'bg-muted text-muted-foreground border-transparent'
                             }`}>
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                             </svg>
                             <span>{propertiesInRadius.length} properties</span>
@@ -330,7 +331,7 @@ export default function MapSearchModal({ isOpen, onClose, onSearch }: MapSearchM
 
                     {/* Error Message - Only show if no location is selected */}
                     {locationError && !selectedLocation && (
-                        <p className="mt-2 text-sm text-red-600">⚠️ {locationError} - Click on the map instead</p>
+                        <p className="mt-3 text-sm text-destructive font-medium flex items-center gap-1.5"><span className="text-lg">⚠️</span> {locationError} - Click on the map instead</p>
                     )}
                 </div>
 
@@ -389,37 +390,37 @@ export default function MapSearchModal({ isOpen, onClose, onSearch }: MapSearchM
 
                     {/* Instructions Overlay */}
                     {!selectedLocation && (
-                        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-white/95 px-6 py-3 rounded-xl shadow-lg z-[1000] backdrop-blur-sm">
-                            <p className="text-sm text-gray-700 font-medium">👆 Search above, use your location, or click on the map</p>
+                        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-background/95 px-6 py-3 rounded-lg shadow-sm border border-border z-[1000] backdrop-blur-sm pointer-events-none">
+                            <p className="text-sm text-foreground font-medium">👆 Search above, use your location, or click on the map</p>
                         </div>
                     )}
 
                     {/* Legend */}
-                    <div className="absolute bottom-4 left-4 bg-white/95 rounded-lg shadow-lg p-3 z-[1000] backdrop-blur-sm">
-                        <p className="text-xs font-semibold text-gray-700 mb-2">Legend</p>
-                        <div className="flex items-center gap-2 text-xs text-gray-600 mb-1">
-                            <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                    <div className="absolute bottom-6 left-6 bg-background/95 rounded-lg shadow-sm border border-border p-4 z-[1000] backdrop-blur-sm pointer-events-none min-w-[140px]">
+                        <p className="text-xs font-semibold text-foreground uppercase tracking-wider mb-3">Legend</p>
+                        <div className="flex items-center gap-2.5 text-sm text-muted-foreground mb-2">
+                            <div className="w-3 h-3 bg-blue-500 rounded-full shrink-0 shadow-sm border border-white/50"></div>
                             <span>Your Location</span>
                         </div>
-                        <div className="flex items-center gap-2 text-xs text-gray-600">
-                            <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                        <div className="flex items-center gap-2.5 text-sm text-muted-foreground">
+                            <div className="w-3 h-3 bg-red-500 rounded-full shrink-0 shadow-sm border border-white/50"></div>
                             <span>Properties</span>
                         </div>
                     </div>
                 </div>
 
                 {/* Footer */}
-                <div className="p-4 border-t border-gray-200 flex items-center justify-between bg-white shrink-0">
-                    <p className="text-sm text-gray-600">
+                <div className="p-4 border-t border-border flex items-center justify-between bg-muted/10 shrink-0">
+                    <p className="text-sm font-medium text-muted-foreground hidden md:block">
                         {selectedLocation
                             ? `🎯 Searching within ${radius}km radius • ${propertiesInRadius.length} properties found`
                             : '📍 Select a location to find nearby properties'
                         }
                     </p>
-                    <div className="flex gap-3">
+                    <div className="flex gap-3 w-full md:w-auto justify-end">
                         {selectedLocation && (
                             <Button
-                                variant="secondary"
+                                variant="outline"
                                 onClick={() => {
                                     setSelectedLocation(null);
                                     setFlyToLocation(null);
@@ -429,7 +430,7 @@ export default function MapSearchModal({ isOpen, onClose, onSearch }: MapSearchM
                             </Button>
                         )}
                         <Button
-                            variant="outline"
+                            variant="secondary"
                             onClick={onClose}
                         >
                             Cancel
@@ -437,9 +438,9 @@ export default function MapSearchModal({ isOpen, onClose, onSearch }: MapSearchM
                         <Button
                             onClick={handleSearchProperties}
                             disabled={propertiesInRadius.length === 0}
-                            className="bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 transition-all shadow-lg shadow-blue-500/30"
+                            className="bg-primary text-primary-foreground hover:bg-primary/90"
                         >
-                            🔍 Search {propertiesInRadius.length} Properties
+                            <span className="opacity-70 mr-1.5">🔍</span> Search {propertiesInRadius.length} Properties
                         </Button>
                     </div>
                 </div>

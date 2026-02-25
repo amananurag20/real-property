@@ -10,6 +10,8 @@ import {
     UserCircle,
     Bell,
     ArrowRight,
+    TrendingUp,
+    Clock,
 } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -30,7 +32,7 @@ export default function DashboardPage() {
             title: 'My Properties',
             value: '3',
             icon: Building2,
-            color: 'bg-blue-500',
+            color: 'primary',
             link: '/dashboard/properties',
             permission: PERMISSIONS.CREATE_PROPERTY,
         },
@@ -38,7 +40,7 @@ export default function DashboardPage() {
             title: 'My Requests',
             value: '2',
             icon: FileText,
-            color: 'bg-green-500',
+            color: 'secondary',
             link: '/dashboard/requests',
             permission: PERMISSIONS.CREATE_REQUEST,
         },
@@ -46,7 +48,7 @@ export default function DashboardPage() {
             title: 'Matches',
             value: '5',
             icon: Link2,
-            color: 'bg-purple-500',
+            color: 'accent',
             link: '/dashboard/matches',
             permission: PERMISSIONS.VIEW_LINKS,
         },
@@ -54,7 +56,7 @@ export default function DashboardPage() {
             title: 'Profile Views',
             value: '128',
             icon: UserCircle,
-            color: 'bg-orange-500',
+            color: 'primary',
             link: '/dashboard/profile',
             permission: PERMISSIONS.EDIT_OWN_PROFILE,
         },
@@ -66,19 +68,22 @@ export default function DashboardPage() {
 
     const quickActions = [
         {
-            label: 'Post New Property',
+            label: 'Post Property',
+            description: 'List a new property',
             href: '/dashboard/properties/new',
             icon: Building2,
             permission: PERMISSIONS.CREATE_PROPERTY,
         },
         {
-            label: 'Post New Request',
+            label: 'Post Request',
+            description: 'Create a new request',
             href: '/dashboard/requests/new',
             icon: FileText,
             permission: PERMISSIONS.CREATE_REQUEST,
         },
         {
-            label: 'Setup Agent Profile',
+            label: 'Agent Profile',
+            description: 'Set up your profile',
             href: '/dashboard/agent-profile',
             icon: UserCircle,
             permission: PERMISSIONS.CREATE_AGENT_PROFILE,
@@ -89,114 +94,130 @@ export default function DashboardPage() {
         hasPermission(userRole, action.permission)
     );
 
+    const colorMap = {
+        primary: 'bg-primary-100 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400',
+        secondary: 'bg-secondary-100 dark:bg-secondary-900/20 text-secondary-700 dark:text-secondary-400',
+        accent: 'bg-accent-100 dark:bg-accent-900/20 text-accent-700 dark:text-accent-400',
+    };
+
     return (
-        <div className="p-6 space-y-6">
-            {/* Welcome Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <div>
-                    <h1 className="text-2xl font-bold text-gray-900">
-                        Welcome back, {user?.name || 'User'}!
-                    </h1>
-                    <p className="text-gray-500 mt-1">
-                        You are signed in as {ROLE_LABELS[userRole as Role]}
-                    </p>
+        <div className="min-h-screen bg-neutral-50/50 dark:bg-neutral-900/50">
+            <div className="max-w-6xl mx-auto px-4 md:px-6 py-8">
+                {/* Welcome Header */}
+                <div className="mb-8">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                        <div>
+                            <h1 className="text-3xl font-bold text-neutral-900 dark:text-white">
+                                Welcome back, {user?.name || 'User'}
+                            </h1>
+                            <p className="text-neutral-600 dark:text-neutral-400 mt-1 text-sm">
+                                {ROLE_LABELS[userRole as Role]} • Last login 2 hours ago
+                            </p>
+                        </div>
+                        <Button variant="outline" size="lg" className="gap-2 w-fit">
+                            <Bell className="w-4 h-4" />
+                            <span className="hidden sm:inline">Notifications</span>
+                        </Button>
+                    </div>
                 </div>
-                <div className="flex items-center gap-2">
-                    <Button variant="outline" size="sm">
-                        <Bell className="w-4 h-4 mr-2" />
-                        Notifications
-                    </Button>
-                </div>
-            </div>
 
-            {/* Stats Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {filteredStats.map((stat) => (
-                    <Link key={stat.title} href={stat.link}>
-                        <Card className="hover:shadow-md transition-shadow cursor-pointer">
-                            <CardContent className="p-6">
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <p className="text-sm font-medium text-gray-500">
-                                            {stat.title}
-                                        </p>
-                                        <p className="text-3xl font-bold text-gray-900 mt-2">
-                                            {stat.value}
-                                        </p>
+                {/* Stats Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                    {filteredStats.map((stat) => (
+                        <Link key={stat.title} href={stat.link}>
+                            <Card className="hover:shadow-md hover:border-primary-200 dark:hover:border-primary-900/50 transition-all duration-200 cursor-pointer">
+                                <CardContent className="p-5">
+                                    <div className="flex items-start justify-between">
+                                        <div>
+                                            <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400 mb-2">
+                                                {stat.title}
+                                            </p>
+                                            <p className="text-3xl font-bold text-neutral-900 dark:text-white">
+                                                {stat.value}
+                                            </p>
+                                        </div>
+                                        <div className={`w-10 h-10 ${colorMap[stat.color as keyof typeof colorMap]} rounded-lg flex items-center justify-center`}>
+                                            <stat.icon className="w-5 h-5" />
+                                        </div>
                                     </div>
-                                    <div className={`${stat.color} p-3 rounded-lg`}>
-                                        <stat.icon className="w-6 h-6 text-white" />
-                                    </div>
+                                </CardContent>
+                            </Card>
+                        </Link>
+                    ))}
+                </div>
+
+                {/* Quick Actions */}
+                {filteredActions.length > 0 && (
+                    <Card className="mb-8">
+                        <CardHeader>
+                            <div className="flex items-center gap-2">
+                                <TrendingUp className="w-5 h-5 text-primary-700 dark:text-primary-400" />
+                                <div>
+                                    <CardTitle className="text-xl">Quick Actions</CardTitle>
+                                    <CardDescription>Get started with common tasks</CardDescription>
                                 </div>
-                            </CardContent>
-                        </Card>
-                    </Link>
-                ))}
-            </div>
+                            </div>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                {filteredActions.map((action) => {
+                                    const Icon = action.icon;
+                                    return (
+                                        <Link key={action.href} href={action.href}>
+                                            <div className="p-4 bg-neutral-50 dark:bg-neutral-800 border border-neutral-100 dark:border-neutral-700 rounded-lg hover:border-primary-200 dark:hover:border-primary-900/50 hover:shadow-sm transition-all cursor-pointer group">
+                                                <div className="flex items-start gap-3">
+                                                    <div className={`w-10 h-10 ${colorMap.primary} rounded-lg flex items-center justify-center flex-shrink-0`}>
+                                                        <Icon className="w-5 h-5" />
+                                                    </div>
+                                                    <div className="flex-1 min-w-0">
+                                                        <p className="font-medium text-neutral-900 dark:text-white text-sm">{action.label}</p>
+                                                        <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">{action.description}</p>
+                                                    </div>
+                                                    <ArrowRight className="w-4 h-4 text-neutral-400 group-hover:text-primary-700 dark:group-hover:text-primary-400 transition-colors flex-shrink-0 mt-0.5" />
+                                                </div>
+                                            </div>
+                                        </Link>
+                                    );
+                                })}
+                            </div>
+                        </CardContent>
+                    </Card>
+                )}
 
-            {/* Quick Actions */}
-            {filteredActions.length > 0 && (
+                {/* Recent Activity */}
                 <Card>
                     <CardHeader>
-                        <CardTitle>Quick Actions</CardTitle>
-                        <CardDescription>
-                            Get started with these common actions
-                        </CardDescription>
+                        <div className="flex items-center gap-2">
+                            <Clock className="w-5 h-5 text-neutral-600 dark:text-neutral-400" />
+                            <div>
+                                <CardTitle className="text-xl">Recent Activity</CardTitle>
+                                <CardDescription>Your latest interactions and updates</CardDescription>
+                            </div>
+                        </div>
                     </CardHeader>
                     <CardContent>
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                            {filteredActions.map((action) => (
-                                <Link key={action.href} href={action.href}>
-                                    <Button
-                                        variant="outline"
-                                        className="w-full h-auto py-4 justify-start gap-3"
-                                    >
-                                        <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                                            <action.icon className="w-5 h-5 text-blue-600" />
-                                        </div>
-                                        <div className="text-left">
-                                            <p className="font-medium">{action.label}</p>
-                                            <p className="text-sm text-gray-500">Click to start</p>
-                                        </div>
-                                        <ArrowRight className="w-4 h-4 ml-auto text-gray-400" />
-                                    </Button>
-                                </Link>
+                        <div className="space-y-3">
+                            {[1, 2, 3].map((_, i) => (
+                                <div
+                                    key={i}
+                                    className="flex items-center gap-3 p-4 bg-neutral-50 dark:bg-neutral-800 rounded-lg border border-neutral-100 dark:border-neutral-700 hover:border-neutral-200 dark:hover:border-neutral-600 transition-colors"
+                                >
+                                    <div className="w-8 h-8 bg-gradient-to-br from-primary-200 to-secondary-200 dark:from-primary-900/30 dark:to-secondary-900/30 rounded-full flex-shrink-0" />
+                                    <div className="flex-1 min-w-0">
+                                        <p className="font-medium text-neutral-900 dark:text-white text-sm">
+                                            Activity item {i + 1}
+                                        </p>
+                                        <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">
+                                            Description of the activity
+                                        </p>
+                                    </div>
+                                    <span className="text-xs text-neutral-500 dark:text-neutral-400 flex-shrink-0 whitespace-nowrap">2h ago</span>
+                                </div>
                             ))}
                         </div>
                     </CardContent>
                 </Card>
-            )}
-
-            {/* Recent Activity Placeholder */}
-            <Card>
-                <CardHeader>
-                    <CardTitle>Recent Activity</CardTitle>
-                    <CardDescription>
-                        Your latest interactions and updates
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <div className="space-y-4">
-                        {[1, 2, 3].map((_, i) => (
-                            <div
-                                key={i}
-                                className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg"
-                            >
-                                <div className="w-10 h-10 bg-gray-200 rounded-full" />
-                                <div className="flex-1">
-                                    <p className="font-medium text-gray-900">
-                                        Activity item {i + 1}
-                                    </p>
-                                    <p className="text-sm text-gray-500">
-                                        Description of the activity...
-                                    </p>
-                                </div>
-                                <span className="text-sm text-gray-400">2h ago</span>
-                            </div>
-                        ))}
-                    </div>
-                </CardContent>
-            </Card>
+            </div>
         </div>
     );
 }

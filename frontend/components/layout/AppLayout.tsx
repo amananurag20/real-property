@@ -23,12 +23,12 @@ export function AppLayout({
     mainClassName,
 }: AppLayoutProps) {
     return (
-        <div className={cn("min-h-screen bg-gray-50 dark:bg-gray-900", className)}>
+        <div className={cn("min-h-screen bg-background", className)}>
             {showHeader && <Header />}
-            
+
             <div className="flex">
                 {showSidebar && <Sidebar className="hidden lg:block" />}
-                
+
                 <main className={cn(
                     "flex-1 min-h-[calc(100vh-4rem)]",
                     mainClassName
@@ -36,9 +36,9 @@ export function AppLayout({
                     {children}
                 </main>
             </div>
-            
+
             {showFooter && (
-                <div className={cn("bg-white border-t", showSidebar && "lg:ml-64")}>
+                <div className={cn("bg-background border-t border-border", showSidebar && "lg:ml-64")}>
                     <Footer />
                 </div>
             )}

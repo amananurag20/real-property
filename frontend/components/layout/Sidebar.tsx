@@ -270,14 +270,14 @@ export function Sidebar({ className }: { className?: string }) {
             <div className="p-4 space-y-6">
                 {/* User Info Card */}
                 {user && (
-                    <div className="p-4 bg-gradient-to-br from-blue-50 to-blue-100/50 rounded-xl border border-blue-100">
+                    <div className="p-4 bg-muted/50 rounded-lg border border-border/50">
                         <div className="flex items-center space-x-3">
-                            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-medium">
+                            <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center text-primary font-medium">
                                 {user.name?.charAt(0)?.toUpperCase() || 'U'}
                             </div>
                             <div className="flex-1 min-w-0">
-                                <p className="text-sm font-medium text-gray-900 truncate">{user.name}</p>
-                                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                <p className="text-sm font-medium text-foreground truncate">{user.name}</p>
+                                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-secondary text-secondary-foreground border border-border mt-1">
                                     {ROLE_LABELS[userRole as Role]}
                                 </span>
                             </div>
@@ -297,26 +297,26 @@ export function Sidebar({ className }: { className?: string }) {
                                     key={item.href}
                                     href={item.href}
                                     className={cn(
-                                        "flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200",
+                                        "flex items-center space-x-3 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 group",
                                         isActive(item.href)
-                                            ? "bg-blue-50 text-blue-600 border-r-2 border-blue-600"
-                                            : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                                            ? "bg-accent/50 text-foreground"
+                                            : "text-muted-foreground hover:bg-accent hover:text-foreground"
                                     )}
                                 >
                                     <span className={cn(
                                         "transition-colors",
-                                        isActive(item.href) ? "text-blue-600" : "text-gray-500"
+                                        isActive(item.href) ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
                                     )}>
                                         {item.icon}
                                     </span>
                                     <span className="flex-1">{item.label}</span>
                                     {item.badge && (
-                                        <span className="inline-flex items-center justify-center px-2 py-0.5 text-xs font-medium bg-red-100 text-red-800 rounded-full min-w-[1.25rem]">
+                                        <span className="inline-flex items-center justify-center px-2 py-0.5 text-xs font-medium bg-destructive/10 text-destructive rounded-full min-w-[1.25rem]">
                                             {item.badge}
                                         </span>
                                     )}
                                     {isActive(item.href) && (
-                                        <ChevronRight className="w-4 h-4 text-blue-600" />
+                                        <ChevronRight className="w-4 h-4 text-muted-foreground" />
                                     )}
                                 </Link>
                             ))}
