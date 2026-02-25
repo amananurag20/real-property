@@ -15,6 +15,8 @@ datasource db {
 enum Role {
   VISITOR
   USER
+  OWNER
+  TENANT
   AGENT
   SERVICE_PROVIDER
   ADMIN

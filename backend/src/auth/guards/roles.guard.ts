@@ -12,6 +12,8 @@ import { ROLES_KEY } from '../decorators/roles.decorator';
 export enum Role {
   VISITOR = 'VISITOR',
   USER = 'USER',
+  OWNER = 'OWNER',
+  TENANT = 'TENANT',
   AGENT = 'AGENT',
   SERVICE_PROVIDER = 'SERVICE_PROVIDER',
   ADMIN = 'ADMIN',
@@ -19,7 +21,7 @@ export enum Role {
 
 @Injectable()
 export class RolesGuard implements CanActivate {
-  constructor(private reflector: Reflector) {}
+  constructor(private reflector: Reflector) { }
 
   canActivate(context: ExecutionContext): boolean {
     const requiredRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [

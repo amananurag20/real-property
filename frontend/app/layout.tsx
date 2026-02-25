@@ -5,6 +5,7 @@ import Chatbot from "@/components/Chatbot";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import QueryProvider from "@/components/providers/query-provider";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,6 +37,7 @@ export default function RootLayout({
             <TooltipProvider>
               {children}
               <Chatbot />
+              <Toaster position="top-right" />
             </TooltipProvider>
           </QueryProvider>
         </AuthProvider>
