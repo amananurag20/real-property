@@ -1,5 +1,6 @@
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+'use client';
+
+import { AppLayout } from '@/components/layout/AppLayout';
 
 export default function MainLayout({
     children,
@@ -7,12 +8,8 @@ export default function MainLayout({
     children: React.ReactNode;
 }) {
     return (
-        <div className="flex flex-col min-h-screen">
-            <Header />
-            <main className="flex-grow">
-                {children}
-            </main>
-            <Footer />
-        </div>
+        <AppLayout showSidebar={false} showHeader={true} showFooter={true}>
+            {children}
+        </AppLayout>
     );
 }

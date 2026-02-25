@@ -3,20 +3,18 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
-import { AppLayout } from '@/components/layout/AppLayout';
-import { hasPermission, PERMISSIONS } from '@/constants/permissions';
 
-export default function ProtectedLayout({
+export default function AuthLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
-    const { isAuthenticated, isLoading, user } = useAuth();
+    const { isAuthenticated, isLoading } = useAuth();
     const router = useRouter();
 
     useEffect(() => {
-        if (!isLoading && !isAuthenticated) {
-            router.push('/signin?callbackUrl=/dashboard');
+        if (!isLoading && isAuthenticated) {
+            router.push('/dashboard');
         }
     }, [isAuthenticated, isLoading, router]);
 
@@ -28,13 +26,13 @@ export default function ProtectedLayout({
         );
     }
 
-    if (!isAuthenticated) {
+    if (isAuthenticated) {
         return null;
     }
 
     return (
-        <AppLayout showSidebar={true} showHeader={true} showFooter={false}>
+        <div className="min-h-screen bg-gray-50">
             {children}
-        </AppLayout>
+        </div>
     );
 }

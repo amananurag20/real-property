@@ -1,0 +1,176 @@
+# Real Property - Tech Stack & Development Guidelines
+
+## Project Overview
+Real Property is a full-stack web application for property management.
+
+---
+
+## Backend: d:\Gurjinder\real-property\backend
+
+### Core Framework
+- **Framework**: NestJS 11.0.1
+- **Language**: TypeScript 5.7.3
+- **Runtime**: Node.js
+
+### Database & ORM
+- **Database**: PostgreSQL
+- **ORM**: Prisma 7.4.1
+- **Client**: @prisma/client, @prisma/adapter-pg
+- **Connection**: pg (PostgreSQL driver)
+- **Schema Location**: prisma/schema.prisma
+- **Prisma Scripts**:
+  - `npm run prisma:generate` - Generate Prisma client
+  - `npm run prisma:migrate:dev` - Run dev migrations
+  - `npm run prisma:migrate:deploy` - Deploy migrations
+  - `npm run prisma:studio` - Open Prisma Studio
+
+### Authentication & Security
+- **JWT**: @nestjs/jwt for token-based auth
+- **Passport**: @nestjs/passport, passport-jwt for JWT strategy
+- **Password Hashing**: bcrypt
+- **Validation**: class-validator, class-transformer
+- **Rate Limiting**: @nestjs/throttler
+- **Security Headers**: helmet
+- **Config Management**: @nestjs/config, dotenv, joi
+
+### Job Queues & Caching
+- **Queue System**: BullMQ 5.69.3 with @nestjs/bullmq
+- **Redis**: ioredis for Redis connection
+
+### Real-time Communication
+- **WebSockets**: @nestjs/websockets, @nestjs/platform-socket.io
+- **Socket.io**: socket.io 4.8.3
+
+### API Documentation
+- **Swagger/OpenAPI**: @nestjs/swagger for API docs
+- **Health Checks**: @nestjs/terminus
+
+### Logging
+- **Logger**: pino, pino-http, nestjs-pino
+- **Dev Logging**: pino-pretty (dev dependency)
+
+### Development Tools
+- **Linting**: ESLint 9.18.0 with @eslint/eslintrc, @eslint/js, eslint-config-prettier, eslint-plugin-prettier, typescript-eslint
+- **Formatting**: Prettier 3.4.2
+- **Testing**: Jest 30.0.0, @nestjs/testing, ts-jest, supertest
+- **Git Hooks**: husky, lint-staged, @commitlint/cli, @commitlint/config-conventional
+- **Utilities**: uuid, @types/* packages
+
+### Available Scripts
+- `npm run build` - Build the application
+- `npm run start:dev` - Start with watch mode
+- `npm run start:prod` - Start production build
+- `npm run test` - Run tests
+- `npm run test:cov` - Run tests with coverage
+- `npm run lint` - Run ESLint with auto-fix
+- `npm run format` - Format code with Prettier
+
+---
+
+## Frontend: d:\Gurjinder\real-property\frontend
+
+### Core Framework
+- **Framework**: Next.js 16.1.6
+- **React**: 19.2.3
+- **Language**: TypeScript 5
+
+### Styling & UI
+- **CSS Framework**: Tailwind CSS 4
+- **PostCSS**: @tailwindcss/postcss
+- **Animation**: tw-animate-css
+- **UI Components**: 
+  - radix-ui (v1.4.3)
+  - shadcn (v3.8.5) - CLI for component management
+  - class-variance-authority (CVA for component variants)
+  - clsx, tailwind-merge for class utilities
+  - vaul (drawer component)
+  - lucide-react (icons)
+- **Themes**: next-themes for dark/light mode
+- **Toast Notifications**: sonner
+
+### State Management & Data Fetching
+- **Server State**: @tanstack/react-query 5.90.21 (with devtools)
+- **Forms**: react-hook-form 7.71.2 with @hookform/resolvers
+
+### Validation
+- **Schema Validation**: zod 4.3.6, yup 1.7.1
+
+### HTTP Client
+- **API Requests**: axios 1.13.5
+
+### Maps & Geolocation
+- **Maps**: leaflet 1.9.4 with react-leaflet 5.0.0
+
+### Authentication
+- **Cookies**: js-cookie 3.0.5
+
+### Development Tools
+- **Linting**: ESLint 9 with eslint-config-next 16.1.6
+- **Type Definitions**: @types/node, @types/react, @types/react-dom, @types/js-cookie, @types/leaflet
+
+### Available Scripts
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run lint` - Run ESLint
+
+### Configuration
+- **Next Config**: next.config.ts (TypeScript config)
+- **Image Domains**: images.unsplash.com configured for remote images
+
+---
+
+## Prerequisites Before Starting Any Task
+
+### Environment Requirements
+1. **Node.js**: Ensure Node.js is installed (check package.json engines if specified)
+2. **Database**: PostgreSQL must be running
+3. **Redis**: Required for BullMQ job queues (if using queues)
+4. **Environment Variables**: Create `.env` files in both frontend and backend directories
+
+### Backend Environment Variables (Typical)
+```
+DATABASE_URL="postgresql://user:password@localhost:5432/dbname"
+JWT_SECRET="your-secret-key"
+REDIS_URL="redis://localhost:6379"
+PORT=3000
+```
+
+### Frontend Environment Variables (Typical)
+```
+NEXT_PUBLIC_API_URL="http://localhost:3000"
+```
+
+### Setup Steps
+1. **Install Dependencies**:
+   - Backend: `cd backend && npm install`
+   - Frontend: `cd frontend && npm install`
+
+2. **Database Setup**:
+   - Run `npm run prisma:migrate:dev` in backend
+   - Run `npm run prisma:generate` to generate client
+
+3. **Start Development**:
+   - Backend: `npm run start:dev`
+   - Frontend: `npm run dev`
+
+### Code Quality Guidelines
+- **Linting**: Run `npm run lint` before committing
+- **Formatting**: Prettier is configured and enforced via lint-staged
+- **Type Safety**: Always use TypeScript; avoid `any` types
+- **Commit Conventions**: Follow conventional commits (enforced via commitlint)
+
+### Architecture Patterns
+- **Backend**: Follow NestJS modular architecture
+- **Database**: Use Prisma migrations for schema changes
+- **Frontend**: Use Next.js App Router pattern
+- **API**: RESTful endpoints documented via Swagger at `/api/docs`
+
+### Things to Consider
+- **Database Schema**: Changes require Prisma migrations
+- **Queue Jobs**: Background jobs require Redis to be running
+- **WebSockets**: Real-time features need Socket.io setup
+- **Authentication**: Protected routes require JWT tokens
+- **File Uploads**: Multer is configured for file handling
+- **Rate Limiting**: API endpoints have throttling enabled
+- **Testing**: Write tests for new features (Jest configured)
