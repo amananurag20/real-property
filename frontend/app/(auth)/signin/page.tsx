@@ -112,7 +112,7 @@ const SignInPage = () => {
             </div>
 
             {/* Right Form Section */}
-            <div className="w-full lg:w-7/12 xl:w-1/2 flex flex-col p-6 sm:p-12 xl:p-20 relative min-h-screen lg:min-h-0 lg:h-screen lg:overflow-y-auto">
+            <div className="w-full lg:w-7/12 xl:w-1/2 flex flex-col p-4 sm:p-8 xl:p-12 relative min-h-screen lg:min-h-0 lg:h-screen lg:overflow-y-auto">
                 {/* Mobile Logo */}
                 <div className="lg:hidden absolute top-8 left-6 sm:left-12">
                     <Link href="/" className="inline-flex items-center space-x-3">
@@ -125,19 +125,19 @@ const SignInPage = () => {
                     </Link>
                 </div>
 
-                <div className="w-full max-w-[400px] m-auto pt-16 lg:pt-0 pb-8">
-                    <div className="mb-10 text-left">
+                <div className="w-full max-w-[400px] m-auto pt-16 lg:pt-0 pb-6">
+                    <div className="mb-6 text-left">
                         <h2 className="text-3xl font-bold text-gray-900 tracking-tight">
                             {step === 'phone' ? 'Sign in to your account' : 'Verify your number'}
                         </h2>
-                        <p className="mt-3 text-base text-gray-500">
+                        <p className="mt-2 text-base text-gray-500">
                             {step === 'phone' ? 'Enter your registered phone number.' : 'Enter the verification code we just sent your way.'}
                         </p>
                     </div>
 
                     {step === 'phone' ? (
                         <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                            <form onSubmit={handlePhoneSubmit} className="space-y-6">
+                            <form onSubmit={handlePhoneSubmit} className="space-y-5">
                                 <div className="space-y-2">
                                     <Label htmlFor="phone" className="text-gray-700">Phone Number</Label>
                                     <div className="relative border border-gray-200 rounded-xl overflow-hidden focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600 transition-all">
@@ -170,8 +170,8 @@ const SignInPage = () => {
                         </div>
                     ) : (
                         <div className="animate-in fade-in slide-in-from-right-4 duration-500">
-                            <form onSubmit={handleOtpSubmit} className="space-y-6">
-                                <div className="p-4 bg-blue-50/50 rounded-2xl border border-blue-100 flex items-center justify-between mb-8">
+                            <form onSubmit={handleOtpSubmit} className="space-y-5">
+                                <div className="p-3.5 bg-blue-50/50 rounded-2xl border border-blue-100 flex items-center justify-between mb-6">
                                     <div className="flex items-center space-x-3">
                                         <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm border border-blue-100">
                                             <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -224,7 +224,7 @@ const SignInPage = () => {
                         </div>
                     )}
 
-                    <div className="mt-8 pt-8 border-t border-gray-100 flex items-center justify-between">
+                    <div className="mt-6 pt-6 border-t border-gray-100 flex items-center justify-between">
                         <p className="text-sm text-gray-600">
                             New here?{' '}
                             <Link href="/signup" className="text-blue-600 hover:text-blue-700 font-semibold hover:underline underline-offset-2">Create an account</Link>

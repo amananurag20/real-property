@@ -186,7 +186,7 @@ const SignUpPage = () => {
             </div>
 
             {/* Right Form Section */}
-            <div className="w-full lg:w-7/12 xl:w-1/2 flex flex-col p-6 sm:p-12 xl:p-20 relative min-h-screen lg:min-h-0 lg:h-screen lg:overflow-y-auto">
+            <div className="w-full lg:w-7/12 xl:w-1/2 flex flex-col p-4 sm:p-8 xl:p-12 relative min-h-screen lg:min-h-0 lg:h-screen lg:overflow-y-auto">
                 {/* Mobile Logo */}
                 <div className="lg:hidden absolute top-8 left-6 sm:left-12">
                     <Link href="/" className="inline-flex items-center space-x-3">
@@ -199,19 +199,19 @@ const SignUpPage = () => {
                     </Link>
                 </div>
 
-                <div className="w-full max-w-[480px] m-auto pt-16 lg:pt-0 pb-8">
-                    <div className="mb-10 text-left">
+                <div className="w-full max-w-[480px] m-auto pt-16 lg:pt-0 pb-6">
+                    <div className="mb-6 text-left">
                         <h2 className="text-3xl font-bold text-gray-900 tracking-tight">
                             {step === 'type' ? 'Create an account' : step === 'details' ? 'Account details' : 'Verify your number'}
                         </h2>
-                        <p className="mt-3 text-base text-gray-500">
+                        <p className="mt-2 text-base text-gray-500">
                             {step === 'type' ? 'Select your role to get started with EstateIndia.' : step === 'details' ? 'Tell us a bit about yourself so we can personalize your experience.' : 'Enter the verification code we just sent your way.'}
                         </p>
                     </div>
 
                     {step === 'type' && (
                         <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 {userTypes.map((type) => (
                                     <Button
                                         key={type.id}
@@ -221,16 +221,16 @@ const SignUpPage = () => {
                                             detailsForm.setValue('userType', type.id, { shouldValidate: true });
                                             setStep('details');
                                         }}
-                                        className="h-auto p-5 flex flex-col items-start text-left space-y-4 hover:border-blue-600 hover:bg-blue-50/50 transition-all duration-300 group rounded-2xl border-gray-200"
+                                        className="h-auto p-4 flex flex-col items-start text-left space-y-3 hover:border-blue-600 hover:bg-blue-50/50 transition-all duration-300 group rounded-2xl border-gray-200"
                                     >
-                                        <div className="p-3 bg-gray-50 rounded-xl text-gray-500 group-hover:bg-blue-600 group-hover:text-white group-hover:shadow-md transition-all duration-300">
+                                        <div className="p-2.5 bg-gray-50 rounded-xl text-gray-500 group-hover:bg-blue-600 group-hover:text-white group-hover:shadow-md transition-all duration-300">
                                             {type.icon}
                                         </div>
                                         <div>
-                                            <h3 className="font-semibold text-gray-900 group-hover:text-blue-700 transition-colors text-base">
+                                            <h3 className="font-semibold text-gray-900 group-hover:text-blue-700 transition-colors text-sm">
                                                 {type.title}
                                             </h3>
-                                            <p className="text-xs text-gray-500 mt-1.5 leading-relaxed font-normal whitespace-normal">{type.description}</p>
+                                            <p className="text-xs text-gray-500 mt-1 leading-relaxed font-normal whitespace-normal">{type.description}</p>
                                         </div>
                                     </Button>
                                 ))}
@@ -240,17 +240,17 @@ const SignUpPage = () => {
 
                     {step === 'details' && (
                         <div className="animate-in fade-in slide-in-from-right-4 duration-500">
-                            <form onSubmit={handleDetailsSubmit} className="space-y-6">
+                            <form onSubmit={handleDetailsSubmit} className="space-y-5">
                                 <input type="hidden" {...detailsForm.register('userType')} />
 
-                                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl border border-gray-100">
-                                    <div className="flex items-center gap-4">
-                                        <div className="p-2.5 bg-white shadow-sm border border-gray-100 rounded-xl text-blue-600">
+                                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-2xl border border-gray-100">
+                                    <div className="flex items-center gap-3">
+                                        <div className="p-2 bg-white shadow-sm border border-gray-100 rounded-xl text-blue-600">
                                             {userTypes.find(t => t.id === detailsForm.watch('userType'))?.icon}
                                         </div>
                                         <div>
-                                            <p className="text-xs text-gray-500 font-medium uppercase tracking-wider">Signing up as</p>
-                                            <p className="font-semibold text-gray-900">{userTypes.find(t => t.id === detailsForm.watch('userType'))?.title}</p>
+                                            <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Signing up as</p>
+                                            <p className="font-semibold text-gray-900 text-sm">{userTypes.find(t => t.id === detailsForm.watch('userType'))?.title}</p>
                                         </div>
                                     </div>
                                     <Button
@@ -258,13 +258,13 @@ const SignUpPage = () => {
                                         type="button"
                                         size="sm"
                                         onClick={() => setStep('type')}
-                                        className="text-gray-500 hover:text-gray-900 hover:bg-gray-200/50 rounded-xl"
+                                        className="text-gray-500 hover:text-gray-900 hover:bg-gray-200/50 rounded-xl h-8"
                                     >
                                         Change
                                     </Button>
                                 </div>
 
-                                <div className="space-y-5">
+                                <div className="space-y-4">
                                     <div className="space-y-2">
                                         <Label htmlFor="name" className="text-gray-700">Full Name</Label>
                                         <Input
@@ -314,20 +314,21 @@ const SignUpPage = () => {
                                     </div>
                                 </div>
 
-                                <div className="flex flex-col space-y-2 mt-4 pt-2">
-                                    <div className="flex items-start space-x-3">
+                                <div className="space-y-2 mt-4 pt-2">
+                                    <div className="flex items-start">
                                         <Checkbox
                                             id="agreeTerms"
-                                            className="mt-1 flex-shrink-0 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
+                                            className="mt-1 mr-3 flex-shrink-0 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
                                             checked={detailsForm.watch('agreeTerms')}
                                             onCheckedChange={(checked) => {
                                                 detailsForm.setValue('agreeTerms', checked as boolean, { shouldValidate: true });
                                             }}
                                         />
-                                        <Label htmlFor="agreeTerms" className="font-normal text-sm text-gray-600 leading-normal">
+                                        <Label htmlFor="agreeTerms" className="font-normal text-sm text-gray-600 leading-relaxed max-w-full inline-block">
                                             By creating an account, I agree to the{' '}
-                                            <Link href="#" className="text-blue-600 hover:text-blue-700 font-medium whitespace-nowrap">Terms of Service</Link> and{' '}
-                                            <Link href="#" className="text-blue-600 hover:text-blue-700 font-medium whitespace-nowrap">Privacy Policy</Link>
+                                            <Link href="#" className="text-blue-600 hover:text-blue-700 font-medium hover:underline underline-offset-2">Terms of Service</Link>{' '}
+                                            and{' '}
+                                            <Link href="#" className="text-blue-600 hover:text-blue-700 font-medium hover:underline underline-offset-2">Privacy Policy</Link>
                                         </Label>
                                     </div>
                                     {detailsForm.formState.errors.agreeTerms && (
@@ -348,8 +349,8 @@ const SignUpPage = () => {
 
                     {step === 'otp' && (
                         <div className="animate-in fade-in slide-in-from-right-4 duration-500">
-                            <form onSubmit={handleOtpVerify} className="space-y-6">
-                                <div className="p-4 bg-blue-50/50 rounded-2xl border border-blue-100 flex items-center justify-between mb-8">
+                            <form onSubmit={handleOtpVerify} className="space-y-5">
+                                <div className="p-3.5 bg-blue-50/50 rounded-2xl border border-blue-100 flex items-center justify-between mb-6">
                                     <div className="flex items-center space-x-3">
                                         <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm border border-blue-100">
                                             <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -402,7 +403,7 @@ const SignUpPage = () => {
                         </div>
                     )}
 
-                    <div className="mt-8 pt-8 border-t border-gray-100 flex items-center justify-between">
+                    <div className="mt-6 pt-6 border-t border-gray-100 flex items-center justify-between">
                         <p className="text-sm text-gray-600">
                             Already have an account?{' '}
                             <Link href="/signin" className="text-blue-600 hover:text-blue-700 font-semibold hover:underline underline-offset-2">Sign in here</Link>
