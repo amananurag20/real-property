@@ -1,90 +1,148 @@
 'use client';
 
-import { Card, CardContent } from '@/components/ui/card';
+import { useState } from 'react';
+import AgentCard from '@/components/AgentCard';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Search, MapPin, Star, Phone, Building2 } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export default function AgentsPage() {
+    const [searchTerm, setSearchTerm] = useState('');
+    const [selectedCity, setSelectedCity] = useState('All');
+
     const agents = [
-        { id: 1, name: 'Rajesh Kumar', agency: 'Elite Properties', location: 'Mumbai', experience: 8, rating: 4.8, verified: true, image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop' },
-        { id: 2, name: 'Priya Sharma', agency: 'City Homes', location: 'Bangalore', experience: 5, rating: 4.5, verified: true, image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop' },
-        { id: 3, name: 'Amit Patel', agency: 'Prime Realty', location: 'Delhi', experience: 3, rating: 4.2, verified: false, image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop' },
-        { id: 4, name: 'Sneha Gupta', agency: 'Dream Homes', location: 'Pune', experience: 10, rating: 4.9, verified: true, image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop' },
+        { id: 1, name: 'Rajesh Kumar', agency: 'Premium Properties', experience: '8 years', specialization: 'Luxury Homes', serviceAreas: 'South Mumbai', verified: true, image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face' },
+        { id: 2, name: 'Priya Sharma', agency: 'Urban Realty', experience: '5 years', specialization: 'Commercial Properties', serviceAreas: 'Bangalore Central', verified: true, image: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face' },
+        { id: 3, name: 'Amit Patel', agency: 'Metro Homes', experience: '12 years', specialization: 'Investment Properties', serviceAreas: 'Gurgaon & Noida', verified: true, image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face' },
+        { id: 4, name: 'Sneha Gupta', agency: 'Dream Realty', experience: '10 years', specialization: 'Residential', serviceAreas: 'Pune', verified: true, image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face' },
+        { id: 5, name: 'Vikram Singh', agency: 'Elite Properties', experience: '7 years', specialization: 'Luxury Villas', serviceAreas: 'Delhi', verified: true, image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face' },
+        { id: 6, name: 'Neha Verma', agency: 'City Homes', experience: '6 years', specialization: 'Apartments', serviceAreas: 'Mumbai', verified: false, image: 'https://images.unsplash.com/photo-1517841905240-74f5b1b4e5f5?w=150&h=150&fit=crop&crop=face' },
     ];
 
+    const cities = ['All', 'Mumbai', 'Bangalore', 'Delhi', 'Pune'];
+
+    const filteredAgents = agents.filter(agent => {
+        const matchesSearch = agent.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            agent.agency.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            agent.serviceAreas.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesCity = selectedCity === 'All' || agent.serviceAreas.toLowerCase().includes(selectedCity.toLowerCase());
+        return matchesSearch && matchesCity;
+    });
+
     return (
-        <div className="min-h-screen bg-neutral-50/50 dark:bg-neutral-900/50">
-            <div className="max-w-6xl mx-auto px-4 md:px-6 py-12">
+        <main className="min-h-[calc(100vh-4rem)] bg-muted/30 pt-24 pb-24 px-6 md:px-8">
+            <div className="max-w-6xl mx-auto">
                 {/* Header */}
                 <div className="text-center mb-12">
-                    <h1 className="text-4xl font-bold text-neutral-900 dark:text-white mb-3">Real Estate Agents</h1>
-                    <p className="text-neutral-600 dark:text-neutral-400 max-w-xl mx-auto">Connect with verified, experienced agents across India</p>
+                    <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-3">
+                        Verified Real Estate Agents
+                    </h1>
+                    <p className="text-muted-foreground text-lg">
+                        Connect with experienced professionals across India
+                    </p>
                 </div>
 
-                {/* Search */}
-                <div className="max-w-2xl mx-auto mb-12">
-                    <div className="flex gap-3">
-                        <div className="relative flex-1">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
-                            <Input placeholder="Search by name, agency, or location..." className="pl-10 h-11" />
+                {/* Search & Filter Section */}
+                <div className="max-w-4xl mx-auto mb-12">
+                    <div className="bg-white rounded-2xl shadow-lg border border-border/50 p-1">
+                        <div className="flex flex-col md:flex-row">
+                            {/* Search Input */}
+                            <div className="flex-1 flex items-center px-4 py-3">
+                                <svg className="w-5 h-5 text-muted-foreground mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                                <Input
+                                    type="text"
+                                    placeholder="Search by name, agency, or location..."
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    className="border-0 bg-transparent focus-visible:ring-0 flex-1"
+                                />
+                            </div>
+
+                            {/* Divider */}
+                            <div className="hidden md:block w-px h-8 bg-border/50"></div>
+
+                            {/* City Filter */}
+                            <div className="w-full md:w-48 px-4 py-3">
+                                <Select value={selectedCity} onValueChange={setSelectedCity}>
+                                    <SelectTrigger className="w-full border-0 bg-transparent focus-visible:ring-0">
+                                        <SelectValue placeholder="All Cities" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {cities.map(city => (
+                                            <SelectItem key={city} value={city}>{city}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
                         </div>
-                        <Button size="lg" className="px-6">Search</Button>
+                    </div>
+
+                    {/* Quick City Filters */}
+                    <div className="mt-6">
+                        <div className="flex items-center justify-center gap-2 flex-wrap">
+                            <span className="text-sm text-muted-foreground">Quick filter:</span>
+                            {['Mumbai', 'Bangalore', 'Delhi', 'Pune'].map(city => (
+                                <button
+                                    key={city}
+                                    onClick={() => setSelectedCity(city)}
+                                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                                        selectedCity === city
+                                            ? 'bg-primary text-white'
+                                            : 'bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground'
+                                    }`}
+                                >
+                                    {city}
+                                </button>
+                            ))}
+                            {selectedCity !== 'All' && (
+                                <Button
+                                    onClick={() => setSelectedCity('All')}
+                                    className="px-3 py-1.5 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground transition-all"
+                                >
+                                    Clear
+                                </Button>
+                            )}
+                        </div>
                     </div>
                 </div>
 
                 {/* Agents Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {agents.map((agent) => (
-                        <Card key={agent.id} className="overflow-hidden hover:shadow-lg hover:border-primary-200 dark:hover:border-primary-900/50 transition-all duration-200 border-neutral-100 dark:border-neutral-700">
-                            <CardContent className="p-5">
-                                <div className="flex items-start gap-3 mb-4">
-                                    <img
-                                        src={agent.image}
-                                        alt={agent.name}
-                                        className="w-14 h-14 rounded-xl object-cover flex-shrink-0"
-                                    />
-                                    <div className="flex-1 min-w-0">
-                                        <div className="flex items-center gap-2 mb-1">
-                                            <h3 className="font-semibold text-neutral-900 dark:text-white truncate">{agent.name}</h3>
-                                            {agent.verified && (
-                                                <span className="flex-shrink-0 px-2 py-0.5 bg-secondary-100 dark:bg-secondary-900/20 text-secondary-700 dark:text-secondary-400 rounded text-xs font-medium">Verified</span>
-                                            )}
-                                        </div>
-                                        <p className="text-xs text-neutral-500 dark:text-neutral-400 flex items-center gap-1 truncate">
-                                            <Building2 className="w-3 h-3 flex-shrink-0" />
-                                            {agent.agency}
-                                        </p>
-                                        <p className="text-xs text-neutral-500 dark:text-neutral-400 flex items-center gap-1 truncate">
-                                            <MapPin className="w-3 h-3 flex-shrink-0" />
-                                            {agent.location}
-                                        </p>
-                                    </div>
-                                </div>
-                                
-                                <div className="space-y-3 border-t border-neutral-100 dark:border-neutral-700 pt-4">
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-xs text-neutral-600 dark:text-neutral-400">{agent.experience} years experience</span>
-                                        <span className="flex items-center gap-1 text-sm font-medium text-neutral-900 dark:text-white">
-                                            <Star className="w-4 h-4 fill-accent-400 text-accent-400" />
-                                            {agent.rating}
-                                        </span>
-                                    </div>
-                                    
-                                    <div className="flex gap-2 pt-2">
-                                        <Button variant="outline" className="flex-1" size="sm" className="gap-2">
-                                            <Phone className="w-4 h-4" />
-                                            Contact
-                                        </Button>
-                                        <Button className="flex-1" size="sm">View Profile</Button>
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    ))}
-                </div>
+                {filteredAgents.length > 0 ? (
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {filteredAgents.map((agent) => (
+                            <AgentCard
+                                key={agent.id}
+                                id={agent.id}
+                                name={agent.name}
+                                agency={agent.agency}
+                                experience={agent.experience}
+                                specialization={agent.specialization}
+                                serviceAreas={agent.serviceAreas}
+                                verified={agent.verified}
+                                image={agent.image}
+                            />
+                        ))}
+                    </div>
+                ) : (
+                    <div className="flex flex-col items-center justify-center py-32 px-6 bg-card border border-border rounded-xl shadow-xs">
+                        <div className="inline-flex items-center justify-center w-16 h-16 bg-muted rounded-2xl mb-6">
+                            <svg className="w-8 h-8 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
+                        <h3 className="text-xl font-bold text-foreground mb-2">No agents found</h3>
+                        <p className="text-muted-foreground text-center max-w-sm mb-8">Try adjusting your search filters to find the right agent.</p>
+                        <Button
+                            variant="default"
+                            onClick={() => { setSearchTerm(''); setSelectedCity('All'); }}
+                        >
+                            Clear all filters
+                        </Button>
+                    </div>
+                )}
             </div>
-        </div>
+        </main>
     );
 }

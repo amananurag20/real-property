@@ -155,41 +155,45 @@ export default function HomePage() {
             {[
               {
                 id: 1,
-                type: "Buy",
-                budget: "$800K - $1.2M",
-                location: "South Mumbai",
-                propertyType: "3BHK Apartment",
-                timeline: "Within 3 months",
-                status: "Open"
+                type: 'Buy',
+                title: 'Looking for 3BHK in Mumbai',
+                location: 'Mumbai, Maharashtra',
+                budget: '₹2-3 Crores',
+                timeline: 'Within 3 months',
+                user: 'John D.',
+                posted: '2 days ago'
               },
               {
                 id: 2,
-                type: "Rent",
-                budget: "$2K - $3K/month",
-                location: "Koramangala, Bangalore",
-                propertyType: "2BHK Furnished",
-                timeline: "Immediate",
-                status: "Open"
+                type: 'Rent',
+                title: 'Budget apartment in Bangalore',
+                location: 'Bangalore, Karnataka',
+                budget: '₹25,000/month',
+                timeline: 'Immediate',
+                user: 'Jane S.',
+                posted: '1 day ago'
               },
               {
                 id: 3,
-                type: "Investment",
-                budget: "$5M+",
-                location: "Gurgaon",
-                propertyType: "Commercial Space",
-                timeline: "6 months",
-                status: "Open"
+                type: 'Buy',
+                title: 'Commercial space in Delhi NCR',
+                location: 'Delhi NCR',
+                budget: '₹5+ Crores',
+                timeline: 'Within 6 months',
+                user: 'Raj K.',
+                posted: '3 days ago'
               }
             ].map((request) => (
               <RequestCard
                 key={request.id}
                 id={request.id}
                 type={request.type}
-                budget={request.budget}
+                title={request.title}
                 location={request.location}
-                propertyType={request.propertyType}
+                budget={request.budget}
                 timeline={request.timeline}
-                status={request.status}
+                user={request.user}
+                posted={request.posted}
               />
             ))}
           </div>
@@ -278,45 +282,21 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-5 gap-6">
+          <div className="grid md:grid-cols-3 gap-6">
             {[
-              {
-                service: "CA",
-                count: "45+",
-                image: "https://images.unsplash.com/photo-1545239351-1141bd82e8a6?w=600&h=400&fit=crop",
-                description: "Tax planning, audits, and investment structuring for property portfolios.",
-              },
-              {
-                service: "Lawyer",
-                count: "32+",
-                image: "https://images.unsplash.com/photo-1528740561666-dc2479dc08ab?w=600&h=400&fit=crop",
-                description: "Title checks, contracts, and end-to-end legal compliance for deals.",
-              },
-              {
-                service: "CS",
-                count: "28+",
-                image: "https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?w=600&h=400&fit=crop",
-                description: "Corporate structuring and governance support for developers and investors.",
-              },
-              {
-                service: "Notary",
-                count: "18+",
-                image: "https://images.unsplash.com/photo-1556740749-887f6717d7e4?w=600&h=400&fit=crop",
-                description: "Instant document attestation and certified copies across cities.",
-              },
-              {
-                service: "Loan Advisor",
-                count: "56+",
-                image: "https://images.unsplash.com/photo-1556740749-887f6717d7e4?w=600&h=400&fit=crop",
-                description: "Financing strategies and bank liaison for residential and commercial loans.",
-              },
-            ].map((service) => (
+              { id: 1, name: 'Tax Experts', type: 'CA', location: 'Mumbai', experience: 15, verified: true, phone: '+91 98765 43210' },
+              { id: 2, name: 'Legal Solutions', type: 'Lawyer', location: 'Delhi', experience: 12, verified: true, phone: '+91 98765 43211' },
+              { id: 3, name: 'Corporate CS', type: 'Company Secretary', location: 'Bangalore', experience: 8, verified: true, phone: '+91 98765 43212' },
+              ].map((service) => (
               <ServiceCard
-                key={service.service}
-                service={service.service}
-                count={service.count}
-                image={service.image}
-                description={service.description}
+                key={service.id}
+                id={service.id}
+                name={service.name}
+                type={service.type}
+                location={service.location}
+                experience={service.experience}
+                verified={service.verified}
+                phone={service.phone}
               />
             ))}
           </div>
