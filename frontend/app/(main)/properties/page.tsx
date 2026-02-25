@@ -48,35 +48,45 @@ function PropertiesContent() {
             <div className="max-w-6xl mx-auto">
                 {/* Header & Filters */}
                 <div className="mb-12">
-                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
-                        <div className="space-y-2">
-                            <h1 className="text-3xl font-bold text-foreground tracking-tight">Properties</h1>
-                            <p className="text-muted-foreground">Explore premium properties across India</p>
-                        </div>
+                    {/* Simple Header */}
+                    <div className="text-center mb-8">
+                        <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-3">
+                            Properties
+                        </h1>
+                        <p className="text-muted-foreground text-lg">
+                            Find your perfect home from our curated collection
+                        </p>
+                    </div>
 
-                        {!idsParam && (
-                            <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+                    {/* Search Section */}
+                    <div className="max-w-4xl mx-auto">
+                        {/* Search Bar */}
+                        <div className="bg-white rounded-2xl shadow-lg border border-border/50 p-1">
+                            <div className="flex flex-col md:flex-row">
                                 {/* Search Input */}
-                                <div className="relative flex-1 sm:flex-initial sm:w-72">
-                                    <Input
-                                        type="text"
-                                        placeholder="Search location, city..."
-                                        value={searchTerm}
-                                        onChange={(e) => setSearchTerm(e.target.value)}
-                                        className="pl-10 h-11 bg-background shadow-xs hover:border-primary/50 transition-colors"
-                                    />
-                                    <svg className="w-5 h-5 text-muted-foreground absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <div className="flex-1 flex items-center px-4 py-3">
+                                    <svg className="w-5 h-5 text-muted-foreground mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                     </svg>
+                                    <Input
+                                        type="text"
+                                        placeholder="Search location, city, property type..."
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                        className="border-0 bg-transparent focus-visible:ring-0 flex-1"
+                                    />
                                 </div>
 
+                                {/* Divider */}
+                                <div className="hidden md:block w-px h-8 bg-border/50"></div>
+
                                 {/* City Filter */}
-                                <div className="w-full sm:w-56">
+                                <div className="w-full md:w-56 px-4 py-3">
                                     <Select value={selectedCity} onValueChange={setSelectedCity}>
-                                        <SelectTrigger className="h-11 bg-background shadow-xs hover:border-primary/50 transition-colors">
-                                            <SelectValue placeholder="City" />
+                                        <SelectTrigger className="w-full border-0 bg-transparent focus-visible:ring-0">
+                                            <SelectValue placeholder="All Cities" />
                                         </SelectTrigger>
-                                        <SelectContent position="popper" className="z-[1001]">
+                                        <SelectContent>
                                             {cities.map(city => (
                                                 <SelectItem key={city} value={city}>{city}</SelectItem>
                                             ))}
@@ -84,22 +94,57 @@ function PropertiesContent() {
                                     </Select>
                                 </div>
                             </div>
-                        )}
+                        </div>
+
+                        {/* Quick City Filters */}
+                        <div className="mt-6">
+                            <div className="flex items-center justify-center gap-2">
+                                <span className="text-sm text-muted-foreground">Quick filter:</span>
+                                {['Mumbai', 'Bangalore', 'Pune', 'Delhi'].map(city => (
+                                    <button
+                                        key={city}
+                                        onClick={() => setSelectedCity(city)}
+                                        className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                                            selectedCity === city
+                                                ? 'bg-primary text-white'
+                                                : 'bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground'
+                                        }`}
+                                    >
+                                        {city}
+                                    </button>
+                                ))}
+                                {(searchTerm || selectedCity !== 'All') && (
+                                    <button
+                                        onClick={() => { setSearchTerm(''); setSelectedCity('All'); }}
+                                        className="px-3 py-1.5 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground transition-all"
+                                    >
+                                        Clear all
+                                    </button>
+                                )}
+                            </div>
+                        </div>
                     </div>
 
+                    {/* Map Filter Notice */}
                     {idsParam && (
-                        <div className="inline-flex items-center gap-3 px-4 py-2.5 bg-primary/10 border border-primary/20 rounded-lg shrink-0">
-                            <span className="text-sm font-medium text-primary">Filtered from map</span>
-                            <Button variant="ghost" size="sm" onClick={() => { setSearchTerm(''); setSelectedCity('All'); }} className="text-primary hover:text-primary hover:bg-primary/20 h-7 px-3 text-xs">
-                                Clear filter
-                            </Button>
+                        <div className="mt-6 text-center">
+                            <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-full">
+                                <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+                                <span className="text-sm font-medium">Showing properties from map selection</span>
+                                <button 
+                                    onClick={() => { setSearchTerm(''); setSelectedCity('All'); }}
+                                    className="ml-2 text-xs underline hover:no-underline"
+                                >
+                                    Clear
+                                </button>
+                            </div>
                         </div>
                     )}
                 </div>
 
                 {/* Properties Grid */}
                 {filteredProperties.length > 0 ? (
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-8">
                         {filteredProperties.map((property) => (
                             <PropertyCard key={property.id} {...property} />
                         ))}
