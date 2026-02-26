@@ -113,30 +113,32 @@ export function Header() {
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex h-16 items-center justify-between">
                     {/* Logo */}
-                    <Link href="/" className="flex items-center space-x-2">
-                        <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                            <Building2 className="w-5 h-5 text-white" />
+                    <Link href="/" className="flex items-center space-x-3">
+                        <div className="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center shadow-lg">
+                            <Building2 className="w-6 h-6 text-white" />
                         </div>
-                        <span className="text-xl font-bold text-gray-900 dark:text-white hidden sm:block">
+                        <span className="text-xl font-bold text-slate-900 dark:text-white hidden sm:block tracking-tight">
                             EstateIndia
                         </span>
                     </Link>
 
                     {/* Desktop Navigation */}
-                    <nav className="hidden lg:flex items-center space-x-1">
-                        {filteredNavItems.map((item) => (
-                            <Link
-                                key={item.href}
-                                href={item.href}
-                                className={`flex items-center space-x-1.5 px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive(item.activePattern)
-                                        ? 'bg-accent/60 text-foreground'
-                                        : 'text-muted-foreground hover:bg-accent hover:text-foreground'
+                    <nav className="hidden lg:flex items-center">
+                        <div className="bg-muted/50 rounded-full p-1.5 flex items-center">
+                            {filteredNavItems.map((item) => (
+                                <Link
+                                    key={item.href}
+                                    href={item.href}
+                                    className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${isActive(item.activePattern)
+                                            ? 'bg-white text-slate-900 shadow-md'
+                                            : 'text-muted-foreground hover:text-foreground hover:bg-white/50'
                                     }`}
-                            >
-                                {item.icon}
-                                <span>{item.label}</span>
-                            </Link>
-                        ))}
+                                >
+                                    {item.icon}
+                                    <span>{item.label}</span>
+                                </Link>
+                            ))}
+                        </div>
                     </nav>
 
                     {/* Right Side Actions */}

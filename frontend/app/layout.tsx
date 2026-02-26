@@ -6,6 +6,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import QueryProvider from "@/components/providers/query-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,6 +36,10 @@ export default function RootLayout({
         <AuthProvider>
           <QueryProvider>
             <TooltipProvider>
+                  <ReactQueryDevtools
+                          position="top"
+                initialIsOpen={false}
+              />  
               {children}
               <Chatbot />
               <Toaster position="top-right" />
