@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import RequestCard from '@/components/RequestCard';
+import { allRequests } from '@/data/requests';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -10,14 +11,7 @@ export default function RequestsPage() {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedType, setSelectedType] = useState('All');
 
-    const requests = [
-        { id: 1, type: 'Buy', title: 'Looking for 3BHK in Mumbai', location: 'Mumbai, Maharashtra', budget: '₹2-3 Crores', timeline: 'Within 3 months', user: 'John D.', posted: '2 days ago' },
-        { id: 2, type: 'Rent', title: 'Budget apartment in Bangalore', location: 'Bangalore, Karnataka', budget: '₹25,000/month', timeline: 'Immediate', user: 'Jane S.', posted: '1 day ago' },
-        { id: 3, type: 'Buy', title: 'Commercial space in Delhi NCR', location: 'Delhi NCR', budget: '₹5+ Crores', timeline: 'Within 6 months', user: 'Raj K.', posted: '3 days ago' },
-        { id: 4, type: 'Rent', title: 'Family house in Pune', location: 'Pune, Maharashtra', budget: '₹40,000/month', timeline: 'Within 1 month', user: 'Priya M.', posted: '5 hours ago' },
-    ];
-
-    const filteredRequests = requests.filter(request => {
+    const filteredRequests = allRequests.filter(request => {
         const matchesSearch = request.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
             request.location.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesType = selectedType === 'All' || request.type === selectedType;
@@ -113,10 +107,10 @@ export default function RequestsPage() {
                                 type={request.type}
                                 title={request.title}
                                 location={request.location}
-                                budget={request.budget}
+                                budget={`${request.budgetMin} - ${request.budgetMax}`}
                                 timeline={request.timeline}
                                 user={request.user}
-                                posted={request.posted}
+                                posted={request.postedDate}
                             />
                         ))}
                     </div>

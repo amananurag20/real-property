@@ -7,6 +7,7 @@ import RequestCard from '@/components/RequestCard';
 import AgentCard from '@/components/AgentCard';
 import ServiceCard from '@/components/ServiceCard';
 import { allProperties } from '@/data/properties';
+import { allRequests } from '@/data/requests';
 
 export default function HomePage() {
   return (
@@ -152,48 +153,17 @@ export default function HomePage() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
-            {[
-              {
-                id: 1,
-                type: 'Buy',
-                title: 'Looking for 3BHK in Mumbai',
-                location: 'Mumbai, Maharashtra',
-                budget: '₹2-3 Crores',
-                timeline: 'Within 3 months',
-                user: 'John D.',
-                posted: '2 days ago'
-              },
-              {
-                id: 2,
-                type: 'Rent',
-                title: 'Budget apartment in Bangalore',
-                location: 'Bangalore, Karnataka',
-                budget: '₹25,000/month',
-                timeline: 'Immediate',
-                user: 'Jane S.',
-                posted: '1 day ago'
-              },
-              {
-                id: 3,
-                type: 'Buy',
-                title: 'Commercial space in Delhi NCR',
-                location: 'Delhi NCR',
-                budget: '₹5+ Crores',
-                timeline: 'Within 6 months',
-                user: 'Raj K.',
-                posted: '3 days ago'
-              }
-            ].map((request) => (
+            {allRequests.slice(0, 3).map((request) => (
               <RequestCard
                 key={request.id}
                 id={request.id}
                 type={request.type}
                 title={request.title}
                 location={request.location}
-                budget={request.budget}
+                budget={`${request.budgetMin} - ${request.budgetMax}`}
                 timeline={request.timeline}
                 user={request.user}
-                posted={request.posted}
+                posted={request.postedDate}
               />
             ))}
           </div>
