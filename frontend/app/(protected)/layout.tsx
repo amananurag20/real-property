@@ -33,7 +33,7 @@ export default function ProtectedLayout({
     }
 
     return (
-        <AppLayout showSidebar={true} showHeader={true} showFooter={false}>
+        <AppLayout showSidebar={false} showHeader={true} showFooter={false}>
             {children}
         </AppLayout>
     );

@@ -12,16 +12,11 @@ import {
     ArrowRight,
     TrendingUp,
     Clock,
+    ChevronLeft,
+    Plus,
 } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card';
 
 export default function DashboardPage() {
     const { user } = useAuth();
@@ -32,7 +27,6 @@ export default function DashboardPage() {
             title: 'My Properties',
             value: '3',
             icon: Building2,
-            color: 'primary',
             link: '/dashboard/properties',
             permission: PERMISSIONS.CREATE_PROPERTY,
         },
@@ -40,7 +34,6 @@ export default function DashboardPage() {
             title: 'My Requests',
             value: '2',
             icon: FileText,
-            color: 'secondary',
             link: '/dashboard/requests',
             permission: PERMISSIONS.CREATE_REQUEST,
         },
@@ -48,7 +41,6 @@ export default function DashboardPage() {
             title: 'Matches',
             value: '5',
             icon: Link2,
-            color: 'accent',
             link: '/dashboard/matches',
             permission: PERMISSIONS.VIEW_LINKS,
         },
@@ -56,7 +48,6 @@ export default function DashboardPage() {
             title: 'Profile Views',
             value: '128',
             icon: UserCircle,
-            color: 'primary',
             link: '/dashboard/profile',
             permission: PERMISSIONS.EDIT_OWN_PROFILE,
         },
@@ -69,24 +60,31 @@ export default function DashboardPage() {
     const quickActions = [
         {
             label: 'Post Property',
-            description: 'List a new property',
-            href: '/dashboard/properties/new',
+            description: 'List a new property for sale or rent',
+            href: '/dashboard/properties/form',
             icon: Building2,
             permission: PERMISSIONS.CREATE_PROPERTY,
         },
         {
             label: 'Post Request',
-            description: 'Create a new request',
-            href: '/dashboard/requests/new',
+            description: 'Create a new property request',
+            href: '/dashboard/requests/form',
             icon: FileText,
             permission: PERMISSIONS.CREATE_REQUEST,
         },
         {
             label: 'Agent Profile',
-            description: 'Set up your profile',
+            description: 'Set up your agent profile',
             href: '/dashboard/agent-profile',
             icon: UserCircle,
             permission: PERMISSIONS.CREATE_AGENT_PROFILE,
+        },
+        {
+            label: 'Service Provider',
+            description: 'Set up your service provider profile',
+            href: '/provider/profile/edit',
+            icon: UserCircle,
+            permission: PERMISSIONS.CREATE_SERVICE_PROFILE,
         },
     ];
 
@@ -94,130 +92,142 @@ export default function DashboardPage() {
         hasPermission(userRole, action.permission)
     );
 
-    const colorMap = {
-        primary: 'bg-primary-100 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400',
-        secondary: 'bg-secondary-100 dark:bg-secondary-900/20 text-secondary-700 dark:text-secondary-400',
-        accent: 'bg-accent-100 dark:bg-accent-900/20 text-accent-700 dark:text-accent-400',
-    };
+    const recentActivities = [
+        {
+            title: 'Property listing approved',
+            description: 'Your 2BHK apartment in Mumbai is now live',
+            time: '2 hours ago',
+            type: 'success'
+        },
+        {
+            title: 'New match found',
+            description: 'A buyer is interested in your Pune property',
+            time: '4 hours ago',
+            type: 'info'
+        },
+        {
+            title: 'Request updated',
+            description: 'Your Bangalore property request was updated',
+            time: '1 day ago',
+            type: 'neutral'
+        }
+    ];
 
     return (
-        <div className="min-h-screen bg-neutral-50/50 dark:bg-neutral-900/50">
-            <div className="max-w-6xl mx-auto px-4 md:px-6 py-8">
-                {/* Welcome Header */}
-                <div className="mb-8">
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                        <div>
-                            <h1 className="text-3xl font-bold text-neutral-900 dark:text-white">
-                                Welcome back, {user?.name || 'User'}
-                            </h1>
-                            <p className="text-neutral-600 dark:text-neutral-400 mt-1 text-sm">
-                                {ROLE_LABELS[userRole as Role]} • Last login 2 hours ago
-                            </p>
-                        </div>
-                        <Button variant="outline" size="lg" className="gap-2 w-fit">
-                            <Bell className="w-4 h-4" />
-                            <span className="hidden sm:inline">Notifications</span>
-                        </Button>
+        <main className="min-h-screen bg-muted/30 pt-10 pb-16">
+            <div className="max-w-7xl mx-auto px-6 md:px-8">
+                {/* Header */}
+                <div className="flex items-center gap-4 mb-8">
+                    <Link 
+                        href="/"
+                        className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-slate-900 text-white hover:bg-slate-800 transition-all shadow-lg hover:shadow-xl"
+                    >
+                        <ChevronLeft className="w-5 h-5" />
+                    </Link>
+                    <div>
+                        <h1 className="text-3xl font-bold text-foreground">Welcome back, {user?.name || 'User'}</h1>
+                        <p className="text-muted-foreground">{ROLE_LABELS[userRole as Role]} • Last login 2 hours ago</p>
                     </div>
                 </div>
 
                 {/* Stats Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                    {filteredStats.map((stat) => (
-                        <Link key={stat.title} href={stat.link}>
-                            <Card className="hover:shadow-md hover:border-primary-200 dark:hover:border-primary-900/50 transition-all duration-200 cursor-pointer">
-                                <CardContent className="p-5">
-                                    <div className="flex items-start justify-between">
-                                        <div>
-                                            <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400 mb-2">
-                                                {stat.title}
-                                            </p>
-                                            <p className="text-3xl font-bold text-neutral-900 dark:text-white">
-                                                {stat.value}
-                                            </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    {filteredStats.map((stat) => {
+                        const Icon = stat.icon;
+                        return (
+                            <Link key={stat.title} href={stat.link}>
+                                <div className="bg-white rounded-[32px] shadow-[0_30px_70px_-45px_rgba(15,23,42,0.45)] border border-border/40 p-6 hover:shadow-[0_40px_80px_-45px_rgba(15,23,42,0.6)] transition-all duration-300 cursor-pointer group">
+                                    <div className="flex items-start justify-between mb-4">
+                                        <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-primary/10">
+                                            <Icon className="w-6 h-6 text-primary" />
                                         </div>
-                                        <div className={`w-10 h-10 ${colorMap[stat.color as keyof typeof colorMap]} rounded-lg flex items-center justify-center`}>
-                                            <stat.icon className="w-5 h-5" />
-                                        </div>
+                                        <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
                                     </div>
-                                </CardContent>
-                            </Card>
-                        </Link>
-                    ))}
+                                    <div>
+                                        <p className="text-sm text-muted-foreground mb-1">{stat.title}</p>
+                                        <p className="text-3xl font-bold text-foreground">{stat.value}</p>
+                                    </div>
+                                </div>
+                            </Link>
+                        );
+                    })}
                 </div>
 
-                {/* Quick Actions */}
-                {filteredActions.length > 0 && (
-                    <Card className="mb-8">
-                        <CardHeader>
-                            <div className="flex items-center gap-2">
-                                <TrendingUp className="w-5 h-5 text-primary-700 dark:text-primary-400" />
+                <div className="grid lg:grid-cols-3 gap-8">
+                    {/* Quick Actions */}
+                    <div className="lg:col-span-2">
+                        <div className="bg-white rounded-[32px] shadow-[0_30px_70px_-45px_rgba(15,23,42,0.45)] border border-border/40 p-8">
+                            <div className="flex items-center gap-3 mb-6">
+                                <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-primary/10">
+                                    <TrendingUp className="w-6 h-6 text-primary" />
+                                </div>
                                 <div>
-                                    <CardTitle className="text-xl">Quick Actions</CardTitle>
-                                    <CardDescription>Get started with common tasks</CardDescription>
+                                    <h2 className="text-2xl font-bold text-foreground">Quick Actions</h2>
+                                    <p className="text-muted-foreground">Get started with common tasks</p>
                                 </div>
                             </div>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+
+                            <div className="space-y-4">
                                 {filteredActions.map((action) => {
                                     const Icon = action.icon;
                                     return (
                                         <Link key={action.href} href={action.href}>
-                                            <div className="p-4 bg-neutral-50 dark:bg-neutral-800 border border-neutral-100 dark:border-neutral-700 rounded-lg hover:border-primary-200 dark:hover:border-primary-900/50 hover:shadow-sm transition-all cursor-pointer group">
-                                                <div className="flex items-start gap-3">
-                                                    <div className={`w-10 h-10 ${colorMap.primary} rounded-lg flex items-center justify-center flex-shrink-0`}>
-                                                        <Icon className="w-5 h-5" />
-                                                    </div>
-                                                    <div className="flex-1 min-w-0">
-                                                        <p className="font-medium text-neutral-900 dark:text-white text-sm">{action.label}</p>
-                                                        <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">{action.description}</p>
-                                                    </div>
-                                                    <ArrowRight className="w-4 h-4 text-neutral-400 group-hover:text-primary-700 dark:group-hover:text-primary-400 transition-colors flex-shrink-0 mt-0.5" />
+                                            <div className="flex items-center gap-4 p-6 rounded-2xl bg-muted/30 hover:bg-muted/50 transition-all duration-200 cursor-pointer group border border-border/20">
+                                                <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-primary/10">
+                                                    <Icon className="w-6 h-6 text-primary" />
                                                 </div>
+                                                <div className="flex-1">
+                                                    <h3 className="font-semibold text-foreground mb-1">{action.label}</h3>
+                                                    <p className="text-sm text-muted-foreground">{action.description}</p>
+                                                </div>
+                                                <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
                                             </div>
                                         </Link>
                                     );
                                 })}
                             </div>
-                        </CardContent>
-                    </Card>
-                )}
+                        </div>
+                    </div>
 
-                {/* Recent Activity */}
-                <Card>
-                    <CardHeader>
-                        <div className="flex items-center gap-2">
-                            <Clock className="w-5 h-5 text-neutral-600 dark:text-neutral-400" />
-                            <div>
-                                <CardTitle className="text-xl">Recent Activity</CardTitle>
-                                <CardDescription>Your latest interactions and updates</CardDescription>
+                    {/* Recent Activity */}
+                    <div className="lg:col-span-1">
+                        <div className="bg-white rounded-[32px] shadow-[0_30px_70px_-45px_rgba(15,23,42,0.45)] border border-border/40 p-8">
+                            <div className="flex items-center gap-3 mb-6">
+                                <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-primary/10">
+                                    <Clock className="w-6 h-6 text-primary" />
+                                </div>
+                                <div>
+                                    <h2 className="text-xl font-bold text-foreground">Recent Activity</h2>
+                                    <p className="text-sm text-muted-foreground">Latest updates</p>
+                                </div>
+                            </div>
+
+                            <div className="space-y-4">
+                                {recentActivities.map((activity, index) => (
+                                    <div key={index} className="flex items-start gap-3 p-4 rounded-2xl bg-muted/20 border border-border/20">
+                                        <div className={`w-3 h-3 rounded-full mt-2 flex-shrink-0 ${
+                                            activity.type === 'success' ? 'bg-emerald-500' :
+                                            activity.type === 'info' ? 'bg-blue-500' : 'bg-gray-400'
+                                        }`} />
+                                        <div className="flex-1 min-w-0">
+                                            <p className="font-medium text-foreground text-sm mb-1">{activity.title}</p>
+                                            <p className="text-xs text-muted-foreground mb-2">{activity.description}</p>
+                                            <span className="text-xs text-muted-foreground">{activity.time}</span>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <div className="mt-6 pt-6 border-t border-border">
+                                <Button variant="ghost" className="w-full text-sm">
+                                    <Bell className="w-4 h-4 mr-2" />
+                                    View All Notifications
+                                </Button>
                             </div>
                         </div>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="space-y-3">
-                            {[1, 2, 3].map((_, i) => (
-                                <div
-                                    key={i}
-                                    className="flex items-center gap-3 p-4 bg-neutral-50 dark:bg-neutral-800 rounded-lg border border-neutral-100 dark:border-neutral-700 hover:border-neutral-200 dark:hover:border-neutral-600 transition-colors"
-                                >
-                                    <div className="w-8 h-8 bg-gradient-to-br from-primary-200 to-secondary-200 dark:from-primary-900/30 dark:to-secondary-900/30 rounded-full flex-shrink-0" />
-                                    <div className="flex-1 min-w-0">
-                                        <p className="font-medium text-neutral-900 dark:text-white text-sm">
-                                            Activity item {i + 1}
-                                        </p>
-                                        <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">
-                                            Description of the activity
-                                        </p>
-                                    </div>
-                                    <span className="text-xs text-neutral-500 dark:text-neutral-400 flex-shrink-0 whitespace-nowrap">2h ago</span>
-                                </div>
-                            ))}
-                        </div>
-                    </CardContent>
-                </Card>
+                    </div>
+                </div>
             </div>
-        </div>
+        </main>
     );
 }

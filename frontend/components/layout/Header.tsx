@@ -28,9 +28,12 @@ import {
     LayoutDashboard,
     Plus,
     Shield,
-    Bell,
-    Search,
-    X,
+    FileText,
+    ChevronDown,
+    Settings,
+    Link2,
+    UserCircle,
+    BarChart3,
 } from 'lucide-react';
 
 interface NavItem {
@@ -45,29 +48,17 @@ export function Header() {
     const { user, isAuthenticated, logout } = useAuth();
     const pathname = usePathname();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [exploreOpen, setExploreOpen] = useState(false);
 
     const userRole = user?.role || Role.VISITOR;
 
-    const mainNavItems: NavItem[] = [
-        {
-            label: 'Home',
-            href: '/',
-            icon: <Home className="w-4 h-4" />,
-            activePattern: '^/$',
-        },
+    const exploreItems: NavItem[] = [
         {
             label: 'Properties',
             href: '/properties',
             icon: <Building2 className="w-4 h-4" />,
             permission: PERMISSIONS.BROWSE_PROPERTIES,
             activePattern: '^/properties',
-        },
-        {
-            label: 'Requests',
-            href: '/requests',
-            icon: <Search className="w-4 h-4" />,
-            permission: PERMISSIONS.BROWSE_REQUESTS,
-            activePattern: '^/requests',
         },
         {
             label: 'Agents',
@@ -92,7 +83,7 @@ export function Header() {
         },
     ];
 
-    const filteredNavItems = mainNavItems.filter(item => {
+    const filteredExploreItems = exploreItems.filter(item => {
         if (!item.permission) return true;
         return hasPermission(userRole, item.permission);
     });
@@ -102,6 +93,8 @@ export function Header() {
         return new RegExp(pattern).test(pathname);
     };
 
+    const isExploreActive = filteredExploreItems?.some(item => isActive(item?.activePattern));
+
     const getDashboardLink = () => {
         if (userRole === Role.ADMIN) return '/admin';
         if (userRole === Role.SERVICE_PROVIDER) return '/provider/dashboard';
@@ -109,194 +102,351 @@ export function Header() {
     };
 
     return (
-        <header className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:bg-gray-900/95 dark:supports-[backdrop-filter]:bg-gray-900/60">
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex h-16 items-center justify-between">
+        <header className="sticky top-0 z-50 w-full bg-white border-b border-gray-100">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="flex h-[60px] items-center justify-between gap-8">
+
                     {/* Logo */}
-                    <Link href="/" className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center shadow-lg">
-                            <Building2 className="w-6 h-6 text-white" />
-                        </div>
-                        <span className="text-xl font-bold text-slate-900 dark:text-white hidden sm:block tracking-tight">
+                    <Link href="/" className="flex-shrink-0">
+                        <span className="text-[22px] font-bold text-slate-900 tracking-tight font-serif italic">
                             EstateIndia
                         </span>
                     </Link>
 
                     {/* Desktop Navigation */}
-                    <nav className="hidden lg:flex items-center">
-                        <div className="bg-muted/50 rounded-full p-1.5 flex items-center">
-                            {filteredNavItems.map((item) => (
-                                <Link
-                                    key={item.href}
-                                    href={item.href}
-                                    className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${isActive(item.activePattern)
-                                            ? 'bg-white text-slate-900 shadow-md'
-                                            : 'text-muted-foreground hover:text-foreground hover:bg-white/50'
+                    <nav className="hidden lg:flex items-center gap-0">
+                        <Link
+                            href="/"
+                            className={`px-3.5 py-1.5 text-[14px] font-medium transition-colors ${
+                                isActive('^/$') ? 'text-slate-900' : 'text-gray-500 hover:text-gray-900'
+                            }`}
+                        >
+                            Home
+                        </Link>
+
+                        {/* Explore Dropdown */}
+                        <DropdownMenu open={exploreOpen} onOpenChange={setExploreOpen}>
+                            <DropdownMenuTrigger asChild>
+                                <button
+                                    className={`flex items-center gap-1 px-3.5 py-1.5 text-[14px] font-medium transition-colors outline-none ${
+                                        isExploreActive ? 'text-slate-900' : 'text-gray-500 hover:text-gray-900'
                                     }`}
                                 >
-                                    {item.icon}
-                                    <span>{item.label}</span>
-                                </Link>
-                            ))}
-                        </div>
+                                    Explore
+                                    <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-150 ${exploreOpen ? 'rotate-180' : ''}`} />
+                                </button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent
+                                align="start"
+                                sideOffset={12}
+                                className="w-52 rounded-xl shadow-xl border border-gray-100 p-2"
+                            >
+                                {filteredExploreItems.map((item) => (
+                                    <DropdownMenuItem key={item.href} asChild>
+                                        <Link
+                                            href={item.href}
+                                            className="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer text-[14px] text-gray-700 hover:text-gray-900 hover:bg-gray-50 font-medium"
+                                        >
+                                            <span className="text-gray-400">{item.icon}</span>
+                                            {item.label}
+                                        </Link>
+                                    </DropdownMenuItem>
+                                ))}
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+
+                        {hasPermission(userRole, PERMISSIONS.BROWSE_REQUESTS) && (
+                            <Link
+                                href="/requests"
+                                className={`px-3.5 py-1.5 text-[14px] font-medium transition-colors ${
+                                    isActive('^/requests') ? 'text-slate-900' : 'text-gray-500 hover:text-gray-900'
+                                }`}
+                            >
+                                Requests
+                            </Link>
+                        )}
+
+                        {isAuthenticated && (
+                            <Link
+                                href={getDashboardLink()}
+                                className={`px-3.5 py-1.5 text-[14px] font-medium transition-colors ${
+                                    isActive('^/dashboard') || isActive('^/admin') || isActive('^/agent') || isActive('^/provider')
+                                        ? 'text-slate-900'
+                                        : 'text-gray-500 hover:text-gray-900'
+                                }`}
+                            >
+                                Dashboard
+                            </Link>
+                        )}
                     </nav>
 
-                    {/* Right Side Actions */}
-                    <div className="flex items-center space-x-2">
-                        {/* Quick Actions for Authenticated Users */}
+                    {/* Right Side */}
+                    <div className="flex items-center gap-2">
+                        {/* Post CTA for authenticated users */}
                         {isAuthenticated && (
-                            <>
+                            <div className="hidden md:flex items-center gap-1">
                                 {hasPermission(userRole, PERMISSIONS.CREATE_PROPERTY) && (
-                                    <Link href="/dashboard/properties/new" className="hidden md:flex">
-                                        <Button variant="ghost" size="sm" className="text-gray-700 dark:text-gray-300">
-                                            <Plus className="w-4 h-4 mr-1" />
+                                    <Link href="/dashboard/properties/new">
+                                        <Button variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900 text-[13px] font-medium h-8 px-3">
+                                            <Plus className="w-3.5 h-3.5 mr-1" />
                                             Post Property
                                         </Button>
                                     </Link>
                                 )}
                                 {hasPermission(userRole, PERMISSIONS.CREATE_REQUEST) && (
-                                    <Link href="/dashboard/requests/new" className="hidden md:flex">
-                                        <Button variant="ghost" size="sm" className="text-gray-700 dark:text-gray-300">
-                                            <Plus className="w-4 h-4 mr-1" />
+                                    <Link href="/dashboard/requests/new">
+                                        <Button variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900 text-[13px] font-medium h-8 px-3">
+                                            <Plus className="w-3.5 h-3.5 mr-1" />
                                             Post Request
                                         </Button>
                                     </Link>
                                 )}
-                            </>
+                            </div>
                         )}
 
-                        {/* Mobile Menu Toggle */}
-                        <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-                            <SheetTrigger asChild>
-                                <Button variant="ghost" size="icon" className="lg:hidden">
-                                    <Menu className="h-5 w-5" />
-                                </Button>
-                            </SheetTrigger>
-                            <SheetContent side="right" className="w-80">
-                                <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
-                                <div className="flex flex-col h-full">
-                                    <div className="flex items-center justify-between py-4 border-b">
-                                        <span className="font-semibold text-lg">Menu</span>
-                                    </div>
-                                    <nav className="flex-1 py-4 space-y-1">
-                                        {filteredNavItems.map((item) => (
-                                            <Link
-                                                key={item.href}
-                                                href={item.href}
-                                                onClick={() => setMobileMenuOpen(false)}
-                                                className={`flex items-center space-x-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive(item.activePattern)
-                                                        ? 'bg-accent text-foreground'
-                                                        : 'text-muted-foreground hover:bg-accent hover:text-foreground'
-                                                    }`}
-                                            >
-                                                {item.icon}
-                                                <span>{item.label}</span>
-                                            </Link>
-                                        ))}
-                                    </nav>
-                                    <div className="border-t py-4 space-y-2">
-                                        {isAuthenticated ? (
-                                            <>
-                                                <Link
-                                                    href={getDashboardLink()}
-                                                    onClick={() => setMobileMenuOpen(false)}
-                                                    className="flex items-center space-x-3 px-3 py-2 rounded-md text-sm font-medium text-foreground hover:bg-accent"
-                                                >
-                                                    <LayoutDashboard className="w-4 h-4 text-muted-foreground" />
-                                                    <span>Dashboard</span>
-                                                </Link>
-                                                <button
-                                                    onClick={() => {
-                                                        logout();
-                                                        setMobileMenuOpen(false);
-                                                    }}
-                                                    className="flex items-center space-x-3 px-3 py-2 rounded-md text-sm font-medium text-destructive hover:bg-destructive/10 w-full"
-                                                >
-                                                    <LogOut className="w-4 h-4" />
-                                                    <span>Sign Out</span>
-                                                </button>
-                                            </>
-                                        ) : (
-                                            <>
-                                                <Link
-                                                    href="/signin"
-                                                    onClick={() => setMobileMenuOpen(false)}
-                                                    className="flex items-center justify-center px-3 py-2 rounded-md text-sm font-medium text-foreground hover:bg-accent border border-border"
-                                                >
-                                                    <span>Sign In</span>
-                                                </Link>
-                                                <Link
-                                                    href="/signup"
-                                                    onClick={() => setMobileMenuOpen(false)}
-                                                    className="flex items-center justify-center px-3 py-2 rounded-md text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90"
-                                                >
-                                                    <span>Sign Up</span>
-                                                </Link>
-                                            </>
-                                        )}
-                                    </div>
-                                </div>
-                            </SheetContent>
-                        </Sheet>
-
-                        {/* User Menu */}
+                        {/* User Avatar Dropdown */}
                         {isAuthenticated ? (
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                    <Button variant="ghost" size="icon" className="relative">
-                                        <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center text-primary text-sm font-medium">
+                                    <button className="flex items-center gap-2 rounded-full hover:opacity-80 transition-opacity outline-none ml-1">
+                                        <div className="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center text-white text-[13px] font-semibold">
                                             {user?.name?.charAt(0)?.toUpperCase() || 'U'}
                                         </div>
-                                    </Button>
+                                    </button>
                                 </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end" className="w-56">
-                                    <DropdownMenuLabel className="font-normal">
-                                        <div className="flex flex-col space-y-1">
-                                            <p className="text-sm font-medium">{user?.name}</p>
-                                            <p className="text-xs text-muted-foreground">{user?.email}</p>
-                                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 w-fit mt-1">
-                                                {ROLE_LABELS[userRole as Role]}
-                                            </span>
-                                        </div>
-                                    </DropdownMenuLabel>
-                                    <DropdownMenuSeparator />
+                                <DropdownMenuContent align="end" sideOffset={10} className="w-60 rounded-xl shadow-xl border border-gray-100 p-2">
+                                    <div className="px-3 py-3 border-b border-gray-100 mb-1">
+                                        <p className="text-[14px] font-semibold text-gray-900">{user?.name}</p>
+                                        <p className="text-[12px] text-gray-400 mt-0.5">{user?.email}</p>
+                                        <span className="inline-flex items-center mt-2 px-2 py-0.5 rounded-full text-[11px] font-medium bg-gray-100 text-gray-600">
+                                            {ROLE_LABELS[userRole as Role]}
+                                        </span>
+                                    </div>
                                     <DropdownMenuItem asChild>
-                                        <Link href={getDashboardLink()} className="cursor-pointer flex items-center">
-                                            <LayoutDashboard className="mr-2 h-4 w-4" />
+                                        <Link href={getDashboardLink()} className="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer text-[13px] text-gray-700 hover:bg-gray-50 font-medium">
+                                            <LayoutDashboard className="w-4 h-4 text-gray-400" />
                                             Dashboard
                                         </Link>
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem asChild>
-                                        <Link href="/dashboard/profile" className="cursor-pointer flex items-center">
-                                            <User className="mr-2 h-4 w-4" />
-                                            Profile
-                                        </Link>
-                                    </DropdownMenuItem>
-                                    {userRole === Role.ADMIN && (
+                                    {hasPermission(userRole, PERMISSIONS.CREATE_PROPERTY) && (
                                         <DropdownMenuItem asChild>
-                                            <Link href="/admin" className="cursor-pointer flex items-center">
-                                                <Shield className="mr-2 h-4 w-4" />
-                                                Admin Panel
+                                            <Link href="/dashboard/properties" className="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer text-[13px] text-gray-700 hover:bg-gray-50 font-medium">
+                                                <Building2 className="w-4 h-4 text-gray-400" />
+                                                My Properties
                                             </Link>
                                         </DropdownMenuItem>
                                     )}
-                                    <DropdownMenuSeparator />
-                                    <DropdownMenuItem onClick={logout} className="cursor-pointer text-red-600 focus:text-red-600">
-                                        <LogOut className="mr-2 h-4 w-4" />
+                                    {hasPermission(userRole, PERMISSIONS.CREATE_REQUEST) && (
+                                        <DropdownMenuItem asChild>
+                                            <Link href="/dashboard/requests" className="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer text-[13px] text-gray-700 hover:bg-gray-50 font-medium">
+                                                <FileText className="w-4 h-4 text-gray-400" />
+                                                My Requests
+                                            </Link>
+                                        </DropdownMenuItem>
+                                    )}
+                                    {hasPermission(userRole, PERMISSIONS.VIEW_LINKS) && (
+                                        <DropdownMenuItem asChild>
+                                            <Link href="/dashboard/matches" className="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer text-[13px] text-gray-700 hover:bg-gray-50 font-medium">
+                                                <Link2 className="w-4 h-4 text-gray-400" />
+                                                Matches
+                                            </Link>
+                                        </DropdownMenuItem>
+                                    )}
+                                    {hasPermission(userRole, PERMISSIONS.CREATE_AGENT_PROFILE) && (
+                                        <DropdownMenuItem asChild>
+                                            <Link href="/dashboard/agent-profile" className="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer text-[13px] text-gray-700 hover:bg-gray-50 font-medium">
+                                                <UserCircle className="w-4 h-4 text-gray-400" />
+                                                Agent Profile
+                                            </Link>
+                                        </DropdownMenuItem>
+                                    )}
+                                    {hasPermission(userRole, PERMISSIONS.CREATE_SERVICE_PROFILE) && (
+                                        <DropdownMenuItem asChild>
+                                            <Link href="/provider/profile/edit" className="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer text-[13px] text-gray-700 hover:bg-gray-50 font-medium">
+                                                <Briefcase className="w-4 h-4 text-gray-400" />
+                                                Service Provider
+                                            </Link>
+                                        </DropdownMenuItem>
+                                    )}
+                                    <DropdownMenuItem asChild>
+                                        <Link href="/dashboard/profile" className="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer text-[13px] text-gray-700 hover:bg-gray-50 font-medium">
+                                            <Settings className="w-4 h-4 text-gray-400" />
+                                            Profile Settings
+                                        </Link>
+                                    </DropdownMenuItem>
+                                    {userRole === Role.ADMIN && (
+                                        <>
+                                            <DropdownMenuSeparator className="my-1" />
+                                            <DropdownMenuItem asChild>
+                                                <Link href="/admin" className="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer text-[13px] text-gray-700 hover:bg-gray-50 font-medium">
+                                                    <Shield className="w-4 h-4 text-gray-400" />
+                                                    Admin Panel
+                                                </Link>
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem asChild>
+                                                <Link href="/admin/analytics" className="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer text-[13px] text-gray-700 hover:bg-gray-50 font-medium">
+                                                    <BarChart3 className="w-4 h-4 text-gray-400" />
+                                                    Analytics
+                                                </Link>
+                                            </DropdownMenuItem>
+                                        </>
+                                    )}
+                                    <DropdownMenuSeparator className="my-1" />
+                                    <DropdownMenuItem onClick={logout} className="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer text-[13px] text-red-500 hover:bg-red-50 font-medium">
+                                        <LogOut className="w-4 h-4" />
                                         Sign Out
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         ) : (
-                            <div className="hidden md:flex items-center space-x-2">
+                            <div className="hidden md:flex items-center gap-2 ml-2">
                                 <Link href="/signin">
-                                    <Button variant="outline" size="sm" className="hidden border-border bg-background lg:flex">Sign In</Button>
+                                    <Button variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900 text-[14px] font-medium h-9 px-4">
+                                        Sign in
+                                    </Button>
                                 </Link>
                                 <Link href="/signup">
-                                    <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90">Sign Up</Button>
+                                    <Button size="sm" className="bg-slate-900 text-white hover:bg-slate-700 text-[14px] font-medium h-9 px-5 rounded-full">
+                                        Sign up
+                                    </Button>
                                 </Link>
                             </div>
                         )}
+
+                        {/* Mobile Menu Toggle */}
+                        <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+                            <SheetTrigger asChild>
+                                <Button variant="ghost" size="icon" className="lg:hidden w-9 h-9 ml-1">
+                                    <Menu className="h-5 w-5 text-gray-600" />
+                                </Button>
+                            </SheetTrigger>
+                            <SheetContent side="right" className="w-[300px] p-0">
+                                <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+                                <div className="flex flex-col h-full">
+                                    {/* Mobile Header */}
+                                    <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+                                        <span className="text-[18px] font-bold text-slate-900 italic font-serif">EstateIndia</span>
+                                    </div>
+
+                                    <div className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
+                                        {/* Home */}
+                                        <Link
+                                            href="/"
+                                            onClick={() => setMobileMenuOpen(false)}
+                                            className={`flex items-center gap-3 px-3 py-3 rounded-xl text-[14px] font-medium transition-colors ${
+                                                isActive('^/$') ? 'bg-slate-900 text-white' : 'text-gray-700 hover:bg-gray-100'
+                                            }`}
+                                        >
+                                            <Home className="w-4 h-4" />
+                                            Home
+                                        </Link>
+
+                                        {/* Explore divider */}
+                                        <div className="pt-3 pb-1 px-3">
+                                            <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest">Explore</p>
+                                        </div>
+                                        {filteredExploreItems.map((item) => (
+                                            <Link
+                                                key={item.href}
+                                                href={item.href}
+                                                onClick={() => setMobileMenuOpen(false)}
+                                                className={`flex items-center gap-3 px-3 py-3 rounded-xl text-[14px] font-medium transition-colors ${
+                                                    isActive(item.activePattern) ? 'bg-slate-900 text-white' : 'text-gray-700 hover:bg-gray-100'
+                                                }`}
+                                            >
+                                                {item.icon}
+                                                {item.label}
+                                            </Link>
+                                        ))}
+
+                                        {/* Activity divider */}
+                                        {hasPermission(userRole, PERMISSIONS.BROWSE_REQUESTS) && (
+                                            <>
+                                                <div className="pt-3 pb-1 px-3">
+                                                    <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest">Activity</p>
+                                                </div>
+                                                <Link
+                                                    href="/requests"
+                                                    onClick={() => setMobileMenuOpen(false)}
+                                                    className={`flex items-center gap-3 px-3 py-3 rounded-xl text-[14px] font-medium transition-colors ${
+                                                        isActive('^/requests') ? 'bg-slate-900 text-white' : 'text-gray-700 hover:bg-gray-100'
+                                                    }`}
+                                                >
+                                                    <FileText className="w-4 h-4" />
+                                                    Requests
+                                                </Link>
+                                            </>
+                                        )}
+
+                                        {/* Account divider */}
+                                        {isAuthenticated && (
+                                            <>
+                                                <div className="pt-3 pb-1 px-3">
+                                                    <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest">Account</p>
+                                                </div>
+                                                <Link
+                                                    href={getDashboardLink()}
+                                                    onClick={() => setMobileMenuOpen(false)}
+                                                    className="flex items-center gap-3 px-3 py-3 rounded-xl text-[14px] font-medium text-gray-700 hover:bg-gray-100 transition-colors"
+                                                >
+                                                    <LayoutDashboard className="w-4 h-4" />
+                                                    Dashboard
+                                                </Link>
+                                                {hasPermission(userRole, PERMISSIONS.CREATE_PROPERTY) && (
+                                                    <Link href="/dashboard/properties" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-3 py-3 rounded-xl text-[14px] font-medium text-gray-700 hover:bg-gray-100">
+                                                        <Building2 className="w-4 h-4" />
+                                                        My Properties
+                                                    </Link>
+                                                )}
+                                                {hasPermission(userRole, PERMISSIONS.CREATE_REQUEST) && (
+                                                    <Link href="/dashboard/requests" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-3 py-3 rounded-xl text-[14px] font-medium text-gray-700 hover:bg-gray-100">
+                                                        <FileText className="w-4 h-4" />
+                                                        My Requests
+                                                    </Link>
+                                                )}
+                                                <Link href="/dashboard/profile" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-3 py-3 rounded-xl text-[14px] font-medium text-gray-700 hover:bg-gray-100">
+                                                    <Settings className="w-4 h-4" />
+                                                    Profile Settings
+                                                </Link>
+                                            </>
+                                        )}
+                                    </div>
+
+                                    {/* Bottom auth actions */}
+                                    <div className="border-t border-gray-100 px-3 py-4 space-y-2">
+                                        {isAuthenticated ? (
+                                            <>
+                                                <div className="flex items-center gap-3 px-3 py-2">
+                                                    <div className="w-9 h-9 rounded-full bg-slate-900 flex items-center justify-center text-white text-[13px] font-semibold flex-shrink-0">
+                                                        {user?.name?.charAt(0)?.toUpperCase() || 'U'}
+                                                    </div>
+                                                    <div className="min-w-0">
+                                                        <p className="text-[13px] font-semibold text-gray-900 truncate">{user?.name}</p>
+                                                        <p className="text-[11px] text-gray-400 truncate">{user?.email}</p>
+                                                    </div>
+                                                </div>
+                                                <button
+                                                    onClick={() => { logout(); setMobileMenuOpen(false); }}
+                                                    className="flex items-center gap-3 w-full px-3 py-3 rounded-xl text-[14px] font-medium text-red-500 hover:bg-red-50 transition-colors"
+                                                >
+                                                    <LogOut className="w-4 h-4" />
+                                                    Sign Out
+                                                </button>
+                                            </>
+                                        ) : (
+                                            <div className="flex flex-col gap-2">
+                                                <Link href="/signin" onClick={() => setMobileMenuOpen(false)}>
+                                                    <Button variant="outline" className="w-full rounded-xl h-11 text-[14px] font-medium">Sign in</Button>
+                                                </Link>
+                                                <Link href="/signup" onClick={() => setMobileMenuOpen(false)}>
+                                                    <Button className="w-full bg-slate-900 text-white hover:bg-slate-700 rounded-xl h-11 text-[14px] font-medium">Sign up</Button>
+                                                </Link>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </SheetContent>
+                        </Sheet>
                     </div>
                 </div>
             </div>
