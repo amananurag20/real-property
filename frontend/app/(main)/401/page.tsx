@@ -13,10 +13,10 @@ export default function UnauthorizedPage() {
                 </p>
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                     <a
-                        href="/signin"
+                        href="/login"
                         className="px-8 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-all shadow-lg"
                     >
-                        Sign In
+                        Login
                     </a>
                     <a
                         href="/"

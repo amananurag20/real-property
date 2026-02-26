@@ -18,6 +18,7 @@ interface Property {
 
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { ChevronRight } from 'lucide-react';
 
 interface PropertySectionProps {
     title: string;
@@ -39,9 +40,7 @@ const PropertySection = ({ title, subtitle, properties, bgColor = 'bg-white', ci
                     <Button variant="ghost" className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 font-semibold flex items-center gap-2 group" asChild>
                         <Link href={city ? `/properties?city=${city}` : '/properties'}>
                             <span>View All</span>
-                            <svg className="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                            </svg>
+                            <ChevronRight className="w-5 h-5 transform group-hover:translate-x-1 transition-transform" />
                         </Link>
                     </Button>
                 </div>

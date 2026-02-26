@@ -53,7 +53,7 @@ export default function DashboardPage() {
         },
     ];
 
-    const filteredStats = stats.filter(stat => 
+    const filteredStats = stats.filter(stat =>
         !stat.permission || hasPermission(userRole, stat.permission)
     );
 
@@ -88,7 +88,7 @@ export default function DashboardPage() {
         },
     ];
 
-    const filteredActions = quickActions.filter(action => 
+    const filteredActions = quickActions.filter(action =>
         hasPermission(userRole, action.permission)
     );
 
@@ -118,7 +118,7 @@ export default function DashboardPage() {
             <div className="max-w-7xl mx-auto px-6 md:px-8">
                 {/* Header */}
                 <div className="flex items-center gap-4 mb-8">
-                    <Link 
+                    <Link
                         href="/"
                         className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-slate-900 text-white hover:bg-slate-800 transition-all shadow-lg hover:shadow-xl"
                     >
@@ -185,44 +185,6 @@ export default function DashboardPage() {
                                         </Link>
                                     );
                                 })}
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Recent Activity */}
-                    <div className="lg:col-span-1">
-                        <div className="bg-white rounded-[32px] shadow-[0_30px_70px_-45px_rgba(15,23,42,0.45)] border border-border/40 p-8">
-                            <div className="flex items-center gap-3 mb-6">
-                                <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-primary/10">
-                                    <Clock className="w-6 h-6 text-primary" />
-                                </div>
-                                <div>
-                                    <h2 className="text-xl font-bold text-foreground">Recent Activity</h2>
-                                    <p className="text-sm text-muted-foreground">Latest updates</p>
-                                </div>
-                            </div>
-
-                            <div className="space-y-4">
-                                {recentActivities.map((activity, index) => (
-                                    <div key={index} className="flex items-start gap-3 p-4 rounded-2xl bg-muted/20 border border-border/20">
-                                        <div className={`w-3 h-3 rounded-full mt-2 flex-shrink-0 ${
-                                            activity.type === 'success' ? 'bg-emerald-500' :
-                                            activity.type === 'info' ? 'bg-blue-500' : 'bg-gray-400'
-                                        }`} />
-                                        <div className="flex-1 min-w-0">
-                                            <p className="font-medium text-foreground text-sm mb-1">{activity.title}</p>
-                                            <p className="text-xs text-muted-foreground mb-2">{activity.description}</p>
-                                            <span className="text-xs text-muted-foreground">{activity.time}</span>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-
-                            <div className="mt-6 pt-6 border-t border-border">
-                                <Button variant="ghost" className="w-full text-sm">
-                                    <Bell className="w-4 h-4 mr-2" />
-                                    View All Notifications
-                                </Button>
                             </div>
                         </div>
                     </div>

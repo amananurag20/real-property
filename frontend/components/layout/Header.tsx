@@ -34,6 +34,7 @@ import {
     Link2,
     UserCircle,
     BarChart3,
+    Bell,
 } from 'lucide-react';
 
 interface NavItem {
@@ -167,8 +168,8 @@ export function Header() {
                             <Link
                                 href={getDashboardLink()}
                                 className={`px-3.5 py-1.5 text-[14px] font-medium transition-colors ${isActive('^/dashboard') || isActive('^/admin') || isActive('^/agent') || isActive('^/provider')
-                                        ? 'text-slate-900'
-                                        : 'text-gray-500 hover:text-gray-900'
+                                    ? 'text-slate-900'
+                                    : 'text-gray-500 hover:text-gray-900'
                                     }`}
                             >
                                 Dashboard
@@ -198,6 +199,14 @@ export function Header() {
                                     </Link>
                                 )}
                             </div>
+                        )}
+
+                        {/* Notification Bell */}
+                        {isAuthenticated && (
+                            <Link href="/notifications" className="relative p-2 text-gray-400 hover:text-gray-900 transition-colors ml-1 hidden md:block">
+                                <Bell className="w-5 h-5" />
+                                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+                            </Link>
                         )}
 
                         {/* User Avatar Dropdown */}
@@ -295,14 +304,14 @@ export function Header() {
                             </DropdownMenu>
                         ) : (
                             <div className="hidden md:flex items-center gap-2 ml-2">
-                                <Link href="/signin">
+                                <Link href="/login">
                                     <Button variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900 text-[14px] font-medium h-9 px-4">
-                                        Sign in
+                                        Login
                                     </Button>
                                 </Link>
-                                <Link href="/signup">
+                                <Link href="/register">
                                     <Button size="sm" className="bg-slate-900 text-white hover:bg-slate-700 text-[14px] font-medium h-9 px-5 rounded-full">
-                                        Sign up
+                                        Register
                                     </Button>
                                 </Link>
                             </div>
@@ -400,6 +409,10 @@ export function Header() {
                                                     <Settings className="w-4 h-4" />
                                                     Profile Settings
                                                 </Link>
+                                                <Link href="/notifications" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-3 py-3 rounded-xl text-[14px] font-medium text-gray-700 hover:bg-gray-100">
+                                                    <Bell className="w-4 h-4" />
+                                                    Notifications
+                                                </Link>
                                             </>
                                         )}
                                     </div>
@@ -427,11 +440,11 @@ export function Header() {
                                             </>
                                         ) : (
                                             <div className="flex flex-col gap-2">
-                                                <Link href="/signin" onClick={() => setMobileMenuOpen(false)}>
-                                                    <Button variant="outline" className="w-full rounded-xl h-11 text-[14px] font-medium">Sign in</Button>
+                                                <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
+                                                    <Button variant="outline" className="w-full rounded-xl h-11 text-[14px] font-medium">Login</Button>
                                                 </Link>
-                                                <Link href="/signup" onClick={() => setMobileMenuOpen(false)}>
-                                                    <Button className="w-full bg-slate-900 text-white hover:bg-slate-700 rounded-xl h-11 text-[14px] font-medium">Sign up</Button>
+                                                <Link href="/register" onClick={() => setMobileMenuOpen(false)}>
+                                                    <Button className="w-full bg-slate-900 text-white hover:bg-slate-700 rounded-xl h-11 text-[14px] font-medium">Register</Button>
                                                 </Link>
                                             </div>
                                         )}

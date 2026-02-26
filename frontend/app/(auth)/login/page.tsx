@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { Smartphone } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
@@ -10,20 +11,20 @@ import { Button } from '@/components/ui/button';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useMutation } from '@tanstack/react-query';
-import { signinPhoneSchema, otpVerificationSchema } from '@/constants/validations';
+import { loginPhoneSchema, otpVerificationSchema } from '@/constants/validations';
 import { authServiceApi } from '@/services/auth.service';
 import { extractData, extractError } from '@/utils/apiResponse';
 
 import { toast } from 'sonner';
 
-const SignInPage = () => {
+const LoginPage = () => {
     const [step, setStep] = useState<'phone' | 'otp'>('phone');
     const router = useRouter();
     const { login, isAuthenticated, isLoading: authLoading } = useAuth();
 
     // Form for Phone Step
     const phoneForm = useForm({
-        resolver: yupResolver(signinPhoneSchema),
+        resolver: yupResolver(loginPhoneSchema),
         defaultValues: { phone: '' }
     });
 
@@ -118,7 +119,7 @@ const SignInPage = () => {
                 <div className="w-full max-w-[400px] m-auto pt-16 lg:pt-0 pb-6">
                     <div className="mb-8 text-left">
                         <h2 className="text-3xl font-bold text-foreground tracking-tight">
-                            {step === 'phone' ? 'Sign in to your account' : 'Verify your number'}
+                            {step === 'phone' ? 'Login to your account' : 'Verify your number'}
                         </h2>
                         <p className="mt-2 text-base text-muted-foreground">
                             {step === 'phone' ? 'Enter your registered phone number.' : 'Enter the verification code we just sent your way.'}
@@ -167,9 +168,7 @@ const SignInPage = () => {
                                 <div className="p-4 bg-muted/30 rounded-2xl border border-border/40 flex items-center justify-between mb-6">
                                     <div className="flex items-center space-x-3">
                                         <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm border border-border/40">
-                                            <svg className="w-5 h-5 text-slate-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                                            </svg>
+                                            <Smartphone className="w-5 h-5 text-slate-900" />
                                         </div>
                                         <div>
                                             <p className="text-sm text-muted-foreground">Sent to</p>
@@ -208,7 +207,7 @@ const SignInPage = () => {
                                     {isLoadingOtp ? (
                                         <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />
                                     ) : null}
-                                    {isLoadingOtp ? 'Verifying...' : 'Secure Sign In'}
+                                    {isLoadingOtp ? 'Verifying...' : 'Secure Login'}
                                 </Button>
 
                                 <div className="text-center mt-4">
@@ -223,7 +222,7 @@ const SignInPage = () => {
                     <div className="mt-8 pt-6 border-t border-border/40 flex items-center justify-between">
                         <p className="text-sm text-muted-foreground">
                             New here?{' '}
-                            <Link href="/signup" className="text-slate-900 hover:text-slate-700 font-semibold hover:underline underline-offset-2">Create an account</Link>
+                            <Link href="/register" className="text-slate-900 hover:text-slate-700 font-semibold hover:underline underline-offset-2">Create an account</Link>
                         </p>
                     </div>
                 </div>
@@ -232,4 +231,4 @@ const SignInPage = () => {
     );
 };
 
-export default SignInPage;
+export default LoginPage;

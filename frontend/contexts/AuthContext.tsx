@@ -61,7 +61,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         document.cookie = 'token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;'; // Clear token cookie
 
         // It's safer to redirect via window.location here to fully force context/middleware reset
-        window.location.href = '/signin';
+        window.location.href = '/login';
     };
 
     return (

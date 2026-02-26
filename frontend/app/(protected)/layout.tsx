@@ -16,7 +16,7 @@ export default function ProtectedLayout({
 
     useEffect(() => {
         if (!isLoading && !isAuthenticated) {
-            router.push('/signin?callbackUrl=/dashboard');
+            router.push('/login?callbackUrl=/dashboard');
         }
     }, [isAuthenticated, isLoading, router]);
 

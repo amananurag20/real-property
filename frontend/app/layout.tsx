@@ -36,10 +36,6 @@ export default function RootLayout({
         <AuthProvider>
           <QueryProvider>
             <TooltipProvider>
-                  <ReactQueryDevtools
-                          position="top"
-                initialIsOpen={false}
-              />  
               {children}
               <Chatbot />
               <Toaster position="top-right" />

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import { MessageCircle, X, Mail, Send } from 'lucide-react';
 
 interface Message {
     id: number;
@@ -134,14 +135,12 @@ const Chatbot = () => {
         <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
             {/* Chat Window */}
             {isOpen && (
-                <div className="mb-4 w-96 h-[520px] bg-background rounded-xl shadow-lg border border-border flex flex-col overflow-hidden">
+                <div className="mb-4 w-96 h-[520px] bg-white rounded-[32px] shadow-[0_30px_70px_-45px_rgba(15,23,42,0.45)] border border-border/40 flex flex-col overflow-hidden">
                     {/* Header */}
-                    <div className="bg-primary p-4 text-primary-foreground flex items-center justify-between border-b border-primary-foreground/10">
+                    <div className="bg-slate-900 p-4 text-white flex items-center justify-between border-b border-slate-800">
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-primary-foreground/10 rounded-lg flex items-center justify-center">
-                                <svg className="w-5 h-5 text-primary-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-                                </svg>
+                            <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center">
+                                <MessageCircle className="w-5 h-5 text-white" />
                             </div>
                             <div>
                                 <h3 className="font-semibold tracking-tight leading-none mb-1">EstateIndia Assistant</h3>
@@ -149,11 +148,9 @@ const Chatbot = () => {
                         </div>
                         <button
                             onClick={() => setIsOpen(false)}
-                            className="hover:bg-primary-foreground/10 p-2 rounded-md transition-colors text-primary-foreground/80 hover:text-primary-foreground"
+                            className="hover:bg-white/10 p-2 rounded-xl transition-colors text-white/80 hover:text-white"
                         >
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                            </svg>
+                            <X className="w-5 h-5" />
                         </button>
                     </div>
 
@@ -166,12 +163,12 @@ const Chatbot = () => {
                             >
                                 <div
                                     className={`max-w-[85%] rounded-2xl px-4 py-3 ${message.isBot
-                                        ? 'bg-card text-foreground rounded-tl-sm shadow-sm border border-border'
-                                        : 'bg-primary text-primary-foreground rounded-br-sm shadow-sm'
+                                        ? 'bg-muted/30 text-foreground rounded-tl-sm shadow-sm border border-border/50'
+                                        : 'bg-slate-900 text-white rounded-br-sm shadow-sm'
                                         }`}
                                 >
                                     <p className="text-sm tracking-tight whitespace-pre-line leading-relaxed">{message.text}</p>
-                                    <p className={`text-[10px] uppercase font-semibold mt-1.5 ${message.isBot ? 'text-muted-foreground' : 'text-primary-foreground/70'}`}>
+                                    <p className={`text-[10px] uppercase font-semibold mt-1.5 ${message.isBot ? 'text-muted-foreground' : 'text-white/70'}`}>
                                         {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                     </p>
                                 </div>
@@ -187,7 +184,7 @@ const Chatbot = () => {
                                         <button
                                             key={q.id}
                                             onClick={() => handleQuickQuestion(q.id, q.question, q.answer)}
-                                            className="text-left text-sm px-4 py-3 bg-card hover:bg-muted border border-border rounded-xl transition-all duration-200 text-foreground shadow-xs hover:border-border"
+                                            className="text-left text-sm px-4 py-3 bg-white hover:bg-muted/30 border border-border/50 rounded-xl transition-all duration-200 text-foreground shadow-xs hover:border-slate-900/20"
                                         >
                                             <span className="opacity-70 mr-2">💡</span> {q.question}
                                         </button>
@@ -205,7 +202,7 @@ const Chatbot = () => {
                                         <button
                                             key={q.id}
                                             onClick={() => handleQuickQuestion(q.id, q.question, q.answer)}
-                                            className="text-left text-xs px-3 py-2.5 bg-muted/50 hover:bg-muted border border-border rounded-lg transition-colors text-foreground font-medium flex items-center gap-2"
+                                            className="text-left text-xs px-3 py-2.5 bg-white hover:bg-muted/30 border border-border/50 rounded-lg transition-colors text-foreground font-medium flex items-center gap-2"
                                         >
                                             <span className="text-muted-foreground">→</span> {q.question}
                                         </button>
@@ -227,7 +224,7 @@ const Chatbot = () => {
                                         placeholder="Your Name"
                                         value={contactName}
                                         onChange={(e) => setContactName(e.target.value)}
-                                        className="w-full px-3 py-2.5 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm text-foreground shadow-xs"
+                                        className="w-full px-3 py-2.5 bg-white border border-border/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent text-sm text-foreground shadow-xs"
                                         required
                                     />
                                 </div>
@@ -237,7 +234,7 @@ const Chatbot = () => {
                                         placeholder="Your Email"
                                         value={contactEmail}
                                         onChange={(e) => setContactEmail(e.target.value)}
-                                        className="w-full px-3 py-2.5 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm text-foreground shadow-xs"
+                                        className="w-full px-3 py-2.5 bg-white border border-border/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent text-sm text-foreground shadow-xs"
                                         required
                                     />
                                 </div>
@@ -246,7 +243,7 @@ const Chatbot = () => {
                                         placeholder="Describe your query..."
                                         value={contactMessage}
                                         onChange={(e) => setContactMessage(e.target.value)}
-                                        className="w-full px-3 py-2.5 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm text-foreground resize-none shadow-xs"
+                                        className="w-full px-3 py-2.5 bg-white border border-border/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent text-sm text-foreground resize-none shadow-xs"
                                         rows={3}
                                         required
                                     />
@@ -255,13 +252,13 @@ const Chatbot = () => {
                                     <button
                                         type="button"
                                         onClick={() => setShowContactForm(false)}
-                                        className="flex-1 px-4 py-2 border border-border rounded-lg hover:bg-muted text-sm font-medium text-foreground transition-colors h-10"
+                                        className="flex-1 px-4 py-2 border border-border/50 rounded-xl hover:bg-muted/30 text-sm font-medium text-foreground transition-colors h-10"
                                     >
                                         Cancel
                                     </button>
                                     <button
                                         type="submit"
-                                        className="flex-1 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 text-sm font-medium transition-colors shadow-sm h-10"
+                                        className="flex-1 px-4 py-2 bg-slate-900 text-white rounded-xl hover:bg-slate-800 text-sm font-medium transition-colors shadow-sm h-10"
                                     >
                                         Submit
                                     </button>
@@ -275,11 +272,9 @@ const Chatbot = () => {
                                 <div className="px-4 py-3 border-t border-border bg-muted/30">
                                     <button
                                         onClick={() => setShowContactForm(true)}
-                                        className="w-full py-2.5 bg-secondary hover:bg-secondary/80 text-secondary-foreground border border-border rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 shadow-xs"
+                                        className="w-full py-2.5 bg-muted/30 hover:bg-muted/50 text-foreground border border-border/50 rounded-xl text-sm font-medium transition-colors flex items-center justify-center gap-2 shadow-xs"
                                     >
-                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                        </svg>
+                                        <Mail className="w-4 h-4" />
                                         Contact Support Team
                                     </button>
                                 </div>
@@ -293,15 +288,13 @@ const Chatbot = () => {
                                         value={inputValue}
                                         onChange={(e) => setInputValue(e.target.value)}
                                         placeholder="Type your message..."
-                                        className="flex-1 px-4 py-2.5 bg-background border border-border rounded-lg text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent shadow-xs"
+                                        className="flex-1 px-4 py-2.5 bg-white border border-border/50 rounded-xl text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent shadow-xs"
                                     />
                                     <button
                                         type="submit"
-                                        className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors shadow-sm flex items-center justify-center shrink-0"
+                                        className="px-4 py-2 bg-slate-900 text-white rounded-xl hover:bg-slate-800 transition-colors shadow-sm flex items-center justify-center shrink-0"
                                     >
-                                        <svg className="w-5 h-5 -ml-1 text-primary-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                                        </svg>
+                                        <Send className="w-5 h-5 -ml-1 text-white" />
                                     </button>
                                 </form>
                             </div>
@@ -314,11 +307,9 @@ const Chatbot = () => {
             {!isOpen && (
                 <button
                     onClick={() => setIsOpen(true)}
-                    className="w-14 h-14 bg-primary text-primary-foreground rounded-full shadow-lg hover:shadow-xl hover:bg-primary/90 hover:scale-105 transition-all duration-300 flex items-center justify-center group border border-primary-foreground/10"
+                    className="w-14 h-14 bg-slate-900 text-white rounded-full shadow-lg hover:shadow-xl hover:bg-slate-800 hover:scale-105 transition-all duration-300 flex items-center justify-center group border border-white/10"
                 >
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                    </svg>
+                    <MessageCircle className="w-6 h-6" />
                     {/* Notification Badge */}
                     <span className="absolute -top-1 -right-1 w-4 h-4 bg-destructive text-destructive-foreground text-[10px] rounded-full flex items-center justify-center font-bold shadow-sm border border-background">
                         1

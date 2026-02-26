@@ -34,19 +34,19 @@ export const baseValidations = {
  * Authentication Form Schemas
  */
 
-// Sign In - Step 1
-export const signinPhoneSchema = yup.object({
+// Login - Step 1
+export const loginPhoneSchema = yup.object({
     phone: baseValidations.phone,
 }).required();
 
-// Sign In/Up - Step 2 (Shared OTP Verification)
+// Login/Register - Step 2 (Shared OTP Verification)
 export const otpVerificationSchema = yup.object({
     phone: baseValidations.phone,
     otp: baseValidations.otp,
 }).required();
 
-// Sign Up - Step 1
-export const signupDetailsSchema = yup.object({
+// Register - Step 1
+export const registerDetailsSchema = yup.object({
     phone: baseValidations.phone,
     name: baseValidations.name,
     email: baseValidations.email,
