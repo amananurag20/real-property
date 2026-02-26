@@ -8,6 +8,8 @@ import AgentCard from '@/components/AgentCard';
 import ServiceCard from '@/components/ServiceCard';
 import { allProperties } from '@/data/properties';
 import { allRequests } from '@/data/requests';
+import { allAgents } from '@/data/agents';
+import { allServices } from '@/data/services';
 
 export default function HomePage() {
   return (
@@ -187,38 +189,7 @@ export default function HomePage() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
-            {[
-              {
-                id: 1,
-                name: "Rajesh Kumar",
-                agency: "Premium Properties",
-                experience: "8 years",
-                specialization: "Luxury Homes",
-                serviceAreas: "South Mumbai",
-                verified: true,
-                image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face"
-              },
-              {
-                id: 2,
-                name: "Priya Sharma",
-                agency: "Urban Realty",
-                experience: "5 years",
-                specialization: "Commercial Properties",
-                serviceAreas: "Bangalore Central",
-                verified: true,
-                image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face"
-              },
-              {
-                id: 3,
-                name: "Amit Patel",
-                agency: "Metro Homes",
-                experience: "12 years",
-                specialization: "Investment Properties",
-                serviceAreas: "Gurgaon & Noida",
-                verified: true,
-                image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
-              }
-            ].map((agent) => (
+            {allAgents.slice(0, 3).map((agent) => (
               <AgentCard
                 key={agent.id}
                 id={agent.id}
@@ -253,11 +224,7 @@ export default function HomePage() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
-            {[
-              { id: 1, name: 'Tax Experts', type: 'CA', location: 'Mumbai', experience: 15, verified: true, phone: '+91 98765 43210' },
-              { id: 2, name: 'Legal Solutions', type: 'Lawyer', location: 'Delhi', experience: 12, verified: true, phone: '+91 98765 43211' },
-              { id: 3, name: 'Corporate CS', type: 'Company Secretary', location: 'Bangalore', experience: 8, verified: true, phone: '+91 98765 43212' },
-              ].map((service) => (
+            {allServices.slice(0, 3).map((service) => (
               <ServiceCard
                 key={service.id}
                 id={service.id}

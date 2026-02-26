@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import AgentCard from '@/components/AgentCard';
+import { allAgents } from '@/data/agents';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -10,18 +11,9 @@ export default function AgentsPage() {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCity, setSelectedCity] = useState('All');
 
-    const agents = [
-        { id: 1, name: 'Rajesh Kumar', agency: 'Premium Properties', experience: '8 years', specialization: 'Luxury Homes', serviceAreas: 'South Mumbai', verified: true, image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face' },
-        { id: 2, name: 'Priya Sharma', agency: 'Urban Realty', experience: '5 years', specialization: 'Commercial Properties', serviceAreas: 'Bangalore Central', verified: true, image: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face' },
-        { id: 3, name: 'Amit Patel', agency: 'Metro Homes', experience: '12 years', specialization: 'Investment Properties', serviceAreas: 'Gurgaon & Noida', verified: true, image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face' },
-        { id: 4, name: 'Sneha Gupta', agency: 'Dream Realty', experience: '10 years', specialization: 'Residential', serviceAreas: 'Pune', verified: true, image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face' },
-        { id: 5, name: 'Vikram Singh', agency: 'Elite Properties', experience: '7 years', specialization: 'Luxury Villas', serviceAreas: 'Delhi', verified: true, image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face' },
-        { id: 6, name: 'Neha Verma', agency: 'City Homes', experience: '6 years', specialization: 'Apartments', serviceAreas: 'Mumbai', verified: false, image: 'https://images.unsplash.com/photo-1517841905240-74f5b1b4e5f5?w=150&h=150&fit=crop&crop=face' },
-    ];
-
     const cities = ['All', 'Mumbai', 'Bangalore', 'Delhi', 'Pune'];
 
-    const filteredAgents = agents.filter(agent => {
+    const filteredAgents = allAgents.filter(agent => {
         const matchesSearch = agent.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
             agent.agency.toLowerCase().includes(searchTerm.toLowerCase()) ||
             agent.serviceAreas.toLowerCase().includes(searchTerm.toLowerCase());

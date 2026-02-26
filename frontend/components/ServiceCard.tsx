@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { MapPin, Phone, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { getServiceImage } from '@/data/services';
 
 interface ServiceCardProps {
   id: number;
@@ -15,17 +16,6 @@ interface ServiceCardProps {
   image?: string;
 }
 
-const getServiceImage = (type: string): string => {
-  const images: { [key: string]: string } = {
-    'Lawyer': 'https://images.unsplash.com/photo-1528740561666-dc2479dc08ab?w=600&h=400&fit=crop',
-    'CA': 'https://images.unsplash.com/photo-1545239351-1141bd82e8a6?w=600&h=400&fit=crop',
-    'Notary': 'https://images.unsplash.com/photo-1556740749-887f6717d7e4?w=600&h=400&fit=crop',
-    'Loan Advisor': 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&h=400&fit=crop',
-    'Company Secretary': 'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?w=600&h=400&fit=crop',
-  };
-  return images[type] || 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=400&fit=crop';
-};
-
 const ServiceCard = ({ 
   id, 
   name, 
@@ -36,7 +26,7 @@ const ServiceCard = ({
   phone,
   image
 }: ServiceCardProps) => {
-  const serviceImage = image || getServiceImage(type);
+  const serviceImage = image || getServiceImage(type as any);
 
   return (
     <Link

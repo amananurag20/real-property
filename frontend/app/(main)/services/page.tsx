@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import ServiceCard from '@/components/ServiceCard';
+import { allServices } from '@/data/services';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -10,17 +11,9 @@ export default function ServicesPage() {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedType, setSelectedType] = useState('All');
 
-    const services = [
-        { id: 1, name: 'Legal Solutions', type: 'Lawyer', location: 'Mumbai', experience: 15, verified: true, phone: '+91 98765 43210' },
-        { id: 2, name: 'Tax Experts CA', type: 'CA', location: 'Delhi', experience: 12, verified: true, phone: '+91 98765 43211' },
-        { id: 3, name: 'Notary Plus', type: 'Notary', location: 'Bangalore', experience: 8, verified: false, phone: '+91 98765 43212' },
-        { id: 4, name: 'Loan Assist', type: 'Loan Advisor', location: 'Pune', experience: 10, verified: true, phone: '+91 98765 43213' },
-        { id: 5, name: 'Corporate CS', type: 'Company Secretary', location: 'Chennai', experience: 6, verified: true, phone: '+91 98765 43214' },
-    ];
-
     const serviceTypes = ['All', 'Lawyer', 'CA', 'Notary', 'Loan Advisor', 'Company Secretary'];
 
-    const filteredServices = services.filter(service => {
+    const filteredServices = allServices.filter(service => {
         const matchesSearch = service.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
             service.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
             service.type.toLowerCase().includes(searchTerm.toLowerCase());
