@@ -21,14 +21,14 @@ import { toast } from 'sonner';
 type UserType = 'owner' | 'broker' | 'tenant' | 'developer' | 'service_provider' | '';
 
 const SignUpPage = () => {
-    const [step, setStep] = useState<'type' | 'details' | 'otp'>('type');
+    const [step, setStep] = useState<'details' | 'otp'>('details');
     const router = useRouter();
     const { login, isAuthenticated, isLoading: authLoading } = useAuth();
 
     // Form for Details Step
     const detailsForm = useForm({
         resolver: yupResolver(signupDetailsSchema),
-        defaultValues: { phone: '', name: '', email: '', userType: '', agreeTerms: false }
+        defaultValues: { phone: '', name: '', email: '', agreeTerms: false }
     });
 
     // Form for OTP Step
@@ -128,20 +128,11 @@ const SignUpPage = () => {
     });
 
     const handleDetailsSubmit = detailsForm.handleSubmit((data) => {
-        const roleMap: Record<UserType, Role> = {
-            'owner': Role.OWNER,
-            'tenant': Role.TENANT,
-            'broker': Role.AGENT,
-            'developer': Role.SERVICE_PROVIDER,
-            'service_provider': Role.SERVICE_PROVIDER,
-            '': Role.USER
-        };
-
         registerMutation.mutate({
             phone: data.phone,
             name: data.name,
             email: data.email,
-            role: roleMap[data.userType as UserType]
+            role: Role.USER // Default all new users to USER role
         });
     });
 
@@ -153,7 +144,7 @@ const SignUpPage = () => {
     const isLoadingVerify = verifyOtpMutation.isPending;
 
     return (
-        <div className="min-h-screen flex flex-col lg:flex-row bg-white font-sans">
+        <div className="min-h-screen flex flex-col lg:flex-row bg-muted/30 font-sans">
             {/* Left Image Section */}
             <div className="hidden lg:flex lg:w-5/12 xl:w-1/2 relative bg-gray-900 overflow-hidden lg:sticky lg:top-0 lg:h-screen shrink-0 border-r border-gray-800">
                 <div className="absolute inset-0 z-0 h-full w-full">
@@ -165,13 +156,8 @@ const SignUpPage = () => {
                     <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent" />
                 </div>
                 <div className="relative z-10 flex flex-col justify-between p-12 w-full h-full">
-                    <Link href="/" className="inline-flex items-center space-x-3 text-white hover:opacity-80 transition-opacity w-max">
-                        <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg">
-                            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                            </svg>
-                        </div>
-                        <span className="text-2xl font-bold tracking-tight">EstateIndia</span>
+                    <Link href="/" className="text-white hover:opacity-80 transition-opacity w-max">
+                        <span className="text-2xl font-bold text-white tracking-tight font-serif italic">EstateIndia</span>
                     </Link>
 
                     <div className="mb-12">
@@ -189,89 +175,34 @@ const SignUpPage = () => {
             <div className="w-full lg:w-7/12 xl:w-1/2 flex flex-col p-4 sm:p-8 xl:p-12 relative min-h-screen lg:min-h-0 lg:h-screen lg:overflow-y-auto">
                 {/* Mobile Logo */}
                 <div className="lg:hidden absolute top-8 left-6 sm:left-12">
-                    <Link href="/" className="inline-flex items-center space-x-3">
-                        <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center shadow-md">
-                            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                            </svg>
-                        </div>
-                        <span className="text-xl font-bold text-gray-900 tracking-tight">EstateIndia</span>
+                    <Link href="/">
+                        <span className="text-xl font-bold text-slate-900 tracking-tight font-serif italic">EstateIndia</span>
                     </Link>
                 </div>
 
                 <div className="w-full max-w-[480px] m-auto pt-16 lg:pt-0 pb-6">
-                    <div className="mb-6 text-left">
-                        <h2 className="text-3xl font-bold text-gray-900 tracking-tight">
-                            {step === 'type' ? 'Create an account' : step === 'details' ? 'Account details' : 'Verify your number'}
+                    <div className="mb-8 text-left">
+                        <h2 className="text-3xl font-bold text-foreground tracking-tight">
+                            {step === 'details' ? 'Create your account' : 'Verify your number'}
                         </h2>
-                        <p className="mt-2 text-base text-gray-500">
-                            {step === 'type' ? 'Select your role to get started with EstateIndia.' : step === 'details' ? 'Tell us a bit about yourself so we can personalize your experience.' : 'Enter the verification code we just sent your way.'}
+                        <p className="mt-2 text-base text-muted-foreground">
+                            {step === 'details' ? 'Tell us a bit about yourself to get started with EstateIndia.' : 'Enter the verification code we just sent your way.'}
                         </p>
                     </div>
 
-                    {step === 'type' && (
-                        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                {userTypes.map((type) => (
-                                    <Button
-                                        key={type.id}
-                                        variant="outline"
-                                        type="button"
-                                        onClick={() => {
-                                            detailsForm.setValue('userType', type.id, { shouldValidate: true });
-                                            setStep('details');
-                                        }}
-                                        className="h-auto p-4 flex flex-col items-start text-left space-y-3 hover:border-blue-600 hover:bg-blue-50/50 transition-all duration-300 group rounded-2xl border-gray-200"
-                                    >
-                                        <div className="p-2.5 bg-gray-50 rounded-xl text-gray-500 group-hover:bg-blue-600 group-hover:text-white group-hover:shadow-md transition-all duration-300">
-                                            {type.icon}
-                                        </div>
-                                        <div>
-                                            <h3 className="font-semibold text-gray-900 group-hover:text-blue-700 transition-colors text-sm">
-                                                {type.title}
-                                            </h3>
-                                            <p className="text-xs text-gray-500 mt-1 leading-relaxed font-normal whitespace-normal">{type.description}</p>
-                                        </div>
-                                    </Button>
-                                ))}
-                            </div>
-                        </div>
-                    )}
 
                     {step === 'details' && (
-                        <div className="animate-in fade-in slide-in-from-right-4 duration-500">
-                            <form onSubmit={handleDetailsSubmit} className="space-y-5">
-                                <input type="hidden" {...detailsForm.register('userType')} />
+                        <div className="bg-white rounded-[32px] shadow-[0_30px_70px_-45px_rgba(15,23,42,0.45)] border border-border/40 p-8">
+                            <form onSubmit={handleDetailsSubmit} className="space-y-6">
 
-                                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-2xl border border-gray-100">
-                                    <div className="flex items-center gap-3">
-                                        <div className="p-2 bg-white shadow-sm border border-gray-100 rounded-xl text-blue-600">
-                                            {userTypes.find(t => t.id === detailsForm.watch('userType'))?.icon}
-                                        </div>
-                                        <div>
-                                            <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Signing up as</p>
-                                            <p className="font-semibold text-gray-900 text-sm">{userTypes.find(t => t.id === detailsForm.watch('userType'))?.title}</p>
-                                        </div>
-                                    </div>
-                                    <Button
-                                        variant="ghost"
-                                        type="button"
-                                        size="sm"
-                                        onClick={() => setStep('type')}
-                                        className="text-gray-500 hover:text-gray-900 hover:bg-gray-200/50 rounded-xl h-8"
-                                    >
-                                        Change
-                                    </Button>
-                                </div>
-
-                                <div className="space-y-4">
-                                    <div className="space-y-2">
-                                        <Label htmlFor="name" className="text-gray-700">Full Name</Label>
+                                <div className="space-y-6">
+                                    <div className="space-y-3">
+                                        <Label htmlFor="name" className="text-sm font-medium text-foreground">Full Name</Label>
                                         <Input
                                             type="text"
                                             id="name"
                                             placeholder="e.g. John Doe"
-                                            className={`h-12 rounded-xl border-gray-200 focus:ring-blue-600 focus:border-blue-600 ${detailsForm.formState.errors.name ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : ''}`}
+                                            className={`h-12 rounded-xl border-border/50 focus-visible:ring-primary ${detailsForm.formState.errors.name ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
                                             {...detailsForm.register('name')}
                                         />
                                         {detailsForm.formState.errors.name && (
@@ -279,13 +210,13 @@ const SignUpPage = () => {
                                         )}
                                     </div>
 
-                                    <div className="space-y-2">
-                                        <Label htmlFor="email" className="text-gray-700">Email Address</Label>
+                                    <div className="space-y-3">
+                                        <Label htmlFor="email" className="text-sm font-medium text-foreground">Email Address</Label>
                                         <Input
                                             type="email"
                                             id="email"
                                             placeholder="you@example.com"
-                                            className={`h-12 rounded-xl border-gray-200 focus:ring-blue-600 focus:border-blue-600 ${detailsForm.formState.errors.email ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : ''}`}
+                                            className={`h-12 rounded-xl border-border/50 focus-visible:ring-primary ${detailsForm.formState.errors.email ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
                                             {...detailsForm.register('email')}
                                         />
                                         {detailsForm.formState.errors.email && (
@@ -293,17 +224,17 @@ const SignUpPage = () => {
                                         )}
                                     </div>
 
-                                    <div className="space-y-2">
-                                        <Label htmlFor="phone" className="text-gray-700">Phone Number</Label>
-                                        <div className="relative">
-                                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-500 font-medium">
+                                    <div className="space-y-3">
+                                        <Label htmlFor="phone" className="text-sm font-medium text-foreground">Phone Number</Label>
+                                        <div className="relative border border-border/50 rounded-xl overflow-hidden focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-all">
+                                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted-foreground font-medium border-r border-border/50 pr-3 bg-muted/30">
                                                 +91
                                             </div>
                                             <Input
                                                 type="tel"
                                                 id="phone"
                                                 placeholder="98765 43210"
-                                                className={`h-12 pl-14 rounded-xl border-gray-200 focus:ring-blue-600 focus:border-blue-600 ${detailsForm.formState.errors.phone ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : ''}`}
+                                                className={`h-12 border-0 pl-[72px] rounded-none focus-visible:ring-0 ${detailsForm.formState.errors.phone ? 'bg-red-50/50' : ''}`}
                                                 maxLength={10}
                                                 {...detailsForm.register('phone')}
                                             />
@@ -314,21 +245,21 @@ const SignUpPage = () => {
                                     </div>
                                 </div>
 
-                                <div className="space-y-2 mt-4 pt-2">
+                                <div className="space-y-3 pt-2">
                                     <div className="flex items-start">
                                         <Checkbox
                                             id="agreeTerms"
-                                            className="mt-1 mr-3 flex-shrink-0 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
+                                            className="mt-1 mr-3 flex-shrink-0 data-[state=checked]:bg-slate-900 data-[state=checked]:border-slate-900"
                                             checked={detailsForm.watch('agreeTerms')}
                                             onCheckedChange={(checked) => {
                                                 detailsForm.setValue('agreeTerms', checked as boolean, { shouldValidate: true });
                                             }}
                                         />
-                                        <Label htmlFor="agreeTerms" className="font-normal text-sm text-gray-600 leading-relaxed max-w-full inline-block">
+                                        <Label htmlFor="agreeTerms" className="font-normal text-sm text-muted-foreground leading-relaxed max-w-full inline-block">
                                             By creating an account, I agree to the{' '}
-                                            <Link href="#" className="text-blue-600 hover:text-blue-700 font-medium hover:underline underline-offset-2">Terms of Service</Link>{' '}
+                                            <Link href="#" className="text-slate-900 hover:text-slate-700 font-medium hover:underline underline-offset-2">Terms of Service</Link>{' '}
                                             and{' '}
-                                            <Link href="#" className="text-blue-600 hover:text-blue-700 font-medium hover:underline underline-offset-2">Privacy Policy</Link>
+                                            <Link href="#" className="text-slate-900 hover:text-slate-700 font-medium hover:underline underline-offset-2">Privacy Policy</Link>
                                         </Label>
                                     </div>
                                     {detailsForm.formState.errors.agreeTerms && (
@@ -338,9 +269,12 @@ const SignUpPage = () => {
 
                                 <Button
                                     type="submit"
-                                    className="w-full h-12 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium text-base shadow-lg shadow-blue-600/20 transition-all active:scale-[0.98]"
+                                    className="w-full h-12 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-medium text-base shadow-lg transition-all active:scale-[0.98]"
                                     disabled={isLoadingRegister}
                                 >
+                                    {isLoadingRegister ? (
+                                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />
+                                    ) : null}
                                     {isLoadingRegister ? 'Sending Code...' : 'Continue'}
                                 </Button>
                             </form>
@@ -348,24 +282,24 @@ const SignUpPage = () => {
                     )}
 
                     {step === 'otp' && (
-                        <div className="animate-in fade-in slide-in-from-right-4 duration-500">
-                            <form onSubmit={handleOtpVerify} className="space-y-5">
-                                <div className="p-3.5 bg-blue-50/50 rounded-2xl border border-blue-100 flex items-center justify-between mb-6">
+                        <div className="bg-white rounded-[32px] shadow-[0_30px_70px_-45px_rgba(15,23,42,0.45)] border border-border/40 p-8">
+                            <form onSubmit={handleOtpVerify} className="space-y-6">
+                                <div className="p-4 bg-muted/30 rounded-2xl border border-border/40 flex items-center justify-between mb-6">
                                     <div className="flex items-center space-x-3">
-                                        <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm border border-blue-100">
-                                            <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm border border-border/40">
+                                            <svg className="w-5 h-5 text-slate-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
                                             </svg>
                                         </div>
                                         <div>
-                                            <p className="text-sm text-gray-500">Sent to</p>
-                                            <p className="font-semibold text-gray-900">+91 {otpForm.getValues('phone')}</p>
+                                            <p className="text-sm text-muted-foreground">Sent to</p>
+                                            <p className="font-semibold text-foreground">+91 {otpForm.getValues('phone')}</p>
                                         </div>
                                     </div>
                                     <button
                                         type="button"
                                         onClick={() => setStep('details')}
-                                        className="text-sm text-blue-600 hover:text-blue-700 font-medium hover:underline underline-offset-2 px-2"
+                                        className="text-sm text-slate-900 hover:text-slate-700 font-medium hover:underline underline-offset-2 px-2"
                                     >
                                         Edit
                                     </button>
@@ -377,7 +311,7 @@ const SignUpPage = () => {
                                         type="text"
                                         id="otp"
                                         placeholder="••••"
-                                        className={`text-center text-4xl tracking-[0.5em] font-bold h-16 rounded-xl border-gray-200 focus:ring-blue-600 focus:border-blue-600 ${otpForm.formState.errors.otp ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : ''}`}
+                                        className={`text-center text-4xl tracking-[0.5em] font-bold h-16 rounded-xl border-border/50 focus-visible:ring-primary ${otpForm.formState.errors.otp ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
                                         maxLength={4}
                                         {...otpForm.register('otp')}
                                     />
@@ -388,25 +322,28 @@ const SignUpPage = () => {
 
                                 <Button
                                     type="submit"
-                                    className="w-full h-12 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium text-base shadow-lg shadow-blue-600/20 transition-all active:scale-[0.98]"
+                                    className="w-full h-12 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-medium text-base shadow-lg transition-all active:scale-[0.98]"
                                     disabled={isLoadingVerify}
                                 >
+                                    {isLoadingVerify ? (
+                                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />
+                                    ) : null}
                                     {isLoadingVerify ? 'Verifying...' : 'Complete Registration'}
                                 </Button>
 
                                 <div className="text-center mt-4">
-                                    <button type="button" className="text-sm text-gray-500 hover:text-blue-600 font-medium transition-colors">
-                                        Didn't receive the code? <span className="text-blue-600 font-semibold">Resend OTP</span>
+                                    <button type="button" className="text-sm text-muted-foreground hover:text-slate-900 font-medium transition-colors">
+                                        Didn't receive the code? <span className="text-slate-900 font-semibold">Resend OTP</span>
                                     </button>
                                 </div>
                             </form>
                         </div>
                     )}
 
-                    <div className="mt-6 pt-6 border-t border-gray-100 flex items-center justify-between">
-                        <p className="text-sm text-gray-600">
+                    <div className="mt-8 pt-6 border-t border-border/40 flex items-center justify-between">
+                        <p className="text-sm text-muted-foreground">
                             Already have an account?{' '}
-                            <Link href="/signin" className="text-blue-600 hover:text-blue-700 font-semibold hover:underline underline-offset-2">Sign in here</Link>
+                            <Link href="/signin" className="text-slate-900 hover:text-slate-700 font-semibold hover:underline underline-offset-2">Sign in here</Link>
                         </p>
                     </div>
                 </div>
