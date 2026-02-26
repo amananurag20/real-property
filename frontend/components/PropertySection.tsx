@@ -12,6 +12,8 @@ interface Property {
     address: string;
     status: string;
     featured: boolean;
+    description: string;
+    propertyType: string;
 }
 
 import Link from 'next/link';

@@ -192,12 +192,6 @@ export function Sidebar({ className }: { className?: string }) {
                 icon: <FileSpreadsheet className="w-5 h-5" />,
                 permission: PERMISSIONS.EXPORT_DATA,
             },
-            {
-                label: 'Activity Logs',
-                href: '/admin/logs',
-                icon: <Database className="w-5 h-5" />,
-                permission: PERMISSIONS.VIEW_ADMIN_LOGS,
-            },
         ];
 
         // Filter items based on permissions

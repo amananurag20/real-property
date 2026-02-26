@@ -145,7 +145,6 @@ const Chatbot = () => {
                             </div>
                             <div>
                                 <h3 className="font-semibold tracking-tight leading-none mb-1">EstateIndia Assistant</h3>
-                                <p className="text-xs text-primary-foreground/80 font-medium tracking-wide">Online • Always here to help</p>
                             </div>
                         </div>
                         <button

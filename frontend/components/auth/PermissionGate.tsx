@@ -2,6 +2,7 @@
 
 import React, { ReactNode } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { hasPermission } from '@/constants/permissions';
 
 interface PermissionGateProps {
   children: ReactNode;
@@ -16,19 +17,22 @@ export const PermissionGate: React.FC<PermissionGateProps> = ({
   requireAll = false,
   fallback,
 }) => {
-  const { isLoading, hasPermission, hasAnyPermission, hasAllPermissions } = useAuth();
+  const { isLoading, user } = useAuth();
 
   if (isLoading) {
     return fallback || null;
   }
 
+  const role = user?.role || 'CLIENT'; // Default fallback
   const perms = Array.isArray(permissions) ? permissions : [permissions];
 
   let hasAccess = false;
   if (Array.isArray(permissions) && permissions.length > 0) {
-    hasAccess = requireAll ? hasAllPermissions(perms) : hasAnyPermission(perms);
+    hasAccess = requireAll
+      ? perms.every(p => hasPermission(role, p))
+      : perms.some(p => hasPermission(role, p));
   } else if (typeof permissions === 'string') {
-    hasAccess = hasPermission(permissions);
+    hasAccess = hasPermission(role, permissions);
   }
 
   if (!hasAccess) {

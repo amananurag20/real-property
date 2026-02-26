@@ -21,7 +21,7 @@ export default function HomePage() {
             {/* Left Content */}
             <div className="space-y-8">
               <div className="space-y-6">
-          
+
                 <h1 className="text-5xl md:text-[4.25rem] font-semibold text-foreground leading-[1.05] tracking-tight">
                   Find a place you will call home
                 </h1>
@@ -31,10 +31,12 @@ export default function HomePage() {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4 sm:items-center">
-                <Button className="h-12 px-8 rounded-full text-sm font-semibold shadow-sm">
-                  Post Property
-                </Button>
-                <Link href="/properties" className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="/dashboard/properties/new">
+                  <Button className="h-12 px-8 rounded-full text-sm font-semibold shadow-sm">
+                    Post Property
+                  </Button>
+                </Link>
+                <Link href="/agents" className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors">
                   Find Agent
                 </Link>
               </div>
@@ -242,9 +244,11 @@ export default function HomePage() {
             <p className="text-sm text-muted-foreground max-w-2xl">
               Need help assembling the right team for your transaction? Tell us what you&apos;re working on and we&apos;ll match you with the right experts within 24 hours.
             </p>
-            <Button className="rounded-full bg-slate-900 px-8 py-6 text-sm font-semibold text-white shadow-md transition-colors hover:bg-slate-800">
-              Meet our services concierge
-            </Button>
+            <Link href="/contact">
+              <Button className="rounded-full bg-slate-900 px-8 py-6 text-sm font-semibold text-white shadow-md transition-colors hover:bg-slate-800">
+                Meet our services concierge
+              </Button>
+            </Link>
           </div>
         </div>
       </section>

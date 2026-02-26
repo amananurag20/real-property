@@ -1,9 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import { Icon } from 'leaflet';
-import 'leaflet/dist/leaflet.css';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -11,13 +9,12 @@ import { Badge } from '@/components/ui/badge';
 import { Search, MapPin, Building2, Home, Filter, Layers, ChevronLeft, Bed, Bath, Maximize, List, X } from 'lucide-react';
 import { allProperties } from '@/data/properties';
 
-// Custom marker icon
-const propertyIcon = new Icon({
-    iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
-    iconSize: [32, 32],
-    iconAnchor: [16, 32],
-    popupAnchor: [0, -32],
-});
+import 'leaflet/dist/leaflet.css';
+
+const MapContainer = dynamic(() => import('react-leaflet').then(mod => mod.MapContainer), { ssr: false });
+const TileLayer = dynamic(() => import('react-leaflet').then(mod => mod.TileLayer), { ssr: false });
+const Marker = dynamic(() => import('react-leaflet').then(mod => mod.Marker), { ssr: false });
+const Popup = dynamic(() => import('react-leaflet').then(mod => mod.Popup), { ssr: false });
 
 export default function MapPage() {
     const [activeFilter, setActiveFilter] = useState('all');
@@ -28,16 +25,16 @@ export default function MapPage() {
     // Filter properties based on search and filter
     const filteredProperties = useMemo(() => {
         return allProperties.filter((property) => {
-            const matchesSearch = 
+            const matchesSearch =
                 property.address.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 property.city.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 property.propertyType.toLowerCase().includes(searchTerm.toLowerCase());
-            
-            const matchesFilter = 
-                activeFilter === 'all' || 
+
+            const matchesFilter =
+                activeFilter === 'all' ||
                 (activeFilter === 'sale' && property.status === 'For Sale') ||
                 (activeFilter === 'rent' && property.status === 'For Rent');
-            
+
             return matchesSearch && matchesFilter;
         });
     }, [searchTerm, activeFilter]);
@@ -72,18 +69,17 @@ export default function MapPage() {
                 <div className="grid lg:grid-cols-[400px_1fr] gap-4 lg:gap-6 h-auto lg:h-[calc(100vh-12rem)]">
                     {/* Backdrop Overlay - Mobile Only */}
                     {showSidebar && (
-                        <div 
+                        <div
                             className="fixed inset-0 bg-black/50 z-[1500] lg:hidden backdrop-blur-sm"
                             onClick={() => setShowSidebar(false)}
                         />
                     )}
 
                     {/* Sidebar - Slides from bottom on mobile */}
-                    <div className={`bg-white shadow-[0_30px_70px_-45px_rgba(15,23,42,0.45)] border border-border/40 overflow-hidden flex flex-col transition-transform duration-300 ${
-                        showSidebar 
-                            ? 'fixed bottom-0 left-0 right-0 z-[2000] rounded-t-[32px] max-h-[85vh] lg:static lg:rounded-[32px] lg:max-h-none' 
-                            : 'hidden lg:flex lg:rounded-[32px]'
-                    }`}>
+                    <div className={`bg-white shadow-[0_30px_70px_-45px_rgba(15,23,42,0.45)] border border-border/40 overflow-hidden flex flex-col transition-transform duration-300 ${showSidebar
+                        ? 'fixed bottom-0 left-0 right-0 z-[2000] rounded-t-[32px] max-h-[85vh] lg:static lg:rounded-[32px] lg:max-h-none'
+                        : 'hidden lg:flex lg:rounded-[32px]'
+                        }`}>
                         {/* Search & Filter Section */}
                         <div className="p-4 lg:p-6 border-b border-border">
                             <div className="flex items-center justify-between mb-4 lg:hidden">
@@ -97,16 +93,16 @@ export default function MapPage() {
                             </div>
                             <div className="relative mb-4">
                                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                                <Input 
-                                    placeholder="Search location..." 
+                                <Input
+                                    placeholder="Search location..."
                                     className="pl-12 h-12 rounded-xl border-border/50 focus-visible:ring-primary"
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
                                 />
                             </div>
                             <div className="flex gap-2">
-                                <Button 
-                                    variant={activeFilter === 'all' ? 'default' : 'outline'} 
+                                <Button
+                                    variant={activeFilter === 'all' ? 'default' : 'outline'}
                                     size="sm"
                                     onClick={() => setActiveFilter('all')}
                                     className="rounded-full flex-1"
@@ -114,8 +110,8 @@ export default function MapPage() {
                                     <Layers className="w-4 h-4 mr-2" />
                                     All
                                 </Button>
-                                <Button 
-                                    variant={activeFilter === 'sale' ? 'default' : 'outline'} 
+                                <Button
+                                    variant={activeFilter === 'sale' ? 'default' : 'outline'}
                                     size="sm"
                                     onClick={() => setActiveFilter('sale')}
                                     className="rounded-full flex-1"
@@ -123,8 +119,8 @@ export default function MapPage() {
                                     <Home className="w-4 h-4 mr-2" />
                                     Sale
                                 </Button>
-                                <Button 
-                                    variant={activeFilter === 'rent' ? 'default' : 'outline'} 
+                                <Button
+                                    variant={activeFilter === 'rent' ? 'default' : 'outline'}
                                     size="sm"
                                     onClick={() => setActiveFilter('rent')}
                                     className="rounded-full flex-1"
@@ -139,19 +135,18 @@ export default function MapPage() {
                         <div className="flex-1 overflow-y-auto p-4 space-y-3">
                             {filteredProperties.length > 0 ? (
                                 filteredProperties.map((property) => (
-                                    <div 
-                                        key={property.id} 
-                                        className={`bg-white rounded-2xl p-4 border-2 cursor-pointer transition-all hover:shadow-md ${
-                                            selectedProperty === property.id 
-                                                ? 'border-primary ring-2 ring-primary/20' 
-                                                : 'border-border/50 hover:border-primary/30'
-                                        }`}
+                                    <div
+                                        key={property.id}
+                                        className={`bg-white rounded-2xl p-4 border-2 cursor-pointer transition-all hover:shadow-md ${selectedProperty === property.id
+                                            ? 'border-primary ring-2 ring-primary/20'
+                                            : 'border-border/50 hover:border-primary/30'
+                                            }`}
                                         onClick={() => setSelectedProperty(property.id)}
                                     >
                                         <div className="flex gap-4">
                                             <div className="w-20 h-20 rounded-xl overflow-hidden flex-shrink-0 bg-muted">
-                                                <img 
-                                                    src={property.image} 
+                                                <img
+                                                    src={property.image}
                                                     alt={property.address}
                                                     className="w-full h-full object-cover"
                                                 />
@@ -159,7 +154,7 @@ export default function MapPage() {
                                             <div className="flex-1 min-w-0">
                                                 <div className="flex items-start justify-between gap-2">
                                                     <h3 className="font-bold text-foreground truncate">{property.address}</h3>
-                                                    <Badge 
+                                                    <Badge
                                                         variant={property.status === 'For Sale' ? 'default' : 'secondary'}
                                                         className="flex-shrink-0 rounded-full text-xs"
                                                     >
@@ -190,8 +185,8 @@ export default function MapPage() {
                                 <div className="text-center py-12">
                                     <MapPin className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
                                     <p className="text-muted-foreground">No properties found</p>
-                                    <Button 
-                                        variant="outline" 
+                                    <Button
+                                        variant="outline"
                                         className="mt-4"
                                         onClick={() => { setSearchTerm(''); setActiveFilter('all'); }}
                                     >
@@ -213,7 +208,7 @@ export default function MapPage() {
                     <div className="bg-white rounded-[24px] lg:rounded-[32px] shadow-[0_30px_70px_-45px_rgba(15,23,42,0.45)] border border-border/40 overflow-hidden relative h-[calc(100vh-10rem)] lg:h-auto">
                         {/* Mobile Toggle Sidebar Button */}
                         <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[1000] lg:hidden">
-                            <Button 
+                            <Button
                                 variant="default"
                                 onClick={() => setShowSidebar(true)}
                                 className="bg-slate-900 hover:bg-slate-800 text-white shadow-2xl flex items-center gap-2 px-6 py-6 rounded-full"
@@ -237,7 +232,12 @@ export default function MapPage() {
                                 <Marker
                                     key={property.id}
                                     position={[property.latitude, property.longitude]}
-                                    icon={propertyIcon}
+                                    icon={typeof window !== 'undefined' ? new (require('leaflet')).Icon({
+                                        iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
+                                        iconSize: [32, 32],
+                                        iconAnchor: [16, 32],
+                                        popupAnchor: [0, -32],
+                                    }) : undefined}
                                     eventHandlers={{
                                         click: () => setSelectedProperty(property.id),
                                     }}
@@ -245,8 +245,8 @@ export default function MapPage() {
                                     <Popup>
                                         <div className="p-2 min-w-[200px]">
                                             <div className="w-full h-24 rounded-lg overflow-hidden mb-3">
-                                                <img 
-                                                    src={property.image} 
+                                                <img
+                                                    src={property.image}
                                                     alt={property.address}
                                                     className="w-full h-full object-cover"
                                                 />
@@ -272,15 +272,15 @@ export default function MapPage() {
 
                         {/* Map Overlay Controls */}
                         <div className="absolute top-4 right-4 z-[500] flex flex-col gap-2">
-                            <Button 
-                                variant="secondary" 
+                            <Button
+                                variant="secondary"
                                 size="icon"
                                 className="bg-white/95 backdrop-blur-sm shadow-lg hover:bg-white w-10 h-10 lg:w-11 lg:h-11"
                             >
                                 <Layers className="w-4 h-4 lg:w-5 lg:h-5" />
                             </Button>
-                            <Button 
-                                variant="secondary" 
+                            <Button
+                                variant="secondary"
                                 size="icon"
                                 className="bg-white/95 backdrop-blur-sm shadow-lg hover:bg-white w-10 h-10 lg:w-11 lg:h-11"
                             >

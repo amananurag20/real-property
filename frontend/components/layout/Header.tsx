@@ -117,9 +117,8 @@ export function Header() {
                     <nav className="hidden lg:flex items-center gap-0">
                         <Link
                             href="/"
-                            className={`px-3.5 py-1.5 text-[14px] font-medium transition-colors ${
-                                isActive('^/$') ? 'text-slate-900' : 'text-gray-500 hover:text-gray-900'
-                            }`}
+                            className={`px-3.5 py-1.5 text-[14px] font-medium transition-colors ${isActive('^/$') ? 'text-slate-900' : 'text-gray-500 hover:text-gray-900'
+                                }`}
                         >
                             Home
                         </Link>
@@ -128,9 +127,8 @@ export function Header() {
                         <DropdownMenu open={exploreOpen} onOpenChange={setExploreOpen}>
                             <DropdownMenuTrigger asChild>
                                 <button
-                                    className={`flex items-center gap-1 px-3.5 py-1.5 text-[14px] font-medium transition-colors outline-none ${
-                                        isExploreActive ? 'text-slate-900' : 'text-gray-500 hover:text-gray-900'
-                                    }`}
+                                    className={`flex items-center gap-1 px-3.5 py-1.5 text-[14px] font-medium transition-colors outline-none ${isExploreActive ? 'text-slate-900' : 'text-gray-500 hover:text-gray-900'
+                                        }`}
                                 >
                                     Explore
                                     <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-150 ${exploreOpen ? 'rotate-180' : ''}`} />
@@ -158,9 +156,8 @@ export function Header() {
                         {hasPermission(userRole, PERMISSIONS.BROWSE_REQUESTS) && (
                             <Link
                                 href="/requests"
-                                className={`px-3.5 py-1.5 text-[14px] font-medium transition-colors ${
-                                    isActive('^/requests') ? 'text-slate-900' : 'text-gray-500 hover:text-gray-900'
-                                }`}
+                                className={`px-3.5 py-1.5 text-[14px] font-medium transition-colors ${isActive('^/requests') ? 'text-slate-900' : 'text-gray-500 hover:text-gray-900'
+                                    }`}
                             >
                                 Requests
                             </Link>
@@ -169,11 +166,10 @@ export function Header() {
                         {isAuthenticated && (
                             <Link
                                 href={getDashboardLink()}
-                                className={`px-3.5 py-1.5 text-[14px] font-medium transition-colors ${
-                                    isActive('^/dashboard') || isActive('^/admin') || isActive('^/agent') || isActive('^/provider')
+                                className={`px-3.5 py-1.5 text-[14px] font-medium transition-colors ${isActive('^/dashboard') || isActive('^/admin') || isActive('^/agent') || isActive('^/provider')
                                         ? 'text-slate-900'
                                         : 'text-gray-500 hover:text-gray-900'
-                                }`}
+                                    }`}
                             >
                                 Dashboard
                             </Link>
@@ -291,7 +287,6 @@ export function Header() {
                                             </DropdownMenuItem>
                                         </>
                                     )}
-                                    <DropdownMenuSeparator className="my-1" />
                                     <DropdownMenuItem onClick={logout} className="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer text-[13px] text-red-500 hover:bg-red-50 font-medium">
                                         <LogOut className="w-4 h-4" />
                                         Sign Out
@@ -333,9 +328,8 @@ export function Header() {
                                         <Link
                                             href="/"
                                             onClick={() => setMobileMenuOpen(false)}
-                                            className={`flex items-center gap-3 px-3 py-3 rounded-xl text-[14px] font-medium transition-colors ${
-                                                isActive('^/$') ? 'bg-slate-900 text-white' : 'text-gray-700 hover:bg-gray-100'
-                                            }`}
+                                            className={`flex items-center gap-3 px-3 py-3 rounded-xl text-[14px] font-medium transition-colors ${isActive('^/$') ? 'bg-slate-900 text-white' : 'text-gray-700 hover:bg-gray-100'
+                                                }`}
                                         >
                                             <Home className="w-4 h-4" />
                                             Home
@@ -350,9 +344,8 @@ export function Header() {
                                                 key={item.href}
                                                 href={item.href}
                                                 onClick={() => setMobileMenuOpen(false)}
-                                                className={`flex items-center gap-3 px-3 py-3 rounded-xl text-[14px] font-medium transition-colors ${
-                                                    isActive(item.activePattern) ? 'bg-slate-900 text-white' : 'text-gray-700 hover:bg-gray-100'
-                                                }`}
+                                                className={`flex items-center gap-3 px-3 py-3 rounded-xl text-[14px] font-medium transition-colors ${isActive(item.activePattern) ? 'bg-slate-900 text-white' : 'text-gray-700 hover:bg-gray-100'
+                                                    }`}
                                             >
                                                 {item.icon}
                                                 {item.label}
@@ -368,9 +361,8 @@ export function Header() {
                                                 <Link
                                                     href="/requests"
                                                     onClick={() => setMobileMenuOpen(false)}
-                                                    className={`flex items-center gap-3 px-3 py-3 rounded-xl text-[14px] font-medium transition-colors ${
-                                                        isActive('^/requests') ? 'bg-slate-900 text-white' : 'text-gray-700 hover:bg-gray-100'
-                                                    }`}
+                                                    className={`flex items-center gap-3 px-3 py-3 rounded-xl text-[14px] font-medium transition-colors ${isActive('^/requests') ? 'bg-slate-900 text-white' : 'text-gray-700 hover:bg-gray-100'
+                                                        }`}
                                                 >
                                                     <FileText className="w-4 h-4" />
                                                     Requests

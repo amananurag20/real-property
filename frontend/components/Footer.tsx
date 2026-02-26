@@ -43,10 +43,8 @@ const Footer = () => {
                         <h4 className="text-[12px] font-semibold text-gray-900 uppercase tracking-widest mb-4">Company</h4>
                         <ul className="space-y-3">
                             {[
-                                { label: 'About Us', href: '/' },
-                                { label: 'Careers', href: '/' },
-                                { label: 'Blog', href: '/' },
-                                { label: 'Contact', href: '/' },
+                                { label: 'About Us', href: '/about' },
+                                { label: 'Contact', href: '/contact' },
                             ].map((link) => (
                                 <li key={link.label}>
                                     <Link href={link.href} className="text-[13px] text-gray-500 hover:text-gray-900 transition-colors">
@@ -62,9 +60,8 @@ const Footer = () => {
                         <h4 className="text-[12px] font-semibold text-gray-900 uppercase tracking-widest mb-4">Legal</h4>
                         <ul className="space-y-3">
                             {[
-                                { label: 'Privacy Policy', href: '/' },
-                                { label: 'Terms of Service', href: '/' },
-                                { label: 'Cookie Policy', href: '/' },
+                                { label: 'Privacy Policy', href: '/privacy' },
+                                { label: 'Terms of Service', href: '/terms' },
                             ].map((link) => (
                                 <li key={link.label}>
                                     <Link href={link.href} className="text-[13px] text-gray-500 hover:text-gray-900 transition-colors">
@@ -82,9 +79,8 @@ const Footer = () => {
                         &copy; 2026 EstateIndia. All rights reserved.
                     </p>
                     <div className="flex items-center gap-5">
-                        <Link href="/" className="text-[12px] text-gray-400 hover:text-gray-700 transition-colors">Privacy</Link>
-                        <Link href="/" className="text-[12px] text-gray-400 hover:text-gray-700 transition-colors">Terms</Link>
-                        <Link href="/" className="text-[12px] text-gray-400 hover:text-gray-700 transition-colors">Sitemap</Link>
+                        <Link href="/privacy" className="text-[12px] text-gray-400 hover:text-gray-700 transition-colors">Privacy</Link>
+                        <Link href="/terms" className="text-[12px] text-gray-400 hover:text-gray-700 transition-colors">Terms</Link>
                     </div>
                 </div>
             </div>
