@@ -25,7 +25,7 @@ export class PropertyService {
     private readonly prisma: PrismaService,
     private readonly notificationService: NotificationService,
     private readonly adminLogService: AdminLogService,
-  ) {}
+  ) { }
 
   /** Create a new property listing */
   async create(userId: string, dto: CreatePropertyDto) {
@@ -224,7 +224,7 @@ export class PropertyService {
 
     // If no existing images, set the first new image as primary
     const hasExistingImages = property.images.length > 0;
-    const imagesToCreate = dto.images.map((img, index) => ({
+    const imagesToCreate = dto.images.map((img: any, index: number) => ({
       ...img,
       propertyId,
       isPrimary: !hasExistingImages && index === 0 ? true : (img.isPrimary ?? false),
@@ -263,7 +263,7 @@ export class PropertyService {
 
     // If the deleted image was primary, set another image as primary
     if (wasPrimary) {
-      const remainingImages = property.images.filter((img) => img.id !== imageId);
+      const remainingImages = property.images.filter((img: any) => img.id !== imageId);
       if (remainingImages.length > 0) {
         await this.prisma.client.propertyImage.update({
           where: { id: remainingImages[0].id },

@@ -25,7 +25,8 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { ResponseMessage } from '../common/decorators/response-message.decorator';
-import { Role, ApprovalStatus } from '../../generated/prisma/enums';
+import { ApprovalStatus } from '../../generated/prisma/enums';
+import { Role } from '../auth/guards/roles.guard';
 
 interface UserPayload {
   userId: string;
@@ -36,7 +37,7 @@ interface UserPayload {
 @ApiTags('Requests')
 @Controller('request')
 export class RequestController {
-  constructor(private readonly requestService: RequestService) {}
+  constructor(private readonly requestService: RequestService) { }
 
   @Post()
   @UseGuards(JwtAuthGuard)
@@ -123,9 +124,7 @@ export class RequestController {
   }
 
   @Patch(':id/approval')
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
-  @ApiBearerAuth()
   @ApiOperation({ summary: 'Update request approval status (admin only)' })
   @ApiParam({ name: 'id', description: 'Request ID' })
   @ApiResponse({ status: 200, description: 'Approval status updated' })

@@ -22,7 +22,7 @@ export class CreateRequestDto {
     description: 'Type of property request',
   })
   @IsEnum(RequestType)
-  requestType: RequestType;
+  requestType!: RequestType;
 
   @ApiProperty({
     example: 'Looking for 3BHK apartment in Chandigarh',
@@ -31,7 +31,7 @@ export class CreateRequestDto {
   })
   @IsString()
   @MaxLength(200)
-  title: string;
+  title!: string;
 
   @ApiProperty({
     example: 5000000,
@@ -40,7 +40,7 @@ export class CreateRequestDto {
   })
   @IsNumber()
   @Min(0)
-  budgetMin: number;
+  budgetMin!: number;
 
   @ApiProperty({
     example: 8000000,
@@ -49,7 +49,7 @@ export class CreateRequestDto {
   })
   @IsNumber()
   @Min(0)
-  budgetMax: number;
+  budgetMax!: number;
 
   @ApiPropertyOptional({
     enum: PropertyType,

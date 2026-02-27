@@ -20,7 +20,7 @@ export class AgentProfileService {
     private readonly prisma: PrismaService,
     private readonly notificationService: NotificationService,
     private readonly adminLogService: AdminLogService,
-  ) {}
+  ) { }
 
   async create(userId: string, dto: CreateAgentProfileDto) {
     // Check if agent profile already exists
@@ -194,21 +194,26 @@ export class AgentProfileService {
     });
 
     // Create notification
-    await this.notificationService.create({
-      userId: profile.userId,
-      type: NotificationType.PROFILE_VERIFIED,
-      title: 'Agent Profile Verified',
-      message: 'Your agent profile has been verified by an administrator.',
-    });
+    await this.notificationService.createNotification(
+      profile.userId,
+      NotificationType.SYSTEM,
+      {
+        title: 'Agent Profile Verified',
+        message: 'Your agent profile has been verified by an administrator.',
+        actionUrl: `/agent/${profile.id}`
+      }
+    );
 
     // Create admin log
-    await this.adminLogService.create({
+    await this.adminLogService.createLog(
       adminId,
-      action: AdminAction.AGENT_VERIFIED,
-      targetType: 'agent_profile',
-      targetId: id,
-      details: { agentProfileId: id },
-    });
+      AdminAction.CONTENT_EDITED,
+      {
+        targetType: 'agent_profile',
+        targetId: id,
+        description: 'Agent Verified',
+      }
+    );
 
     return updatedProfile;
   }
@@ -232,21 +237,27 @@ export class AgentProfileService {
     });
 
     // Notify the agent
-    await this.notificationService.create({
-      userId: profile.userId,
-      type: NotificationType.PROFILE_APPROVED,
-      title: `Agent Profile ${status}`,
-      message: `Your agent profile has been ${status.toLowerCase()} by an administrator.`,
-    });
+    await this.notificationService.createNotification(
+      profile.userId,
+      NotificationType.SYSTEM,
+      {
+        title: `Agent Profile ${status}`,
+        message: `Your agent profile has been ${status.toLowerCase()} by an administrator.`,
+        actionUrl: `/agent/${profile.id}`
+      }
+    );
 
     // Log admin action
-    await this.adminLogService.create({
+    await this.adminLogService.createLog(
       adminId,
-      action: AdminAction.APPROVAL_UPDATED,
-      targetType: 'agent_profile',
-      targetId: id,
-      details: { agentProfileId: id, newStatus: status },
-    });
+      AdminAction.CONTENT_EDITED,
+      {
+        targetType: 'agent_profile',
+        targetId: id,
+        description: `Agent status updated to ${status}`,
+        newState: { approvalStatus: status }
+      }
+    );
 
     return updatedProfile;
   }

@@ -22,7 +22,7 @@ export class PropertyRequestLinkService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly notificationService: NotificationService,
-  ) {}
+  ) { }
 
   async createLink(agentUserId: string, dto: CreateLinkDto) {
     // 1. Find and validate agent profile
@@ -84,13 +84,15 @@ export class PropertyRequestLinkService {
     });
 
     // 5. Notify the request owner
-    await this.notificationService.create({
-      userId: request.postedById,
-      type: NotificationType.TRIANGLE_MATCH,
-      title: 'New Property Match',
-      message: `An agent has matched a property to your request: ${request.title}`,
-      link: `/triangle/${link.id}`,
-    });
+    await this.notificationService.createNotification(
+      request.postedById,
+      NotificationType.TRIANGLE_LINK_CREATED,
+      {
+        title: 'New Property Match',
+        message: `An agent has matched a property to your request: ${request.title}`,
+        actionUrl: `/triangle/${link.id}`,
+      }
+    );
 
     // 6. Increment property inquiry count
     await this.prisma.client.property.update({
@@ -138,8 +140,8 @@ export class PropertyRequestLinkService {
     // Get paginated data
     const links = await this.prisma.client.propertyRequestLink.findMany({
       where,
-      skip: (dto.page - 1) * dto.limit,
-      take: dto.limit,
+      skip: ((dto.page ?? 1) - 1) * (dto.limit ?? 10),
+      take: dto.limit ?? 10,
       orderBy: { createdAt: 'desc' },
       include: {
         property: {
@@ -168,7 +170,7 @@ export class PropertyRequestLinkService {
 
     return {
       data: links,
-      meta: buildPaginationMeta(total, dto.page, dto.limit),
+      meta: buildPaginationMeta(total, dto.page ?? 1, dto.limit ?? 10),
     };
   }
 
@@ -179,12 +181,10 @@ export class PropertyRequestLinkService {
       select: { id: true },
     });
 
-    const requestIds = requests.map((r) => r.id);
-
-    if (requestIds.length === 0) {
+    const requestIds = requests.map((r: { id: string }) => r.id); if (requestIds.length === 0) {
       return {
         data: [],
-        meta: buildPaginationMeta(0, dto.page, dto.limit),
+        meta: buildPaginationMeta(0, dto.page ?? 1, dto.limit ?? 10),
       };
     }
 
@@ -211,8 +211,8 @@ export class PropertyRequestLinkService {
     // Get paginated data
     const links = await this.prisma.client.propertyRequestLink.findMany({
       where,
-      skip: (dto.page - 1) * dto.limit,
-      take: dto.limit,
+      skip: ((dto.page ?? 1) - 1) * (dto.limit ?? 10),
+      take: dto.limit ?? 10,
       orderBy: { createdAt: 'desc' },
       include: {
         property: true,
@@ -237,7 +237,7 @@ export class PropertyRequestLinkService {
 
     return {
       data: links,
-      meta: buildPaginationMeta(total, dto.page, dto.limit),
+      meta: buildPaginationMeta(total, dto.page ?? 1, dto.limit ?? 10),
     };
   }
 
@@ -363,13 +363,15 @@ export class PropertyRequestLinkService {
     });
 
     // Notify buyer about status change
-    await this.notificationService.create({
-      userId: link.request.postedById,
-      type: NotificationType.TRIANGLE_STATUS_UPDATE,
-      title: 'Triangle Match Status Update',
-      message: `The status of your property match has been updated to: ${status}`,
-      link: `/triangle/${link.id}`,
-    });
+    await this.notificationService.createNotification(
+      link.request.postedById,
+      NotificationType.TRIANGLE_LINK_UPDATED,
+      {
+        title: 'Triangle Match Status Update',
+        message: `The status of your property match has been updated to: ${status}`,
+        actionUrl: `/triangle/${link.id}`,
+      }
+    );
 
     return updatedLink;
   }
@@ -424,13 +426,15 @@ export class PropertyRequestLinkService {
       ? `Good news! The buyer is interested in your property match.`
       : `The buyer has declined the property match.`;
 
-    await this.notificationService.create({
-      userId: link.agent.userId,
-      type: NotificationType.TRIANGLE_RESPONSE,
-      title: 'Buyer Response Received',
-      message: notificationMessage,
-      link: `/triangle/${link.id}`,
-    });
+    await this.notificationService.createNotification(
+      link.agent.userId,
+      NotificationType.TRIANGLE_LINK_UPDATED,
+      {
+        title: 'Buyer Response Received',
+        message: notificationMessage,
+        actionUrl: `/triangle/${link.id}`,
+      }
+    );
 
     return updatedLink;
   }

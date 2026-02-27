@@ -6,12 +6,12 @@ export class CreateInquiryDto {
   @IsString()
   @IsNotEmpty()
   @MaxLength(100)
-  name: string;
+  name!: string;
 
   @ApiProperty({ description: 'Email address' })
   @IsEmail()
   @IsNotEmpty()
-  email: string;
+  email!: string;
 
   @ApiProperty({ description: 'Phone number (10 digits starting with 6-9)', required: false })
   @IsOptional()
@@ -23,13 +23,13 @@ export class CreateInquiryDto {
   @IsString()
   @IsNotEmpty()
   @MaxLength(200)
-  subject: string;
+  subject!: string;
 
   @ApiProperty({ description: 'Inquiry message', maxLength: 2000 })
   @IsString()
   @IsNotEmpty()
   @MaxLength(2000)
-  message: string;
+  message!: string;
 
   @ApiProperty({ description: 'Related property ID', required: false })
   @IsOptional()

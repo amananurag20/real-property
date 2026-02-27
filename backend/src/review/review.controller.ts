@@ -9,12 +9,12 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { ResponseMessage } from '../common/decorators/response-message.decorator';
-import { Role } from '../../generated/prisma/enums';
+import { Role } from '../auth/guards/roles.guard';
 
 @ApiTags('Reviews')
 @Controller('review')
 export class ReviewController {
-  constructor(private readonly reviewService: ReviewService) {}
+  constructor(private readonly reviewService: ReviewService) { }
 
   @Post()
   @UseGuards(JwtAuthGuard)
@@ -60,9 +60,7 @@ export class ReviewController {
   }
 
   @Patch(':id/approve')
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
-  @ApiBearerAuth()
   @ApiOperation({ summary: 'Approve a review (Admin only)' })
   @ResponseMessage('Review approved successfully')
   approveReview(@CurrentUser('id') adminId: string, @Param('id') id: string) {
@@ -70,9 +68,7 @@ export class ReviewController {
   }
 
   @Patch(':id/reject')
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
-  @ApiBearerAuth()
   @ApiOperation({ summary: 'Reject a review (Admin only)' })
   @ResponseMessage('Review rejected successfully')
   rejectReview(@CurrentUser('id') adminId: string, @Param('id') id: string) {

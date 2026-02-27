@@ -11,8 +11,7 @@ export * from './decorators/api-responses.decorator';
 // Filters
 export * from './filters/http-exception.filter';
 
-// DTOs
-export * from './dto/pagination.dto';
+// export * from './dto/pagination.dto';
 
 // Utils
 export * from './utils/timezone.util';

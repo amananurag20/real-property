@@ -9,5 +9,5 @@ export class UpdateLinkStatusDto {
     example: TriangleLinkStatus.BUYER_NOTIFIED,
   })
   @IsEnum(TriangleLinkStatus)
-  status: TriangleLinkStatus;
+  status!: TriangleLinkStatus;
 }

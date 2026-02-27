@@ -9,12 +9,12 @@ import { Role } from '../../generated/prisma/enums';
 
 @Injectable()
 export class PaymentService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async createOrder(userId: string, dto: CreatePaymentDto) {
     // Phase 1: Test mode - Just create the payment record
     // Phase 2: Integrate with Razorpay SDK to create actual order
-    const payment = await this.prisma.payment.create({
+    const payment = await this.prisma.client.payment.create({
       data: {
         userId,
         amount: dto.amount,
@@ -37,7 +37,7 @@ export class PaymentService {
 
   async verifyPayment(userId: string, dto: VerifyPaymentDto) {
     // Find payment by razorpayOrderId
-    const payment = await this.prisma.payment.findFirst({
+    const payment = await this.prisma.client.payment.findFirst({
       where: {
         id: dto.razorpayOrderId,
         userId,
@@ -50,7 +50,7 @@ export class PaymentService {
 
     // Phase 1: Test mode - Just update status to SUCCESS
     // Phase 2: Verify signature with Razorpay SDK
-    const updatedPayment = await this.prisma.payment.update({
+    const updatedPayment = await this.prisma.client.payment.update({
       where: { id: payment.id },
       data: {
         status: PaymentStatus.SUCCESS,
@@ -72,13 +72,13 @@ export class PaymentService {
     if (paymentType) where.paymentType = paymentType;
 
     const [data, total] = await Promise.all([
-      this.prisma.payment.findMany({
+      this.prisma.client.payment.findMany({
         where,
         skip,
         take: limit,
         orderBy: { createdAt: 'desc' },
       }),
-      this.prisma.payment.count({ where }),
+      this.prisma.client.payment.count({ where }),
     ]);
 
     return {
@@ -88,7 +88,7 @@ export class PaymentService {
   }
 
   async findOne(userId: string, id: string, role: Role) {
-    const payment = await this.prisma.payment.findUnique({
+    const payment = await this.prisma.client.payment.findUnique({
       where: { id },
     });
 
@@ -114,7 +114,7 @@ export class PaymentService {
     if (paymentType) where.paymentType = paymentType;
 
     const [data, total] = await Promise.all([
-      this.prisma.payment.findMany({
+      this.prisma.client.payment.findMany({
         where,
         skip,
         take: limit,
@@ -128,7 +128,7 @@ export class PaymentService {
         },
         orderBy: { createdAt: 'desc' },
       }),
-      this.prisma.payment.count({ where }),
+      this.prisma.client.payment.count({ where }),
     ]);
 
     return {

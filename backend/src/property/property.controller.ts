@@ -16,7 +16,8 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { ResponseMessage } from '../common/decorators/response-message.decorator';
-import { Role, ApprovalStatus } from '../../generated/prisma/enums';
+import { ApprovalStatus } from '../../generated/prisma/enums';
+import { Role } from '../auth/guards/roles.guard';
 import { CreatePropertyDto } from './dto/create-property.dto';
 import { UpdatePropertyDto } from './dto/update-property.dto';
 import { ListPropertiesDto } from './dto/list-properties.dto';
@@ -25,7 +26,7 @@ import { AddImagesDto } from './dto/add-images.dto';
 @ApiTags('Property')
 @Controller('property')
 export class PropertyController {
-  constructor(private readonly propertyService: PropertyService) {}
+  constructor(private readonly propertyService: PropertyService) { }
 
   @Post()
   @UseGuards(JwtAuthGuard)

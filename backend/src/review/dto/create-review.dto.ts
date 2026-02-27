@@ -6,7 +6,7 @@ export class CreateReviewDto {
   @IsInt()
   @Min(1)
   @Max(5)
-  rating: number;
+  rating!: number;
 
   @ApiProperty({ description: 'Review title', required: false, maxLength: 200 })
   @IsOptional()

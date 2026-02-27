@@ -6,10 +6,10 @@ import { buildPaginationMeta } from '../common/dto/pagination.dto';
 
 @Injectable()
 export class ContactInquiryService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async create(dto: CreateInquiryDto) {
-    const inquiry = await this.prisma.contactInquiry.create({
+    const inquiry = await this.prisma.client.contactInquiry.create({
       data: {
         name: dto.name,
         email: dto.email,
@@ -36,13 +36,13 @@ export class ContactInquiryService {
     if (agentId) where.agentId = agentId;
 
     const [data, total] = await Promise.all([
-      this.prisma.contactInquiry.findMany({
+      this.prisma.client.contactInquiry.findMany({
         where,
         skip,
         take: limit,
         orderBy: { createdAt: 'desc' },
       }),
-      this.prisma.contactInquiry.count({ where }),
+      this.prisma.client.contactInquiry.count({ where }),
     ]);
 
     return {
@@ -52,7 +52,7 @@ export class ContactInquiryService {
   }
 
   async findOne(id: string) {
-    const inquiry = await this.prisma.contactInquiry.findUnique({
+    const inquiry = await this.prisma.client.contactInquiry.findUnique({
       where: { id },
     });
 
@@ -64,7 +64,7 @@ export class ContactInquiryService {
   }
 
   async markResolved(id: string, adminId: string, notes?: string) {
-    const inquiry = await this.prisma.contactInquiry.findUnique({
+    const inquiry = await this.prisma.client.contactInquiry.findUnique({
       where: { id },
     });
 
@@ -72,7 +72,7 @@ export class ContactInquiryService {
       throw new NotFoundException('Contact inquiry not found');
     }
 
-    const updated = await this.prisma.contactInquiry.update({
+    const updated = await this.prisma.client.contactInquiry.update({
       where: { id },
       data: {
         isResolved: true,

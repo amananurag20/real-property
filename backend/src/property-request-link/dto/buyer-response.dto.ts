@@ -9,12 +9,12 @@ export class BuyerResponseDto {
   })
   @IsString()
   @MaxLength(1000)
-  buyerResponse: string;
+  buyerResponse!: string;
 
   @ApiProperty({
     description: 'Whether the buyer is interested',
     example: true,
   })
   @IsBoolean()
-  interested: boolean;
+  interested!: boolean;
 }

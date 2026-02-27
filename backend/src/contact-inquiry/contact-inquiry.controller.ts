@@ -8,12 +8,12 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { ResponseMessage } from '../common/decorators/response-message.decorator';
-import { Role } from '../../generated/prisma/enums';
+import { Role } from '../auth/guards/roles.guard';
 
 @ApiTags('Contact Inquiries')
 @Controller('contact-inquiry')
 export class ContactInquiryController {
-  constructor(private readonly contactInquiryService: ContactInquiryService) {}
+  constructor(private readonly contactInquiryService: ContactInquiryService) { }
 
   @Post()
   @ApiOperation({ summary: 'Create a contact inquiry (Public)' })

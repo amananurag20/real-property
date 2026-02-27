@@ -4,6 +4,7 @@ import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
 import { ListReviewsDto } from './dto/list-reviews.dto';
 import { buildPaginationMeta } from '../common/dto/pagination.dto';
+import { AdminAction } from '../../generated/prisma/enums';
 import { AdminLogService } from '../admin-log/admin-log.service';
 
 @Injectable()
@@ -11,7 +12,7 @@ export class ReviewService {
   constructor(
     private prisma: PrismaService,
     private adminLogService: AdminLogService,
-  ) {}
+  ) { }
 
   async create(userId: string, dto: CreateReviewDto) {
     // Validate exactly one target ID is provided
@@ -20,7 +21,7 @@ export class ReviewService {
       throw new BadRequestException('Exactly one of propertyId, agentProfileId, or serviceProviderProfileId must be provided');
     }
 
-    const review = await this.prisma.review.create({
+    const review = await this.prisma.client.review.create({
       data: {
         rating: dto.rating,
         title: dto.title,
@@ -51,7 +52,7 @@ export class ReviewService {
     if (minRating) where.rating = { gte: minRating };
 
     const [data, total] = await Promise.all([
-      this.prisma.review.findMany({
+      this.prisma.client.review.findMany({
         where,
         skip,
         take: limit,
@@ -65,7 +66,7 @@ export class ReviewService {
         },
         orderBy: { createdAt: 'desc' },
       }),
-      this.prisma.review.count({ where }),
+      this.prisma.client.review.count({ where }),
     ]);
 
     return {
@@ -75,7 +76,7 @@ export class ReviewService {
   }
 
   async findOne(id: string) {
-    const review = await this.prisma.review.findFirst({
+    const review = await this.prisma.client.review.findFirst({
       where: {
         id,
         isApproved: true,
@@ -99,7 +100,7 @@ export class ReviewService {
   }
 
   async update(userId: string, id: string, dto: UpdateReviewDto) {
-    const review = await this.prisma.review.findUnique({ where: { id } });
+    const review = await this.prisma.client.review.findUnique({ where: { id } });
 
     if (!review) {
       throw new NotFoundException('Review not found');
@@ -109,7 +110,7 @@ export class ReviewService {
       throw new ForbiddenException('You can only update your own reviews');
     }
 
-    const updated = await this.prisma.review.update({
+    const updated = await this.prisma.client.review.update({
       where: { id },
       data: {
         ...dto,
@@ -121,7 +122,7 @@ export class ReviewService {
   }
 
   async softDelete(userId: string, id: string) {
-    const review = await this.prisma.review.findUnique({ where: { id } });
+    const review = await this.prisma.client.review.findUnique({ where: { id } });
 
     if (!review) {
       throw new NotFoundException('Review not found');
@@ -131,7 +132,7 @@ export class ReviewService {
       throw new ForbiddenException('You can only delete your own reviews');
     }
 
-    await this.prisma.review.update({
+    await this.prisma.client.review.update({
       where: { id },
       data: { isDeleted: true },
     });
@@ -143,13 +144,13 @@ export class ReviewService {
   }
 
   async approveReview(id: string, adminId: string) {
-    const review = await this.prisma.review.findUnique({ where: { id } });
+    const review = await this.prisma.client.review.findUnique({ where: { id } });
 
     if (!review) {
       throw new NotFoundException('Review not found');
     }
 
-    await this.prisma.review.update({
+    await this.prisma.client.review.update({
       where: { id },
       data: { isApproved: true },
     });
@@ -157,38 +158,40 @@ export class ReviewService {
     // Recalculate rating for the target entity
     await this.recalculateRating(review);
 
-    // Log admin action
-    await this.adminLogService.create({
+    await this.adminLogService.createLog(
       adminId,
-      action: 'APPROVE_REVIEW',
-      targetType: 'Review',
-      targetId: id,
-      details: `Approved review ${id}`,
-    });
+      AdminAction.CONTENT_EDITED,
+      {
+        targetType: 'Review',
+        targetId: id,
+        description: `Approved review ${id}`,
+      }
+    );
 
     return { message: 'Review approved successfully' };
   }
 
   async rejectReview(id: string, adminId: string) {
-    const review = await this.prisma.review.findUnique({ where: { id } });
+    const review = await this.prisma.client.review.findUnique({ where: { id } });
 
     if (!review) {
       throw new NotFoundException('Review not found');
     }
 
-    await this.prisma.review.update({
+    await this.prisma.client.review.update({
       where: { id },
       data: { isApproved: false },
     });
 
-    // Log admin action
-    await this.adminLogService.create({
+    await this.adminLogService.createLog(
       adminId,
-      action: 'REJECT_REVIEW',
-      targetType: 'Review',
-      targetId: id,
-      details: `Rejected review ${id}`,
-    });
+      AdminAction.CONTENT_EDITED,
+      {
+        targetType: 'Review',
+        targetId: id,
+        description: `Rejected review ${id}`,
+      }
+    );
 
     return { message: 'Review rejected successfully' };
   }
@@ -198,13 +201,13 @@ export class ReviewService {
     let targetId: string;
 
     if (review.propertyId) {
-      targetModel = this.prisma.property;
+      targetModel = this.prisma.client.property;
       targetId = review.propertyId;
     } else if (review.agentProfileId) {
-      targetModel = this.prisma.agentProfile;
+      targetModel = this.prisma.client.agentProfile;
       targetId = review.agentProfileId;
     } else if (review.serviceProviderProfileId) {
-      targetModel = this.prisma.serviceProviderProfile;
+      targetModel = this.prisma.client.serviceProviderProfile;
       targetId = review.serviceProviderProfileId;
     } else {
       return; // No target to update
@@ -220,13 +223,13 @@ export class ReviewService {
     else if (review.agentProfileId) whereCondition.agentProfileId = targetId;
     else if (review.serviceProviderProfileId) whereCondition.serviceProviderProfileId = targetId;
 
-    const reviews = await this.prisma.review.findMany({
+    const reviews = await this.prisma.client.review.findMany({
       where: whereCondition,
     });
 
     const totalReviews = reviews.length;
-    const averageRating = totalReviews > 0 
-      ? reviews.reduce((sum, r) => sum + r.rating, 0) / totalReviews 
+    const averageRating = totalReviews > 0
+      ? reviews.reduce((sum: number, r: { rating: number }) => sum + r.rating, 0) / totalReviews
       : 0;
 
     // Update target entity

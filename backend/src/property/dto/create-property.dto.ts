@@ -14,7 +14,7 @@ import {
   IsLongitude,
   Max,
 } from 'class-validator';
-import { PropertyType, PropertyCategory, ListerType } from '../../generated/prisma/enums';
+import { PropertyType, PropertyCategory, ListerType } from '../../../generated/prisma/enums';
 
 export class CreatePropertyDto {
   @ApiProperty({ maxLength: 200 })

@@ -5,7 +5,7 @@ import { ListAdminLogsDto } from './dto/list-admin-logs.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
-import { Role } from '../../generated/prisma/enums';
+import { Role } from '../auth/guards/roles.guard';
 
 @ApiTags('Admin Logs')
 @ApiBearerAuth()
@@ -13,7 +13,7 @@ import { Role } from '../../generated/prisma/enums';
 @Roles(Role.ADMIN)
 @Controller('admin-log')
 export class AdminLogController {
-  constructor(private readonly adminLogService: AdminLogService) {}
+  constructor(private readonly adminLogService: AdminLogService) { }
 
   @Get()
   @ApiOperation({ summary: '[ADMIN] List admin audit logs' })

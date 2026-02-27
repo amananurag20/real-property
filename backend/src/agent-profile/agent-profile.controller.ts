@@ -23,7 +23,8 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { ResponseMessage } from '../common/decorators/response-message.decorator';
-import { Role, ApprovalStatus } from '../../generated/prisma/enums';
+import { ApprovalStatus } from '../../generated/prisma/enums';
+import { Role } from '../auth/guards/roles.guard';
 import { IsEnum } from 'class-validator';
 
 class UpdateApprovalStatusDto {
@@ -34,7 +35,7 @@ class UpdateApprovalStatusDto {
 @ApiTags('Agent Profile')
 @Controller('agent-profile')
 export class AgentProfileController {
-  constructor(private readonly agentProfileService: AgentProfileService) {}
+  constructor(private readonly agentProfileService: AgentProfileService) { }
 
   @Post()
   @UseGuards(JwtAuthGuard)

@@ -6,12 +6,12 @@ export class CreatePaymentDto {
   @ApiProperty({ description: 'Payment amount', minimum: 1 })
   @IsNumber()
   @Min(1)
-  amount: number;
+  amount!: number;
 
   @ApiProperty({ description: 'Type of payment', enum: PaymentType })
   @IsEnum(PaymentType)
   @IsNotEmpty()
-  paymentType: PaymentType;
+  paymentType!: PaymentType;
 
   @ApiProperty({ description: 'Payment description', required: false, maxLength: 500 })
   @IsOptional()
