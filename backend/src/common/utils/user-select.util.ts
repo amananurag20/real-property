@@ -7,7 +7,7 @@
  *   getUserSelect('USER', { id: true }) // override: force-include a field
  */
 
-type UserSelectMap = Record<string, boolean>;
+type UserSelectMap = Record<string, boolean | Record<string, boolean>>;
 
 // ── Field presets ────────────────────────────────────────────────────────────
 
@@ -17,6 +17,7 @@ const USER_SELECT: UserSelectMap = {
   email: true,
   phone: true,
   role: true,
+  avatarUrl: true,
   isActive: true,
   createdAt: true,
   // id        → hidden for self-access (prevents enumeration)
@@ -31,6 +32,7 @@ const ADMIN_SELECT: UserSelectMap = {
   email: true,
   phone: true,
   role: true,
+  avatarUrl: true,
   isActive: true,
   isSuspended: true,
   createdAt: true,
@@ -40,10 +42,33 @@ const ADMIN_SELECT: UserSelectMap = {
 /** Role → default select map */
 const ROLE_SELECT: Record<string, UserSelectMap> = {
   USER: USER_SELECT,
+  OWNER: USER_SELECT,
+  TENANT: USER_SELECT,
   AGENT: USER_SELECT,
   SERVICE_PROVIDER: USER_SELECT,
   VISITOR: USER_SELECT,
   ADMIN: ADMIN_SELECT,
+};
+
+// ── Profile summary select — used when including relations ──────────────────
+
+export const AGENT_PROFILE_SUMMARY_SELECT = {
+  id: true,
+  agencyName: true,
+  isVerified: true,
+  approvalStatus: true,
+  rating: true,
+  profilePhoto: true,
+};
+
+export const SERVICE_PROVIDER_PROFILE_SUMMARY_SELECT = {
+  id: true,
+  type: true,
+  businessName: true,
+  isVerified: true,
+  approvalStatus: true,
+  rating: true,
+  profilePhoto: true,
 };
 
 // ── Builder ──────────────────────────────────────────────────────────────────

@@ -15,6 +15,16 @@ import { UploadModule } from './upload/upload.module';
 import { SocketModule } from './socket/socket.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
+import { NotificationModule } from './notification/notification.module';
+import { AdminLogModule } from './admin-log/admin-log.module';
+import { AgentProfileModule } from './agent-profile/agent-profile.module';
+import { ServiceProviderProfileModule } from './service-provider-profile/service-provider-profile.module';
+import { PropertyModule } from './property/property.module';
+import { RequestModule } from './request/request.module';
+import { PropertyRequestLinkModule } from './property-request-link/property-request-link.module';
+import { ReviewModule } from './review/review.module';
+import { PaymentModule } from './payment/payment.module';
+import { ContactInquiryModule } from './contact-inquiry/contact-inquiry.module';
 
 @Module({
   imports: [
@@ -66,6 +76,16 @@ import { UsersModule } from './users/users.module';
     SocketModule,
     AuthModule,
     UsersModule,
+    NotificationModule,
+    AdminLogModule,
+    AgentProfileModule,
+    ServiceProviderProfileModule,
+    PropertyModule,
+    RequestModule,
+    PropertyRequestLinkModule,
+    ReviewModule,
+    PaymentModule,
+    ContactInquiryModule,
   ],
   controllers: [AppController],
   providers: [

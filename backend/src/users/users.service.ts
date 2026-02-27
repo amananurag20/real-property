@@ -3,8 +3,8 @@ import Redis from 'ioredis';
 import { PrismaService } from '../prisma';
 import { REDIS_CLIENT } from '../redis';
 import { UpdateProfileDto } from './dto/update-profile.dto';
-import { getUserSelect } from '../common/utils/user-select.util';
-import { ROLE_PERMISSIONS } from '../common/constants/permissions.constant';
+import { getUserSelect, AGENT_PROFILE_SUMMARY_SELECT, SERVICE_PROVIDER_PROFILE_SUMMARY_SELECT } from '../common/utils/user-select.util';
+import { getUserEffectivePermissions } from '../common/utils/permissions.util';
 import { Role } from '../../generated/prisma/enums';
 
 @Injectable()
@@ -14,18 +14,26 @@ export class UsersService {
     @Inject(REDIS_CLIENT) private readonly redis: Redis,
   ) {}
 
-  /** Get own profile — role-aware field selection (no id for non-admins) */
+  /** Get own profile — role-aware field selection with profile relations */
   async findMe(userId: string, requesterRole: string) {
     const select = getUserSelect(requesterRole);
     const user = await this.prisma.client.user.findUnique({
       where: { id: userId },
-      select,
+      select: {
+        ...select,
+        agentProfile: { select: AGENT_PROFILE_SUMMARY_SELECT },
+        serviceProviderProfile: { select: SERVICE_PROVIDER_PROFILE_SUMMARY_SELECT },
+      },
     });
     if (!user) throw new NotFoundException('User not found.');
 
     return {
       ...user,
-      permissions: ROLE_PERMISSIONS[user.role as Role] || [],
+      permissions: getUserEffectivePermissions({
+        role: user.role as Role,
+        agentProfile: user.agentProfile,
+        serviceProviderProfile: user.serviceProviderProfile,
+      }),
     };
   }
 
@@ -42,7 +50,11 @@ export class UsersService {
     const select = getUserSelect('ADMIN');
     return this.prisma.client.user.findMany({
       orderBy: { createdAt: 'desc' },
-      select,
+      select: {
+        ...select,
+        agentProfile: { select: AGENT_PROFILE_SUMMARY_SELECT },
+        serviceProviderProfile: { select: SERVICE_PROVIDER_PROFILE_SUMMARY_SELECT },
+      },
     });
   }
 
@@ -51,7 +63,11 @@ export class UsersService {
     const select = getUserSelect('ADMIN');
     const user = await this.prisma.client.user.findUnique({
       where: { id: targetId },
-      select,
+      select: {
+        ...select,
+        agentProfile: { select: AGENT_PROFILE_SUMMARY_SELECT },
+        serviceProviderProfile: { select: SERVICE_PROVIDER_PROFILE_SUMMARY_SELECT },
+      },
     });
     if (!user) throw new NotFoundException('User not found.');
     return user;
