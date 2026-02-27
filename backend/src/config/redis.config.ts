@@ -26,7 +26,7 @@ export const redisConfig = registerAs(
     port: parseInt(process.env['REDIS_PORT'] ?? '6379', 10),
     password: process.env['REDIS_PASSWORD'] || undefined,
     db: parseInt(process.env['REDIS_DB'] ?? '0', 10),
-    keyPrefix: process.env['REDIS_KEY_PREFIX'] ?? 'max-shipping:',
+    keyPrefix: process.env['REDIS_KEY_PREFIX'] ?? 'real-property:',
     maxRetriesPerRequest: null, // Required by BullMQ (must be null)
     retryDelayMs: 500,
     maxRetryDelayMs: 5000,

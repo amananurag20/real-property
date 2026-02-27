@@ -1,5 +1,6 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// ============================================================================
+// PRISMA SCHEMA - Real Estate Triangle Platform (Phase 1)
+// ============================================================================
 
 generator client {
   provider     = "prisma-client"
@@ -11,7 +12,10 @@ datasource db {
   provider = "postgresql"
 }
 
-// ── Enums ─────────────────────────────────────────────────────────────
+// ============================================================================
+// ENUMS
+// ============================================================================
+
 enum Role {
   VISITOR
   USER
@@ -22,17 +26,596 @@ enum Role {
   ADMIN
 }
 
-// ── User ──────────────────────────────────────────────────────────────
+enum PropertyCategory {
+  SALE
+  RENT
+}
+
+enum PropertyType {
+  APARTMENT
+  HOUSE
+  VILLA
+  PLOT
+  COMMERCIAL
+  OFFICE
+  SHOP
+  WAREHOUSE
+  FARMHOUSE
+  PENTHOUSE
+}
+
+enum PropertyStatus {
+  AVAILABLE
+  UNDER_DISCUSSION
+  CLOSED
+  SOLD
+  RENTED
+}
+
+enum ListerType {
+  OWNER
+  AGENT
+  DEVELOPER
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum RequestType {
+  BUY
+  RENT
+  INVESTMENT
+}
+
+enum RequestStatus {
+  OPEN
+  MATCHED
+  CLOSED
+}
+
+enum ServiceProviderType {
+  CA
+  LAWYER
+  CS
+  NOTARY
+  LOAN_ADVISOR
+}
+
+enum TriangleLinkStatus {
+  PENDING
+  BUYER_NOTIFIED
+  BUYER_INTERESTED
+  CONNECTED
+  CLOSED
+  REJECTED
+}
+
+enum PaymentType {
+  FEATURED_LISTING
+  AGENT_SUBSCRIPTION
+  SERVICE_FEE
+  OTHER
+}
+
+enum PaymentStatus {
+  INITIATED
+  PENDING
+  SUCCESS
+  FAILED
+  REFUNDED
+}
+
+enum NotificationType {
+  PROPERTY_APPROVED
+  PROPERTY_REJECTED
+  REQUEST_APPROVED
+  REQUEST_REJECTED
+  TRIANGLE_LINK_CREATED
+  TRIANGLE_LINK_UPDATED
+  PROFILE_VERIFIED
+  PAYMENT_SUCCESS
+  PAYMENT_FAILED
+  SYSTEM
+}
+
+enum AdminAction {
+  USER_SUSPENDED
+  USER_UNSUSPENDED
+  PROPERTY_APPROVED
+  PROPERTY_REJECTED
+  REQUEST_APPROVED
+  REQUEST_REJECTED
+  AGENT_VERIFIED
+  SERVICE_PROVIDER_APPROVED
+  CONTENT_EDITED
+  DATA_EXPORTED
+}
+
+// ============================================================================
+// USER & PROFILES
+// ============================================================================
+
 model User {
   id          String   @id @default(uuid())
   name        String
   email       String   @unique
   phone       String   @unique
   role        Role     @default(USER)
-  isActive    Boolean  @default(true)  @map("is_active")
+  avatarUrl   String?  @map("avatar_url")
+  isActive    Boolean  @default(true) @map("is_active")
   isSuspended Boolean  @default(false) @map("is_suspended")
   createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt      @map("updated_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
+  // Relations - Optional profile extensions
+  agentProfile           AgentProfile?
+  serviceProviderProfile ServiceProviderProfile?
+
+  // Relations - Owned data
+  properties    Property[]
+  requests      Request[]
+  payments      Payment[]
+  notifications Notification[]
+  reviews       Review[]       @relation("ReviewAuthor")
+
+  @@index([email])
+  @@index([phone])
+  @@index([role])
+  @@index([isActive, isSuspended])
   @@map("users")
+}
+
+model AgentProfile {
+  id             String   @id @default(uuid())
+  userId         String   @unique @map("user_id")
+  agencyName     String?  @map("agency_name")
+  serviceAreas   String[] @map("service_areas")
+  experience     Int      @default(0)
+  specialization String[]
+  bio            String?  @db.Text
+  profilePhoto   String?  @map("profile_photo")
+  languages      String[] @default([])
+
+  // Contact (can differ from User contact)
+  contactPhone   String? @map("contact_phone")
+  contactEmail   String? @map("contact_email")
+  whatsappNumber String? @map("whatsapp_number")
+
+  // Stats & Verification
+  rating          Float   @default(0)
+  totalReviews    Int     @default(0) @map("total_reviews")
+  activeListings  Int     @default(0) @map("active_listings")
+  successfulDeals Int     @default(0) @map("successful_deals")
+  isVerified      Boolean @default(false) @map("is_verified")
+
+  // Moderation
+  approvalStatus ApprovalStatus @default(PENDING) @map("approval_status")
+  isDeleted      Boolean        @default(false) @map("is_deleted")
+  deletedAt      DateTime?      @map("deleted_at")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  user          User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  triangleLinks PropertyRequestLink[]
+  reviews       Review[]              @relation("AgentReviews")
+
+  @@index([userId])
+  @@index([isVerified])
+  @@index([approvalStatus])
+  @@index([serviceAreas])
+  @@map("agent_profiles")
+}
+
+model ServiceProviderProfile {
+  id           String              @id @default(uuid())
+  userId       String              @unique @map("user_id")
+  type         ServiceProviderType
+  businessName String?             @map("business_name")
+  location     String
+  state        String?
+  address      String?             @db.Text
+  experience   Int                 @default(0)
+  description  String?             @db.Text
+  services     String[]
+  education    String[]            @default([])
+  languages    String[]            @default([])
+
+  // Contact
+  contactPhone   String? @map("contact_phone")
+  contactEmail   String? @map("contact_email")
+  whatsappNumber String? @map("whatsapp_number")
+  profilePhoto   String? @map("profile_photo")
+
+  // Stats & Verification
+  rating        Float   @default(0)
+  totalReviews  Int     @default(0) @map("total_reviews")
+  clientsServed Int     @default(0) @map("clients_served")
+  isVerified    Boolean @default(false) @map("is_verified")
+  availability  String?
+
+  // Moderation
+  approvalStatus ApprovalStatus @default(PENDING) @map("approval_status")
+  isDeleted      Boolean        @default(false) @map("is_deleted")
+  deletedAt      DateTime?      @map("deleted_at")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reviews Review[] @relation("ServiceProviderReviews")
+
+  @@index([userId])
+  @@index([type])
+  @@index([location])
+  @@index([isVerified])
+  @@index([approvalStatus])
+  @@map("service_provider_profiles")
+}
+
+// ============================================================================
+// PROPERTIES
+// ============================================================================
+
+model Property {
+  id           String           @id @default(uuid())
+  title        String
+  slug         String           @unique
+  propertyType PropertyType     @map("property_type")
+  category     PropertyCategory
+
+  // Pricing
+  price     Decimal @db.Decimal(15, 2)
+  priceUnit String  @default("total") @map("price_unit")
+
+  // Size & Specs
+  areaSize  Float   @map("area_size")
+  areaUnit  String  @default("sqft") @map("area_unit")
+  bedrooms  Int?
+  bathrooms Int?
+  parking   Int?
+  floors    Int?
+  yearBuilt Int?    @map("year_built")
+
+  // Location
+  state     String
+  city      String
+  locality  String
+  address   String? @db.Text
+  pincode   String?
+  latitude  Float?
+  longitude Float?
+
+  // Details
+  description String   @db.Text
+  amenities   String[] @default([])
+  features    String[] @default([])
+
+  // Listing Info
+  listedById   String     @map("listed_by_id")
+  listerType   ListerType @map("lister_type")
+  contactName  String?    @map("contact_name")
+  contactPhone String?    @map("contact_phone")
+  contactEmail String?    @map("contact_email")
+
+  // Status & Moderation
+  status         PropertyStatus @default(AVAILABLE)
+  approvalStatus ApprovalStatus @default(PENDING) @map("approval_status")
+  isFeatured     Boolean        @default(false) @map("is_featured")
+  featuredUntil  DateTime?      @map("featured_until")
+
+  // Soft Delete
+  isDeleted Boolean   @default(false) @map("is_deleted")
+  deletedAt DateTime? @map("deleted_at")
+
+  // Stats
+  viewCount    Int @default(0) @map("view_count")
+  inquiryCount Int @default(0) @map("inquiry_count")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  listedBy      User                  @relation(fields: [listedById], references: [id])
+  images        PropertyImage[]
+  triangleLinks PropertyRequestLink[]
+  reviews       Review[]              @relation("PropertyReviews")
+
+  @@index([listedById])
+  @@index([propertyType])
+  @@index([category])
+  @@index([status])
+  @@index([approvalStatus])
+  @@index([state, city, locality])
+  @@index([price])
+  @@index([isFeatured])
+  @@index([isDeleted])
+  @@index([latitude, longitude])
+  @@map("properties")
+}
+
+model PropertyImage {
+  id         String   @id @default(uuid())
+  propertyId String   @map("property_id")
+  url        String
+  caption    String?
+  sortOrder  Int      @default(0) @map("sort_order")
+  isPrimary  Boolean  @default(false) @map("is_primary")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  // Relations
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@index([propertyId])
+  @@map("property_images")
+}
+
+// ============================================================================
+// REQUESTS
+// ============================================================================
+
+model Request {
+  id          String      @id @default(uuid())
+  requestType RequestType @map("request_type")
+  title       String
+
+  // Budget
+  budgetMin Decimal @map("budget_min") @db.Decimal(15, 2)
+  budgetMax Decimal @map("budget_max") @db.Decimal(15, 2)
+
+  // Preferences
+  preferredPropertyType PropertyType[] @map("preferred_property_type")
+  preferredLocations    String[]       @map("preferred_locations")
+  preferredState        String?        @map("preferred_state")
+  minArea               Float?         @map("min_area")
+  maxArea               Float?         @map("max_area")
+  minBedrooms           Int?           @map("min_bedrooms")
+
+  // Timeline & Notes
+  timeline     String?  @db.Text
+  notes        String?  @db.Text
+  requirements String[] @default([])
+
+  // User Info
+  postedById        String  @map("posted_by_id")
+  contactPreference String? @map("contact_preference")
+
+  // Status & Moderation
+  status         RequestStatus  @default(OPEN)
+  approvalStatus ApprovalStatus @default(PENDING) @map("approval_status")
+
+  // Soft Delete
+  isDeleted Boolean   @default(false) @map("is_deleted")
+  deletedAt DateTime? @map("deleted_at")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  postedBy      User                  @relation(fields: [postedById], references: [id])
+  triangleLinks PropertyRequestLink[]
+
+  @@index([postedById])
+  @@index([requestType])
+  @@index([status])
+  @@index([approvalStatus])
+  @@index([preferredLocations])
+  @@index([budgetMin, budgetMax])
+  @@index([isDeleted])
+  @@map("requests")
+}
+
+// ============================================================================
+// TRIANGLE CONNECTION (Core Differentiator)
+// ============================================================================
+
+model PropertyRequestLink {
+  id         String             @id @default(uuid())
+  propertyId String             @map("property_id")
+  requestId  String             @map("request_id")
+  agentId    String             @map("agent_id")
+  status     TriangleLinkStatus @default(PENDING)
+
+  // Interaction History
+  agentNote     String? @map("agent_note") @db.Text
+  buyerResponse String? @map("buyer_response") @db.Text
+
+  // Timestamps for status transitions
+  notifiedAt  DateTime? @map("notified_at")
+  respondedAt DateTime? @map("responded_at")
+  connectedAt DateTime? @map("connected_at")
+  closedAt    DateTime? @map("closed_at")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  property Property     @relation(fields: [propertyId], references: [id])
+  request  Request      @relation(fields: [requestId], references: [id])
+  agent    AgentProfile @relation(fields: [agentId], references: [id])
+
+  @@unique([propertyId, requestId, agentId])
+  @@index([propertyId])
+  @@index([requestId])
+  @@index([agentId])
+  @@index([status])
+  @@map("property_request_links")
+}
+
+// ============================================================================
+// PAYMENTS (Backend Ready for Phase 2 Monetization)
+// ============================================================================
+
+model Payment {
+  id          String      @id @default(uuid())
+  userId      String      @map("user_id")
+  amount      Decimal     @db.Decimal(10, 2)
+  currency    String      @default("INR")
+  paymentType PaymentType @map("payment_type")
+  description String?
+
+  // Razorpay Integration
+  razorpayOrderId   String? @unique @map("razorpay_order_id")
+  razorpayPaymentId String? @unique @map("razorpay_payment_id")
+  razorpaySignature String? @map("razorpay_signature")
+
+  // Status
+  status        PaymentStatus @default(INITIATED)
+  failureReason String?       @map("failure_reason")
+
+  // Reference to what was paid for
+  referenceType String? @map("reference_type")
+  referenceId   String? @map("reference_id")
+
+  // Metadata
+  metadata Json?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([status])
+  @@index([paymentType])
+  @@index([razorpayOrderId])
+  @@map("payments")
+}
+
+// ============================================================================
+// REVIEWS
+// ============================================================================
+
+model Review {
+  id       String  @id @default(uuid())
+  authorId String  @map("author_id")
+  rating   Int
+  title    String?
+  comment  String? @db.Text
+
+  // Polymorphic: Review can be for Property, Agent, or ServiceProvider
+  propertyId               String? @map("property_id")
+  agentProfileId           String? @map("agent_profile_id")
+  serviceProviderProfileId String? @map("service_provider_profile_id")
+
+  // Moderation
+  isApproved Boolean @default(true) @map("is_approved")
+  isDeleted  Boolean @default(false) @map("is_deleted")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  author                 User                    @relation("ReviewAuthor", fields: [authorId], references: [id])
+  property               Property?               @relation("PropertyReviews", fields: [propertyId], references: [id])
+  agentProfile           AgentProfile?           @relation("AgentReviews", fields: [agentProfileId], references: [id])
+  serviceProviderProfile ServiceProviderProfile? @relation("ServiceProviderReviews", fields: [serviceProviderProfileId], references: [id])
+
+  @@index([authorId])
+  @@index([propertyId])
+  @@index([agentProfileId])
+  @@index([serviceProviderProfileId])
+  @@index([rating])
+  @@map("reviews")
+}
+
+// ============================================================================
+// NOTIFICATIONS
+// ============================================================================
+
+model Notification {
+  id      String           @id @default(uuid())
+  userId  String           @map("user_id")
+  type    NotificationType
+  title   String
+  message String           @db.Text
+
+  // Reference to related entity
+  referenceType String? @map("reference_type")
+  referenceId   String? @map("reference_id")
+
+  // Action URL (optional)
+  actionUrl String? @map("action_url")
+
+  // Status
+  isRead Boolean   @default(false) @map("is_read")
+  readAt DateTime? @map("read_at")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([isRead])
+  @@index([type])
+  @@index([createdAt])
+  @@map("notifications")
+}
+
+// ============================================================================
+// ADMIN LOGS (Audit Trail)
+// ============================================================================
+
+model AdminLog {
+  id          String      @id @default(uuid())
+  adminId     String      @map("admin_id")
+  action      AdminAction
+  description String?     @db.Text
+
+  // Target of action
+  targetType String @map("target_type")
+  targetId   String @map("target_id")
+
+  // Before/After state (optional JSON)
+  previousState Json? @map("previous_state")
+  newState      Json? @map("new_state")
+
+  // Request metadata
+  ipAddress String? @map("ip_address")
+  userAgent String? @map("user_agent")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([adminId])
+  @@index([action])
+  @@index([targetType, targetId])
+  @@index([createdAt])
+  @@map("admin_logs")
+}
+
+// ============================================================================
+// CONTACT INQUIRIES (for visitors)
+// ============================================================================
+
+model ContactInquiry {
+  id      String  @id @default(uuid())
+  name    String
+  email   String
+  phone   String?
+  subject String
+  message String  @db.Text
+
+  // Reference (optional)
+  propertyId String? @map("property_id")
+  agentId    String? @map("agent_id")
+
+  // Status
+  isResolved Boolean   @default(false) @map("is_resolved")
+  resolvedAt DateTime? @map("resolved_at")
+  resolvedBy String?   @map("resolved_by")
+  notes      String?   @db.Text
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([email])
+  @@index([isResolved])
+  @@index([createdAt])
+  @@map("contact_inquiries")
 }
