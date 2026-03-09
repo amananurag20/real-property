@@ -6,22 +6,24 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useAuth } from '@/contexts/AuthContext';
 import { User, Mail, Phone, Building2, Save, ChevronLeft, Camera, MapPin, Calendar } from 'lucide-react';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function DashboardProfilePage() {
     const { user } = useAuth();
+    const router = useRouter();
 
     return (
         <main className="min-h-screen bg-muted/30 pt-10 pb-16">
             <div className="max-w-4xl mx-auto px-6 md:px-8">
                 {/* Header */}
                 <div className="flex items-center gap-4 mb-8">
-                    <Link 
-                        href="/dashboard"
+                    <button
+                        type="button"
+                        onClick={() => router.back()}
                         className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-slate-900 text-white hover:bg-slate-800 transition-all shadow-lg hover:shadow-xl"
                     >
                         <ChevronLeft className="w-5 h-5" />
-                    </Link>
+                    </button>
                     <div>
                         <h1 className="text-3xl font-bold text-foreground">Profile Settings</h1>
                         <p className="text-muted-foreground">Manage your personal information</p>
@@ -61,16 +63,16 @@ export default function DashboardProfilePage() {
                                 {/* Basic Information */}
                                 <div className="space-y-6">
                                     <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2">Basic Details</h3>
-                                    
+
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="space-y-3">
                                             <Label className="flex items-center gap-2 text-sm font-medium text-foreground">
                                                 <User className="w-4 h-4 text-primary" />
                                                 Full Name
                                             </Label>
-                                            <Input 
-                                                defaultValue={user?.name || ''} 
-                                                placeholder="Enter your full name" 
+                                            <Input
+                                                defaultValue={user?.name || ''}
+                                                placeholder="Enter your full name"
                                                 className="h-12 rounded-xl border-border/50 focus-visible:ring-primary"
                                             />
                                         </div>
@@ -80,10 +82,10 @@ export default function DashboardProfilePage() {
                                                 <Mail className="w-4 h-4 text-primary" />
                                                 Email Address
                                             </Label>
-                                            <Input 
-                                                type="email" 
-                                                defaultValue={user?.email || ''} 
-                                                placeholder="your@email.com" 
+                                            <Input
+                                                type="email"
+                                                defaultValue={user?.email || ''}
+                                                placeholder="your@email.com"
                                                 className="h-12 rounded-xl border-border/50 focus-visible:ring-primary"
                                             />
                                         </div>
@@ -95,9 +97,9 @@ export default function DashboardProfilePage() {
                                                 <Phone className="w-4 h-4 text-primary" />
                                                 Phone Number
                                             </Label>
-                                            <Input 
-                                                defaultValue={user?.phone || ''} 
-                                                placeholder="+91 98765 43210" 
+                                            <Input
+                                                defaultValue={user?.phone || ''}
+                                                placeholder="+91 98765 43210"
                                                 className="h-12 rounded-xl border-border/50 focus-visible:ring-primary"
                                             />
                                         </div>
@@ -107,8 +109,8 @@ export default function DashboardProfilePage() {
                                                 <Calendar className="w-4 h-4 text-primary" />
                                                 Date of Birth
                                             </Label>
-                                            <Input 
-                                                type="date" 
+                                            <Input
+                                                type="date"
                                                 className="h-12 rounded-xl border-border/50 focus-visible:ring-primary"
                                             />
                                         </div>
@@ -118,15 +120,15 @@ export default function DashboardProfilePage() {
                                 {/* Location Information */}
                                 <div className="space-y-6">
                                     <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2">Location Details</h3>
-                                    
+
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="space-y-3">
                                             <Label className="flex items-center gap-2 text-sm font-medium text-foreground">
                                                 <Building2 className="w-4 h-4 text-primary" />
                                                 City
                                             </Label>
-                                            <Input 
-                                                placeholder="Your city" 
+                                            <Input
+                                                placeholder="Your city"
                                                 className="h-12 rounded-xl border-border/50 focus-visible:ring-primary"
                                             />
                                         </div>
@@ -136,8 +138,8 @@ export default function DashboardProfilePage() {
                                                 <MapPin className="w-4 h-4 text-primary" />
                                                 State
                                             </Label>
-                                            <Input 
-                                                placeholder="Your state" 
+                                            <Input
+                                                placeholder="Your state"
                                                 className="h-12 rounded-xl border-border/50 focus-visible:ring-primary"
                                             />
                                         </div>
@@ -147,8 +149,8 @@ export default function DashboardProfilePage() {
                                         <Label className="text-sm font-medium text-foreground">
                                             Complete Address
                                         </Label>
-                                        <Textarea 
-                                            placeholder="Enter your complete address..." 
+                                        <Textarea
+                                            placeholder="Enter your complete address..."
                                             rows={3}
                                             className="rounded-xl border-border/50 focus-visible:ring-primary resize-none"
                                         />
@@ -158,13 +160,13 @@ export default function DashboardProfilePage() {
                                 {/* About Section */}
                                 <div className="space-y-6">
                                     <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2">About You</h3>
-                                    
+
                                     <div className="space-y-3">
                                         <Label className="text-sm font-medium text-foreground">
                                             Bio
                                         </Label>
-                                        <Textarea 
-                                            placeholder="Tell us about yourself..." 
+                                        <Textarea
+                                            placeholder="Tell us about yourself..."
                                             rows={4}
                                             className="rounded-xl border-border/50 focus-visible:ring-primary resize-none"
                                         />

@@ -123,6 +123,17 @@ export function Header() {
                         >
                             Home
                         </Link>
+                        {isAuthenticated && (
+                            <Link
+                                href={getDashboardLink()}
+                                className={`px-3.5 py-1.5 text-[14px] font-medium transition-colors ${isActive('^/dashboard') || isActive('^/admin') || isActive('^/agent') || isActive('^/provider')
+                                    ? 'text-slate-900'
+                                    : 'text-gray-500 hover:text-gray-900'
+                                    }`}
+                            >
+                                Dashboard
+                            </Link>
+                        )}
 
                         {/* Explore Dropdown */}
                         <DropdownMenu open={exploreOpen} onOpenChange={setExploreOpen}>
@@ -164,17 +175,7 @@ export function Header() {
                             </Link>
                         )}
 
-                        {isAuthenticated && (
-                            <Link
-                                href={getDashboardLink()}
-                                className={`px-3.5 py-1.5 text-[14px] font-medium transition-colors ${isActive('^/dashboard') || isActive('^/admin') || isActive('^/agent') || isActive('^/provider')
-                                    ? 'text-slate-900'
-                                    : 'text-gray-500 hover:text-gray-900'
-                                    }`}
-                            >
-                                Dashboard
-                            </Link>
-                        )}
+
                     </nav>
 
                     {/* Right Side */}
@@ -183,7 +184,7 @@ export function Header() {
                         {isAuthenticated && (
                             <div className="hidden md:flex items-center gap-1">
                                 {hasPermission(userRole, PERMISSIONS.CREATE_PROPERTY) && (
-                                    <Link href="/dashboard/properties/new">
+                                    <Link href="/dashboard/properties/form">
                                         <Button variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900 text-[13px] font-medium h-8 px-3">
                                             <Plus className="w-3.5 h-3.5 mr-1" />
                                             Post Property
@@ -191,7 +192,7 @@ export function Header() {
                                     </Link>
                                 )}
                                 {hasPermission(userRole, PERMISSIONS.CREATE_REQUEST) && (
-                                    <Link href="/dashboard/requests/new">
+                                    <Link href="/dashboard/requests/form">
                                         <Button variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900 text-[13px] font-medium h-8 px-3">
                                             <Plus className="w-3.5 h-3.5 mr-1" />
                                             Post Request
@@ -279,23 +280,7 @@ export function Header() {
                                             Profile Settings
                                         </Link>
                                     </DropdownMenuItem>
-                                    {userRole === Role.ADMIN && (
-                                        <>
-                                            <DropdownMenuSeparator className="my-1" />
-                                            <DropdownMenuItem asChild>
-                                                <Link href="/admin" className="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer text-[13px] text-gray-700 hover:bg-gray-50 font-medium">
-                                                    <Shield className="w-4 h-4 text-gray-400" />
-                                                    Admin Panel
-                                                </Link>
-                                            </DropdownMenuItem>
-                                            <DropdownMenuItem asChild>
-                                                <Link href="/admin/analytics" className="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer text-[13px] text-gray-700 hover:bg-gray-50 font-medium">
-                                                    <BarChart3 className="w-4 h-4 text-gray-400" />
-                                                    Analytics
-                                                </Link>
-                                            </DropdownMenuItem>
-                                        </>
-                                    )}
+
                                     <DropdownMenuItem onClick={logout} className="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer text-[13px] text-red-500 hover:bg-red-50 font-medium">
                                         <LogOut className="w-4 h-4" />
                                         Sign Out

@@ -10,8 +10,10 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useRouter } from 'next/navigation';
 
 export default function DashboardPropertiesPage() {
+    const router = useRouter();
     const properties = [
         {
             id: 1,
@@ -62,12 +64,13 @@ export default function DashboardPropertiesPage() {
             <div className="max-w-7xl mx-auto px-6 md:px-8">
                 {/* Header */}
                 <div className="flex items-center gap-4 mb-8">
-                    <Link 
-                        href="/dashboard"
+                    <button
+                        type="button"
+                        onClick={() => router.back()}
                         className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-slate-900 text-white hover:bg-slate-800 transition-all shadow-lg hover:shadow-xl"
                     >
                         <ChevronLeft className="w-5 h-5" />
-                    </Link>
+                    </button>
                     <div className="flex-1">
                         <h1 className="text-3xl font-bold text-foreground">My Properties</h1>
                         <p className="text-muted-foreground">Manage your property listings</p>
@@ -129,20 +132,18 @@ export default function DashboardPropertiesPage() {
                                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                 />
                                 <div className="absolute top-4 left-4 flex gap-2">
-                                    <Badge 
+                                    <Badge
                                         variant={property.type === 'Sale' ? 'default' : 'secondary'}
                                         className="rounded-full px-3 py-1"
                                     >
                                         For {property.type}
                                     </Badge>
-                                    <div className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-bold border ${
-                                        property.status === 'Available' 
-                                            ? 'bg-emerald-50 text-emerald-600 border-emerald-100' 
+                                    <div className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-bold border ${property.status === 'Available'
+                                            ? 'bg-emerald-50 text-emerald-600 border-emerald-100'
                                             : 'bg-orange-50 text-orange-600 border-orange-100'
-                                    }`}>
-                                        <span className={`inline-block h-2 w-2 rounded-full ${
-                                            property.status === 'Available' ? 'bg-emerald-500' : 'bg-orange-500'
-                                        }`}></span>
+                                        }`}>
+                                        <span className={`inline-block h-2 w-2 rounded-full ${property.status === 'Available' ? 'bg-emerald-500' : 'bg-orange-500'
+                                            }`}></span>
                                         {property.status}
                                     </div>
                                 </div>

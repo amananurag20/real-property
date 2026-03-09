@@ -6,16 +6,16 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { 
-    UserCircle, 
-    Building2, 
-    MapPin, 
-    Award, 
-    Save, 
-    CheckCircle, 
-    ChevronLeft, 
-    Camera, 
-    Eye, 
+import {
+    UserCircle,
+    Building2,
+    MapPin,
+    Award,
+    Save,
+    CheckCircle,
+    ChevronLeft,
+    Camera,
+    Eye,
     Edit,
     Phone,
     Mail,
@@ -25,9 +25,11 @@ import {
 import { useAuth } from '@/contexts/AuthContext';
 import { Role } from '@/constants/roles';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function AgentProfilePage() {
     const { user } = useAuth();
+    const router = useRouter();
     const isAgent = user?.role === Role.AGENT;
     const [showPreview, setShowPreview] = useState(false);
 
@@ -53,14 +55,13 @@ export default function AgentProfilePage() {
                 <div className="max-w-4xl mx-auto px-6 md:px-8">
                     {/* Header */}
                     <div className="flex items-center gap-4 mb-8">
-                        <Button 
-                            onClick={() => setShowPreview(false)}
-                            variant="outline"
-                            size="icon"
-                            className="w-10 h-10 rounded-full"
+                        <button
+                            type="button"
+                            onClick={() => router.back()}
+                            className="inline-flex items-center justify-center w-10 h-10 rounded-full border bg-white hover:bg-muted/30 transition-all"
                         >
                             <ChevronLeft className="w-5 h-5" />
-                        </Button>
+                        </button>
                         <div className="flex-1">
                             <h1 className="text-3xl font-bold text-foreground">Agent Profile Preview</h1>
                             <p className="text-muted-foreground">How your profile will appear to clients</p>
@@ -77,8 +78,8 @@ export default function AgentProfilePage() {
                         <div className="relative bg-gradient-to-br from-primary/10 to-primary/5 p-8 pb-16">
                             <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
                                 <div className="relative">
-                                    <img 
-                                        src={previewData.image} 
+                                    <img
+                                        src={previewData.image}
                                         alt={previewData.name}
                                         className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg"
                                     />
@@ -180,18 +181,19 @@ export default function AgentProfilePage() {
             <div className="max-w-4xl mx-auto px-6 md:px-8">
                 {/* Header */}
                 <div className="flex items-center gap-4 mb-8">
-                    <Link 
-                        href="/dashboard"
+                    <button
+                        type="button"
+                        onClick={() => router.back()}
                         className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-slate-900 text-white hover:bg-slate-800 transition-all shadow-lg hover:shadow-xl"
                     >
                         <ChevronLeft className="w-5 h-5" />
-                    </Link>
+                    </button>
                     <div className="flex-1">
                         <h1 className="text-3xl font-bold text-foreground">
                             {isAgent ? 'Agent Profile' : 'Create Agent Profile'}
                         </h1>
                         <p className="text-muted-foreground">
-                            {isAgent 
+                            {isAgent
                                 ? 'Manage your agent profile and public information'
                                 : 'Set up your agent profile to start connecting properties with buyers'
                             }
@@ -257,16 +259,16 @@ export default function AgentProfilePage() {
                                 {/* Basic Information */}
                                 <div className="space-y-6">
                                     <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2">Basic Details</h3>
-                                    
+
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="space-y-3">
                                             <Label className="flex items-center gap-2 text-sm font-medium text-foreground">
                                                 <UserCircle className="w-4 h-4 text-primary" />
                                                 Full Name
                                             </Label>
-                                            <Input 
-                                                defaultValue={user?.name || ''} 
-                                                placeholder="Your full name" 
+                                            <Input
+                                                defaultValue={user?.name || ''}
+                                                placeholder="Your full name"
                                                 className="h-12 rounded-xl border-border/50 focus-visible:ring-primary"
                                             />
                                         </div>
@@ -276,8 +278,8 @@ export default function AgentProfilePage() {
                                                 <Building2 className="w-4 h-4 text-primary" />
                                                 Agency/Brokerage
                                             </Label>
-                                            <Input 
-                                                placeholder="Agency name" 
+                                            <Input
+                                                placeholder="Agency name"
                                                 className="h-12 rounded-xl border-border/50 focus-visible:ring-primary"
                                             />
                                         </div>
@@ -289,9 +291,9 @@ export default function AgentProfilePage() {
                                                 <Award className="w-4 h-4 text-primary" />
                                                 Years of Experience
                                             </Label>
-                                            <Input 
-                                                type="number" 
-                                                placeholder="e.g., 5" 
+                                            <Input
+                                                type="number"
+                                                placeholder="e.g., 5"
                                                 className="h-12 rounded-xl border-border/50 focus-visible:ring-primary"
                                             />
                                         </div>
@@ -300,8 +302,8 @@ export default function AgentProfilePage() {
                                             <Label className="text-sm font-medium text-foreground">
                                                 Specialization
                                             </Label>
-                                            <Input 
-                                                placeholder="e.g., Residential, Commercial" 
+                                            <Input
+                                                placeholder="e.g., Residential, Commercial"
                                                 className="h-12 rounded-xl border-border/50 focus-visible:ring-primary"
                                             />
                                         </div>
@@ -311,14 +313,14 @@ export default function AgentProfilePage() {
                                 {/* Service Areas */}
                                 <div className="space-y-6">
                                     <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2">Service Information</h3>
-                                    
+
                                     <div className="space-y-3">
                                         <Label className="flex items-center gap-2 text-sm font-medium text-foreground">
                                             <MapPin className="w-4 h-4 text-primary" />
                                             Service Areas
                                         </Label>
-                                        <Input 
-                                            placeholder="Cities or regions you serve (comma separated)" 
+                                        <Input
+                                            placeholder="Cities or regions you serve (comma separated)"
                                             className="h-12 rounded-xl border-border/50 focus-visible:ring-primary"
                                         />
                                     </div>
@@ -327,8 +329,8 @@ export default function AgentProfilePage() {
                                         <Label className="text-sm font-medium text-foreground">
                                             About Me
                                         </Label>
-                                        <Textarea 
-                                            placeholder="Describe your experience, expertise, and what makes you unique..." 
+                                        <Textarea
+                                            placeholder="Describe your experience, expertise, and what makes you unique..."
                                             rows={4}
                                             className="rounded-xl border-border/50 focus-visible:ring-primary resize-none"
                                         />

@@ -18,14 +18,14 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { 
-    Briefcase, 
-    MapPin, 
-    Phone, 
-    Mail, 
-    ChevronLeft, 
-    Camera, 
-    Eye, 
+import {
+    Briefcase,
+    MapPin,
+    Phone,
+    Mail,
+    ChevronLeft,
+    Camera,
+    Eye,
     Edit,
     Save,
     Award,
@@ -70,14 +70,13 @@ export default function ProviderProfileEditPage() {
                 <div className="max-w-4xl mx-auto px-6 md:px-8">
                     {/* Header */}
                     <div className="flex items-center gap-4 mb-8">
-                        <Button 
-                            onClick={() => setShowPreview(false)}
-                            variant="outline"
-                            size="icon"
-                            className="w-10 h-10 rounded-full"
+                        <button
+                            type="button"
+                            onClick={() => router.back()}
+                            className="inline-flex items-center justify-center w-10 h-10 rounded-full border bg-white hover:bg-muted/30 transition-all"
                         >
                             <ChevronLeft className="w-5 h-5" />
-                        </Button>
+                        </button>
                         <div className="flex-1">
                             <h1 className="text-3xl font-bold text-foreground">Service Provider Preview</h1>
                             <p className="text-muted-foreground">How your profile will appear to clients</p>
@@ -94,8 +93,8 @@ export default function ProviderProfileEditPage() {
                         <div className="relative bg-gradient-to-br from-primary/10 to-primary/5 p-8 pb-16">
                             <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
                                 <div className="relative">
-                                    <img 
-                                        src={previewData.image} 
+                                    <img
+                                        src={previewData.image}
                                         alt={previewData.name}
                                         className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg"
                                     />
@@ -198,12 +197,13 @@ export default function ProviderProfileEditPage() {
             <div className="max-w-4xl mx-auto px-6 md:px-8">
                 {/* Header */}
                 <div className="flex items-center gap-4 mb-8">
-                    <Link 
-                        href="/provider/dashboard"
+                    <button
+                        type="button"
+                        onClick={() => router.back()}
                         className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-slate-900 text-white hover:bg-slate-800 transition-all shadow-lg hover:shadow-xl"
                     >
                         <ChevronLeft className="w-5 h-5" />
-                    </Link>
+                    </button>
                     <div className="flex-1">
                         <h1 className="text-3xl font-bold text-foreground">Service Provider Profile</h1>
                         <p className="text-muted-foreground">Update your professional service information</p>
@@ -256,7 +256,7 @@ export default function ProviderProfileEditPage() {
                                 {/* Service Details */}
                                 <div className="space-y-6">
                                     <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2">Service Details</h3>
-                                    
+
                                     <div className="space-y-3">
                                         <Label className="flex items-center gap-2 text-sm font-medium text-foreground">
                                             <Briefcase className="w-4 h-4 text-primary" />
@@ -282,8 +282,8 @@ export default function ProviderProfileEditPage() {
                                         <Label className="text-sm font-medium text-foreground">
                                             Business/Practice Name
                                         </Label>
-                                        <Input 
-                                            placeholder="Enter your business name" 
+                                        <Input
+                                            placeholder="Enter your business name"
                                             className="h-12 rounded-xl border-border/50 focus-visible:ring-primary"
                                         />
                                     </div>
@@ -293,9 +293,9 @@ export default function ProviderProfileEditPage() {
                                             <Award className="w-4 h-4 text-primary" />
                                             Years of Experience
                                         </Label>
-                                        <Input 
-                                            type="number" 
-                                            placeholder="e.g., 10" 
+                                        <Input
+                                            type="number"
+                                            placeholder="e.g., 10"
                                             className="h-12 rounded-xl border-border/50 focus-visible:ring-primary"
                                         />
                                     </div>
@@ -304,14 +304,14 @@ export default function ProviderProfileEditPage() {
                                 {/* Location & Contact */}
                                 <div className="space-y-6">
                                     <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2">Location & Contact</h3>
-                                    
+
                                     <div className="space-y-3">
                                         <Label className="flex items-center gap-2 text-sm font-medium text-foreground">
                                             <MapPin className="w-4 h-4 text-primary" />
                                             Service Location
                                         </Label>
-                                        <Input 
-                                            placeholder="City, State" 
+                                        <Input
+                                            placeholder="City, State"
                                             className="h-12 rounded-xl border-border/50 focus-visible:ring-primary"
                                         />
                                     </div>
@@ -322,8 +322,8 @@ export default function ProviderProfileEditPage() {
                                                 <Phone className="w-4 h-4 text-primary" />
                                                 Phone Number
                                             </Label>
-                                            <Input 
-                                                placeholder="Contact number" 
+                                            <Input
+                                                placeholder="Contact number"
                                                 className="h-12 rounded-xl border-border/50 focus-visible:ring-primary"
                                             />
                                         </div>
@@ -333,8 +333,8 @@ export default function ProviderProfileEditPage() {
                                                 <Mail className="w-4 h-4 text-primary" />
                                                 Email Address
                                             </Label>
-                                            <Input 
-                                                placeholder="Email address" 
+                                            <Input
+                                                placeholder="Email address"
                                                 className="h-12 rounded-xl border-border/50 focus-visible:ring-primary"
                                             />
                                         </div>
@@ -344,13 +344,13 @@ export default function ProviderProfileEditPage() {
                                 {/* About Services */}
                                 <div className="space-y-6">
                                     <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2">About Your Services</h3>
-                                    
+
                                     <div className="space-y-3">
                                         <Label className="text-sm font-medium text-foreground">
                                             Service Description
                                         </Label>
-                                        <Textarea 
-                                            placeholder="Describe your services, expertise, and what makes you unique..." 
+                                        <Textarea
+                                            placeholder="Describe your services, expertise, and what makes you unique..."
                                             rows={4}
                                             className="rounded-xl border-border/50 focus-visible:ring-primary resize-none"
                                         />
@@ -359,10 +359,11 @@ export default function ProviderProfileEditPage() {
 
                                 {/* Action Buttons */}
                                 <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-border">
-                                    <Button 
-                                        variant="outline" 
+                                    <Button
+                                        type="button"
+                                        variant="outline"
                                         className="flex-1 h-12 rounded-xl"
-                                        onClick={() => router.push('/provider/dashboard')}
+                                        onClick={() => router.back()}
                                     >
                                         Cancel
                                     </Button>

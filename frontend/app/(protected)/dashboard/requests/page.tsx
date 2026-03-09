@@ -10,8 +10,10 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useRouter } from 'next/navigation';
 
 export default function DashboardRequestsPage() {
+    const router = useRouter();
     const requests = [
         {
             id: 1,
@@ -62,12 +64,13 @@ export default function DashboardRequestsPage() {
             <div className="max-w-7xl mx-auto px-6 md:px-8">
                 {/* Header */}
                 <div className="flex items-center gap-4 mb-8">
-                    <Link 
-                        href="/dashboard"
+                    <button
+                        type="button"
+                        onClick={() => router.back()}
                         className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-slate-900 text-white hover:bg-slate-800 transition-all shadow-lg hover:shadow-xl"
                     >
                         <ChevronLeft className="w-5 h-5" />
-                    </Link>
+                    </button>
                     <div className="flex-1">
                         <h1 className="text-3xl font-bold text-foreground">My Requests</h1>
                         <p className="text-muted-foreground">Manage your property requests</p>
@@ -130,14 +133,12 @@ export default function DashboardRequestsPage() {
                                         <Badge variant={request.type === 'Buy' ? 'default' : 'secondary'} className="rounded-full px-4 py-1">
                                             {request.type}
                                         </Badge>
-                                        <div className={`inline-flex items-center gap-2 rounded-full px-4 py-1 text-xs font-bold border ${
-                                            request.status === 'Open' 
-                                                ? 'bg-emerald-50 text-emerald-600 border-emerald-100' 
+                                        <div className={`inline-flex items-center gap-2 rounded-full px-4 py-1 text-xs font-bold border ${request.status === 'Open'
+                                                ? 'bg-emerald-50 text-emerald-600 border-emerald-100'
                                                 : 'bg-blue-50 text-blue-600 border-blue-100'
-                                        }`}>
-                                            <span className={`inline-block h-2 w-2 rounded-full ${
-                                                request.status === 'Open' ? 'bg-emerald-500' : 'bg-blue-500'
-                                            }`}></span>
+                                            }`}>
+                                            <span className={`inline-block h-2 w-2 rounded-full ${request.status === 'Open' ? 'bg-emerald-500' : 'bg-blue-500'
+                                                }`}></span>
                                             {request.status}
                                         </div>
                                     </div>

@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
 import { MapPin, Home, Users, ArrowRight, CheckCircle2 } from 'lucide-react';
@@ -10,8 +12,26 @@ import { allProperties } from '@/data/properties';
 import { allRequests } from '@/data/requests';
 import { allAgents } from '@/data/agents';
 import { allServices } from '@/data/services';
+import { useAuth } from '@/contexts/AuthContext';
+import { Role } from '@/constants/roles';
 
 export default function HomePage() {
+  const { isAuthenticated, user } = useAuth();
+
+  const getDashboardLink = () => {
+    switch (user?.role) {
+      case Role.ADMIN:
+        return '/admin';
+      case Role.AGENT:
+        return '/dashboard/agent-profile';
+      case Role.SERVICE_PROVIDER:
+        return '/provider/dashboard';
+      case Role.USER:
+      default:
+        return '/dashboard';
+    }
+  };
+
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
@@ -21,7 +41,6 @@ export default function HomePage() {
             {/* Left Content */}
             <div className="space-y-8">
               <div className="space-y-6">
-
                 <h1 className="text-5xl md:text-[4.25rem] font-semibold text-foreground leading-[1.05] tracking-tight">
                   Find a place you will call home
                 </h1>
@@ -31,12 +50,19 @@ export default function HomePage() {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4 sm:items-center">
-                <Link href="/dashboard/properties/new">
+                <Link href="/dashboard/properties/form">
                   <Button className="h-12 px-8 rounded-full text-sm font-semibold shadow-sm">
                     Post Property
                   </Button>
                 </Link>
-                <Link href="/agents" className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors">
+                {isAuthenticated && (
+                  <Link href={getDashboardLink()}>
+                    <Button variant="outline" className="h-12 px-8 rounded-full text-sm font-semibold shadow-sm border-slate-200">
+                      Go to Dashboard
+                    </Button>
+                  </Link>
+                )}
+                <Link href="/agents" className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors ml-2">
                   Find Agent
                 </Link>
               </div>

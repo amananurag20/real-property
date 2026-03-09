@@ -20,7 +20,7 @@ export default function RequestFormPage() {
     const params = useParams();
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
-    
+
     // Determine if this is edit mode
     const paramsArray = params.params as string[] | undefined;
     const isEditMode = paramsArray?.[0] === 'edit' && paramsArray?.[1];
@@ -62,11 +62,11 @@ export default function RequestFormPage() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
-        
+
         // Simulate API call
         setTimeout(() => {
             setIsLoading(false);
-            router.push('/dashboard/requests');
+            router.back();
         }, 1000);
     };
 
@@ -79,12 +79,13 @@ export default function RequestFormPage() {
             <div className="max-w-4xl mx-auto px-6 md:px-8">
                 {/* Header */}
                 <div className="flex items-center gap-4 mb-8">
-                    <Link 
-                        href="/dashboard/requests"
+                    <button
+                        type="button"
+                        onClick={() => router.back()}
                         className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-slate-900 text-white hover:bg-slate-800 transition-all shadow-lg hover:shadow-xl"
                     >
                         <ChevronLeft className="w-5 h-5" />
-                    </Link>
+                    </button>
                     <div>
                         <h1 className="text-3xl font-bold text-foreground">
                             {isEditMode ? `Edit Request #${requestId}` : 'Post New Request'}
@@ -138,10 +139,10 @@ export default function RequestFormPage() {
 
                             <div className="space-y-3">
                                 <Label className="text-sm font-medium text-foreground">Request Title</Label>
-                                <Input 
+                                <Input
                                     value={formData.title}
                                     onChange={(e) => handleInputChange('title', e.target.value)}
-                                    placeholder="e.g., Looking for 2BHK Apartment in Bangalore" 
+                                    placeholder="e.g., Looking for 2BHK Apartment in Bangalore"
                                     className="h-12 rounded-xl border-border/50 focus-visible:ring-primary"
                                     required
                                 />
@@ -196,11 +197,11 @@ export default function RequestFormPage() {
                                         <DollarSign className="w-4 h-4 text-primary" />
                                         Min Budget (₹)
                                     </Label>
-                                    <Input 
-                                        type="number" 
+                                    <Input
+                                        type="number"
                                         value={formData.minBudget}
                                         onChange={(e) => handleInputChange('minBudget', e.target.value)}
-                                        placeholder="Minimum budget" 
+                                        placeholder="Minimum budget"
                                         className="h-12 rounded-xl border-border/50 focus-visible:ring-primary"
                                         required
                                     />
@@ -211,11 +212,11 @@ export default function RequestFormPage() {
                                         <DollarSign className="w-4 h-4 text-primary" />
                                         Max Budget (₹)
                                     </Label>
-                                    <Input 
-                                        type="number" 
+                                    <Input
+                                        type="number"
                                         value={formData.maxBudget}
                                         onChange={(e) => handleInputChange('maxBudget', e.target.value)}
-                                        placeholder="Maximum budget" 
+                                        placeholder="Maximum budget"
                                         className="h-12 rounded-xl border-border/50 focus-visible:ring-primary"
                                         required
                                     />
@@ -225,22 +226,22 @@ export default function RequestFormPage() {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-3">
                                     <Label className="text-sm font-medium text-foreground">Min Area (sq ft)</Label>
-                                    <Input 
-                                        type="number" 
+                                    <Input
+                                        type="number"
                                         value={formData.minArea}
                                         onChange={(e) => handleInputChange('minArea', e.target.value)}
-                                        placeholder="Minimum area" 
+                                        placeholder="Minimum area"
                                         className="h-12 rounded-xl border-border/50 focus-visible:ring-primary"
                                     />
                                 </div>
 
                                 <div className="space-y-3">
                                     <Label className="text-sm font-medium text-foreground">Max Area (sq ft)</Label>
-                                    <Input 
-                                        type="number" 
+                                    <Input
+                                        type="number"
                                         value={formData.maxArea}
                                         onChange={(e) => handleInputChange('maxArea', e.target.value)}
-                                        placeholder="Maximum area" 
+                                        placeholder="Maximum area"
                                         className="h-12 rounded-xl border-border/50 focus-visible:ring-primary"
                                     />
                                 </div>
@@ -261,10 +262,10 @@ export default function RequestFormPage() {
                                     <MapPin className="w-4 h-4 text-primary" />
                                     Preferred Location
                                 </Label>
-                                <Input 
+                                <Input
                                     value={formData.location}
                                     onChange={(e) => handleInputChange('location', e.target.value)}
-                                    placeholder="City, Area or Locality" 
+                                    placeholder="City, Area or Locality"
                                     className="h-12 rounded-xl border-border/50 focus-visible:ring-primary"
                                     required
                                 />
@@ -298,10 +299,10 @@ export default function RequestFormPage() {
                         <div className="space-y-6">
                             <div className="space-y-3">
                                 <Label className="text-sm font-medium text-foreground">Detailed Requirements</Label>
-                                <Textarea 
+                                <Textarea
                                     value={formData.requirements}
                                     onChange={(e) => handleInputChange('requirements', e.target.value)}
-                                    placeholder="Describe any specific requirements, preferences, or features you're looking for..." 
+                                    placeholder="Describe any specific requirements, preferences, or features you're looking for..."
                                     rows={4}
                                     className="rounded-xl border-border/50 focus-visible:ring-primary resize-none"
                                     required
@@ -310,10 +311,10 @@ export default function RequestFormPage() {
 
                             <div className="space-y-3">
                                 <Label className="text-sm font-medium text-foreground">Preferred Amenities</Label>
-                                <Textarea 
+                                <Textarea
                                     value={formData.amenities}
                                     onChange={(e) => handleInputChange('amenities', e.target.value)}
-                                    placeholder="List preferred amenities (e.g., Gym, Swimming Pool, Security, Parking)" 
+                                    placeholder="List preferred amenities (e.g., Gym, Swimming Pool, Security, Parking)"
                                     rows={3}
                                     className="rounded-xl border-border/50 focus-visible:ring-primary resize-none"
                                 />
@@ -324,15 +325,15 @@ export default function RequestFormPage() {
                     {/* Action Buttons */}
                     <div className="bg-white rounded-[32px] shadow-[0_30px_70px_-45px_rgba(15,23,42,0.45)] border border-border/40 p-8">
                         <div className="flex flex-col sm:flex-row gap-4">
-                            <Button 
+                            <Button
                                 type="button"
-                                variant="outline" 
+                                variant="outline"
                                 className="flex-1 h-12 rounded-xl"
-                                onClick={() => router.push('/dashboard/requests')}
+                                onClick={() => router.back()}
                             >
                                 Cancel
                             </Button>
-                            <Button 
+                            <Button
                                 type="submit"
                                 className="flex-1 h-12 rounded-xl bg-slate-900 hover:bg-slate-800"
                                 disabled={isLoading}
@@ -348,6 +349,6 @@ export default function RequestFormPage() {
                     </div>
                 </form>
             </div>
-        </main>
+        </main >
     );
 }
