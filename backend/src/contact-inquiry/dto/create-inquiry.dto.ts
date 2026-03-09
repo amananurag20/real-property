@@ -1,8 +1,19 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, IsOptional, IsString, IsUUID, Matches, MaxLength } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUUID,
+  Matches,
+  MaxLength,
+} from 'class-validator';
 
 export class CreateInquiryDto {
-  @ApiProperty({ description: 'Name of the person making inquiry', maxLength: 100 })
+  @ApiProperty({
+    description: 'Name of the person making inquiry',
+    maxLength: 100,
+  })
   @IsString()
   @IsNotEmpty()
   @MaxLength(100)
@@ -13,10 +24,16 @@ export class CreateInquiryDto {
   @IsNotEmpty()
   email!: string;
 
-  @ApiProperty({ description: 'Phone number (10 digits starting with 6-9)', required: false })
+  @ApiProperty({
+    description: 'Phone number (10 digits starting with 6-9)',
+    required: false,
+  })
   @IsOptional()
   @IsString()
-  @Matches(/^[6-9]\d{9}$/, { message: 'Phone must be a valid 10-digit Indian phone number starting with 6-9' })
+  @Matches(/^[6-9]\d{9}$/, {
+    message:
+      'Phone must be a valid 10-digit Indian phone number starting with 6-9',
+  })
   phone?: string;
 
   @ApiProperty({ description: 'Subject of the inquiry', maxLength: 200 })

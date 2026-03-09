@@ -9,11 +9,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import {
-  ApiTags,
-  ApiBearerAuth,
-  ApiOperation,
-} from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { AgentProfileService } from './agent-profile.service';
 import { CreateAgentProfileDto } from './dto/create-agent-profile.dto';
 import { UpdateAgentProfileDto } from './dto/update-agent-profile.dto';
@@ -35,7 +31,7 @@ class UpdateApprovalStatusDto {
 @ApiTags('Agent Profile')
 @Controller('agent-profile')
 export class AgentProfileController {
-  constructor(private readonly agentProfileService: AgentProfileService) { }
+  constructor(private readonly agentProfileService: AgentProfileService) {}
 
   @Post()
   @UseGuards(JwtAuthGuard)
@@ -99,10 +95,7 @@ export class AgentProfileController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Verify agent profile (admin only)' })
   @ResponseMessage('Agent profile verified successfully')
-  verifyAgent(
-    @Param('id') id: string,
-    @CurrentUser('id') adminId: string,
-  ) {
+  verifyAgent(@Param('id') id: string, @CurrentUser('id') adminId: string) {
     return this.agentProfileService.verifyAgent(id, adminId);
   }
 
@@ -110,7 +103,9 @@ export class AgentProfileController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Update agent profile approval status (admin only)' })
+  @ApiOperation({
+    summary: 'Update agent profile approval status (admin only)',
+  })
   @ResponseMessage('Agent profile approval status updated successfully')
   updateApprovalStatus(
     @Param('id') id: string,

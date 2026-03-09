@@ -43,7 +43,11 @@ export class NotificationService {
     });
 
     // Real-time delivery via Socket.IO
-    this.socketService.emitToRoom(`user:${userId}`, 'notification', notification);
+    this.socketService.emitToRoom(
+      `user:${userId}`,
+      'notification',
+      notification,
+    );
 
     return notification;
   }

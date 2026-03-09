@@ -9,7 +9,11 @@ export class ListAgentProfilesDto extends PaginationDto {
   @IsString()
   serviceArea?: string;
 
-  @ApiPropertyOptional({ description: 'Minimum rating', minimum: 0, maximum: 5 })
+  @ApiPropertyOptional({
+    description: 'Minimum rating',
+    minimum: 0,
+    maximum: 5,
+  })
   @IsOptional()
   @IsNumber()
   @Type(() => Number)

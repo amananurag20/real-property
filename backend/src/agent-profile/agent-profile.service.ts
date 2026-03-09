@@ -20,7 +20,7 @@ export class AgentProfileService {
     private readonly prisma: PrismaService,
     private readonly notificationService: NotificationService,
     private readonly adminLogService: AdminLogService,
-  ) { }
+  ) {}
 
   async create(userId: string, dto: CreateAgentProfileDto) {
     // Check if agent profile already exists
@@ -200,20 +200,16 @@ export class AgentProfileService {
       {
         title: 'Agent Profile Verified',
         message: 'Your agent profile has been verified by an administrator.',
-        actionUrl: `/agent/${profile.id}`
-      }
+        actionUrl: `/agent/${profile.id}`,
+      },
     );
 
     // Create admin log
-    await this.adminLogService.createLog(
-      adminId,
-      AdminAction.CONTENT_EDITED,
-      {
-        targetType: 'agent_profile',
-        targetId: id,
-        description: 'Agent Verified',
-      }
-    );
+    await this.adminLogService.createLog(adminId, AdminAction.CONTENT_EDITED, {
+      targetType: 'agent_profile',
+      targetId: id,
+      description: 'Agent Verified',
+    });
 
     return updatedProfile;
   }
@@ -243,21 +239,17 @@ export class AgentProfileService {
       {
         title: `Agent Profile ${status}`,
         message: `Your agent profile has been ${status.toLowerCase()} by an administrator.`,
-        actionUrl: `/agent/${profile.id}`
-      }
+        actionUrl: `/agent/${profile.id}`,
+      },
     );
 
     // Log admin action
-    await this.adminLogService.createLog(
-      adminId,
-      AdminAction.CONTENT_EDITED,
-      {
-        targetType: 'agent_profile',
-        targetId: id,
-        description: `Agent status updated to ${status}`,
-        newState: { approvalStatus: status }
-      }
-    );
+    await this.adminLogService.createLog(adminId, AdminAction.CONTENT_EDITED, {
+      targetType: 'agent_profile',
+      targetId: id,
+      description: `Agent status updated to ${status}`,
+      newState: { approvalStatus: status },
+    });
 
     return updatedProfile;
   }

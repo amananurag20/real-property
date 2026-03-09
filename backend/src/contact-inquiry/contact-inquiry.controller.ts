@@ -1,4 +1,13 @@
-import { Controller, Post, Get, Patch, Body, Param, Query, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Patch,
+  Body,
+  Param,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { ContactInquiryService } from './contact-inquiry.service';
 import { CreateInquiryDto } from './dto/create-inquiry.dto';
@@ -13,7 +22,7 @@ import { Role } from '../auth/guards/roles.guard';
 @ApiTags('Contact Inquiries')
 @Controller('contact-inquiry')
 export class ContactInquiryController {
-  constructor(private readonly contactInquiryService: ContactInquiryService) { }
+  constructor(private readonly contactInquiryService: ContactInquiryService) {}
 
   @Post()
   @ApiOperation({ summary: 'Create a contact inquiry (Public)' })

@@ -68,7 +68,7 @@ describe('HealthService', () => {
 
       await service.check();
       expect(prismaService.client.$queryRaw).toHaveBeenCalledWith(
-        expect.anything()
+        expect.anything(),
       );
     });
   });

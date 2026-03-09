@@ -25,13 +25,15 @@ export class RequestService {
     private readonly prisma: PrismaService,
     private readonly notificationService: NotificationService,
     private readonly adminLogService: AdminLogService,
-  ) { }
+  ) {}
 
   /** Create a new property request */
   async create(userId: string, dto: CreateRequestDto) {
     // Validate budgetMin <= budgetMax
     if (dto.budgetMin > dto.budgetMax) {
-      throw new BadRequestException('budgetMin cannot be greater than budgetMax');
+      throw new BadRequestException(
+        'budgetMin cannot be greater than budgetMax',
+      );
     }
 
     // Validate minArea <= maxArea if both provided
@@ -87,7 +89,10 @@ export class RequestService {
     }
 
     if (dto.preferredState) {
-      where.preferredState = { contains: dto.preferredState, mode: 'insensitive' };
+      where.preferredState = {
+        contains: dto.preferredState,
+        mode: 'insensitive',
+      };
     }
 
     if (dto.minBudget !== undefined) {
@@ -146,7 +151,10 @@ export class RequestService {
     }
 
     if (dto.preferredState) {
-      where.preferredState = { contains: dto.preferredState, mode: 'insensitive' };
+      where.preferredState = {
+        contains: dto.preferredState,
+        mode: 'insensitive',
+      };
     }
 
     if (dto.minBudget !== undefined) {
@@ -215,7 +223,8 @@ export class RequestService {
 
     // Access control
     const isOwner = userId && request.postedById === userId;
-    const isAdminOrAgent = userRole && [Role.ADMIN, Role.AGENT].includes(userRole as any);
+    const isAdminOrAgent =
+      userRole && [Role.ADMIN, Role.AGENT].includes(userRole as any);
     const isApproved = request.approvalStatus === ApprovalStatus.APPROVED;
 
     // Owner can always see their own request
@@ -259,7 +268,9 @@ export class RequestService {
     const newBudgetMin = dto.budgetMin ?? request.budgetMin;
     const newBudgetMax = dto.budgetMax ?? request.budgetMax;
     if (newBudgetMin > newBudgetMax) {
-      throw new BadRequestException('budgetMin cannot be greater than budgetMax');
+      throw new BadRequestException(
+        'budgetMin cannot be greater than budgetMax',
+      );
     }
 
     // Validate areas if both provided

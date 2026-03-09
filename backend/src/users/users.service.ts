@@ -2,15 +2,17 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { memoryCache } from '../common/utils/memory-cache.util';
 import { PrismaService } from '../prisma';
 import { UpdateProfileDto } from './dto/update-profile.dto';
-import { getUserSelect, AGENT_PROFILE_SUMMARY_SELECT, SERVICE_PROVIDER_PROFILE_SUMMARY_SELECT } from '../common/utils/user-select.util';
+import {
+  getUserSelect,
+  AGENT_PROFILE_SUMMARY_SELECT,
+  SERVICE_PROVIDER_PROFILE_SUMMARY_SELECT,
+} from '../common/utils/user-select.util';
 import { getUserEffectivePermissions } from '../common/utils/permissions.util';
 import { Role } from '../../generated/prisma/enums';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    private readonly prisma: PrismaService,
-  ) { }
+  constructor(private readonly prisma: PrismaService) {}
 
   /** Get own profile — role-aware field selection with profile relations */
   async findMe(userId: string, requesterRole: string) {
@@ -20,7 +22,9 @@ export class UsersService {
       select: {
         ...select,
         agentProfile: { select: AGENT_PROFILE_SUMMARY_SELECT },
-        serviceProviderProfile: { select: SERVICE_PROVIDER_PROFILE_SUMMARY_SELECT },
+        serviceProviderProfile: {
+          select: SERVICE_PROVIDER_PROFILE_SUMMARY_SELECT,
+        },
       },
     });
     if (!user) throw new NotFoundException('User not found.');
@@ -51,7 +55,9 @@ export class UsersService {
       select: {
         ...select,
         agentProfile: { select: AGENT_PROFILE_SUMMARY_SELECT },
-        serviceProviderProfile: { select: SERVICE_PROVIDER_PROFILE_SUMMARY_SELECT },
+        serviceProviderProfile: {
+          select: SERVICE_PROVIDER_PROFILE_SUMMARY_SELECT,
+        },
       },
     });
   }
@@ -64,7 +70,9 @@ export class UsersService {
       select: {
         ...select,
         agentProfile: { select: AGENT_PROFILE_SUMMARY_SELECT },
-        serviceProviderProfile: { select: SERVICE_PROVIDER_PROFILE_SUMMARY_SELECT },
+        serviceProviderProfile: {
+          select: SERVICE_PROVIDER_PROFILE_SUMMARY_SELECT,
+        },
       },
     });
     if (!user) throw new NotFoundException('User not found.');

@@ -25,7 +25,8 @@ export class ListRequestsDto extends PaginationDto {
   @ApiPropertyOptional({
     example: 5000000,
     minimum: 0,
-    description: 'Filter by minimum budget (finds requests with budgetMax >= this value)',
+    description:
+      'Filter by minimum budget (finds requests with budgetMax >= this value)',
   })
   @IsOptional()
   @Type(() => Number)
@@ -36,7 +37,8 @@ export class ListRequestsDto extends PaginationDto {
   @ApiPropertyOptional({
     example: 10000000,
     minimum: 0,
-    description: 'Filter by maximum budget (finds requests with budgetMin <= this value)',
+    description:
+      'Filter by maximum budget (finds requests with budgetMin <= this value)',
   })
   @IsOptional()
   @Type(() => Number)

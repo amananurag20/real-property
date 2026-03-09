@@ -1,5 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsNumber, IsObject, IsOptional, IsString, IsUUID, MaxLength, Min } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsObject,
+  IsOptional,
+  IsString,
+  IsUUID,
+  MaxLength,
+  Min,
+} from 'class-validator';
 import { PaymentType } from '../../../generated/prisma/enums';
 
 export class CreatePaymentDto {
@@ -13,13 +23,21 @@ export class CreatePaymentDto {
   @IsNotEmpty()
   paymentType!: PaymentType;
 
-  @ApiProperty({ description: 'Payment description', required: false, maxLength: 500 })
+  @ApiProperty({
+    description: 'Payment description',
+    required: false,
+    maxLength: 500,
+  })
   @IsOptional()
   @IsString()
   @MaxLength(500)
   description?: string;
 
-  @ApiProperty({ description: 'Reference type (e.g., "Property", "Service")', required: false, maxLength: 100 })
+  @ApiProperty({
+    description: 'Reference type (e.g., "Property", "Service")',
+    required: false,
+    maxLength: 100,
+  })
   @IsOptional()
   @IsString()
   @MaxLength(100)

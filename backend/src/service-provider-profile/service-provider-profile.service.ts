@@ -10,7 +10,11 @@ import { CreateServiceProviderProfileDto } from './dto/create-service-provider-p
 import { UpdateServiceProviderProfileDto } from './dto/update-service-provider-profile.dto';
 import { ListServiceProviderProfilesDto } from './dto/list-service-provider-profiles.dto';
 import { buildPaginationMeta } from '../common/dto/pagination.dto';
-import { ApprovalStatus, NotificationType, AdminAction } from '../../generated/prisma/enums';
+import {
+  ApprovalStatus,
+  NotificationType,
+  AdminAction,
+} from '../../generated/prisma/enums';
 
 @Injectable()
 export class ServiceProviderProfileService {
@@ -23,11 +27,15 @@ export class ServiceProviderProfileService {
   /** Create a service provider profile (authenticated) */
   async create(userId: string, dto: CreateServiceProviderProfileDto) {
     // Check if user already has a profile
-    const existing = await this.prisma.client.serviceProviderProfile.findUnique({
-      where: { userId },
-    });
+    const existing = await this.prisma.client.serviceProviderProfile.findUnique(
+      {
+        where: { userId },
+      },
+    );
     if (existing) {
-      throw new ConflictException('Service provider profile already exists for this user.');
+      throw new ConflictException(
+        'Service provider profile already exists for this user.',
+      );
     }
 
     return this.prisma.client.serviceProviderProfile.create({
@@ -200,7 +208,9 @@ export class ServiceProviderProfileService {
     });
 
     if (!profile) {
-      throw new NotFoundException('Service provider profile not found or not approved.');
+      throw new NotFoundException(
+        'Service provider profile not found or not approved.',
+      );
     }
 
     return profile;
@@ -236,19 +246,27 @@ export class ServiceProviderProfileService {
     );
 
     // Log admin action
-    await this.adminLogService.createLog(adminId, AdminAction.SERVICE_PROVIDER_APPROVED, {
-      description: `Verified service provider profile for ${profile.user.name}`,
-      targetType: 'ServiceProviderProfile',
-      targetId: id,
-      previousState: { isVerified: profile.isVerified },
-      newState: { isVerified: true },
-    });
+    await this.adminLogService.createLog(
+      adminId,
+      AdminAction.SERVICE_PROVIDER_APPROVED,
+      {
+        description: `Verified service provider profile for ${profile.user.name}`,
+        targetType: 'ServiceProviderProfile',
+        targetId: id,
+        previousState: { isVerified: profile.isVerified },
+        newState: { isVerified: true },
+      },
+    );
 
     return updated;
   }
 
   /** [ADMIN] Update approval status */
-  async updateApprovalStatus(id: string, status: ApprovalStatus, adminId: string) {
+  async updateApprovalStatus(
+    id: string,
+    status: ApprovalStatus,
+    adminId: string,
+  ) {
     const profile = await this.prisma.client.serviceProviderProfile.findUnique({
       where: { id },
       include: { user: true },

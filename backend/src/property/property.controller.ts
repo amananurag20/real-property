@@ -26,7 +26,7 @@ import { AddImagesDto } from './dto/add-images.dto';
 @ApiTags('Property')
 @Controller('property')
 export class PropertyController {
-  constructor(private readonly propertyService: PropertyService) { }
+  constructor(private readonly propertyService: PropertyService) {}
 
   @Post()
   @UseGuards(JwtAuthGuard)

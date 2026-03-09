@@ -25,7 +25,7 @@ export class PropertyService {
     private readonly prisma: PrismaService,
     private readonly notificationService: NotificationService,
     private readonly adminLogService: AdminLogService,
-  ) { }
+  ) {}
 
   /** Create a new property listing */
   async create(userId: string, dto: CreatePropertyDto) {
@@ -64,13 +64,17 @@ export class PropertyService {
     }
     if (dto.minPrice !== undefined || dto.maxPrice !== undefined) {
       where.price = {};
-      if (dto.minPrice !== undefined) (where.price as Record<string, unknown>).gte = dto.minPrice;
-      if (dto.maxPrice !== undefined) (where.price as Record<string, unknown>).lte = dto.maxPrice;
+      if (dto.minPrice !== undefined)
+        (where.price as Record<string, unknown>).gte = dto.minPrice;
+      if (dto.maxPrice !== undefined)
+        (where.price as Record<string, unknown>).lte = dto.maxPrice;
     }
     if (dto.minArea !== undefined || dto.maxArea !== undefined) {
       where.areaSize = {};
-      if (dto.minArea !== undefined) (where.areaSize as Record<string, unknown>).gte = dto.minArea;
-      if (dto.maxArea !== undefined) (where.areaSize as Record<string, unknown>).lte = dto.maxArea;
+      if (dto.minArea !== undefined)
+        (where.areaSize as Record<string, unknown>).gte = dto.minArea;
+      if (dto.maxArea !== undefined)
+        (where.areaSize as Record<string, unknown>).lte = dto.maxArea;
     }
     if (dto.minBedrooms !== undefined) {
       where.bedrooms = { gte: dto.minBedrooms };
@@ -182,7 +186,9 @@ export class PropertyService {
 
     if (!property) throw new NotFoundException('Property not found.');
     if (property.listedById !== userId)
-      throw new ForbiddenException('You do not have permission to update this property.');
+      throw new ForbiddenException(
+        'You do not have permission to update this property.',
+      );
 
     return this.prisma.client.property.update({
       where: { id: propertyId },
@@ -198,7 +204,9 @@ export class PropertyService {
 
     if (!property) throw new NotFoundException('Property not found.');
     if (property.listedById !== userId)
-      throw new ForbiddenException('You do not have permission to delete this property.');
+      throw new ForbiddenException(
+        'You do not have permission to delete this property.',
+      );
 
     await this.prisma.client.property.update({
       where: { id: propertyId },
@@ -220,14 +228,17 @@ export class PropertyService {
 
     if (!property) throw new NotFoundException('Property not found.');
     if (property.listedById !== userId)
-      throw new ForbiddenException('You do not have permission to add images to this property.');
+      throw new ForbiddenException(
+        'You do not have permission to add images to this property.',
+      );
 
     // If no existing images, set the first new image as primary
     const hasExistingImages = property.images.length > 0;
     const imagesToCreate = dto.images.map((img: any, index: number) => ({
       ...img,
       propertyId,
-      isPrimary: !hasExistingImages && index === 0 ? true : (img.isPrimary ?? false),
+      isPrimary:
+        !hasExistingImages && index === 0 ? true : (img.isPrimary ?? false),
     }));
 
     await this.prisma.client.propertyImage.createMany({
@@ -246,7 +257,9 @@ export class PropertyService {
 
     if (!property) throw new NotFoundException('Property not found.');
     if (property.listedById !== userId)
-      throw new ForbiddenException('You do not have permission to delete images from this property.');
+      throw new ForbiddenException(
+        'You do not have permission to delete images from this property.',
+      );
 
     const image = await this.prisma.client.propertyImage.findUnique({
       where: { id: imageId },
@@ -263,7 +276,9 @@ export class PropertyService {
 
     // If the deleted image was primary, set another image as primary
     if (wasPrimary) {
-      const remainingImages = property.images.filter((img: any) => img.id !== imageId);
+      const remainingImages = property.images.filter(
+        (img: any) => img.id !== imageId,
+      );
       if (remainingImages.length > 0) {
         await this.prisma.client.propertyImage.update({
           where: { id: remainingImages[0].id },
@@ -283,7 +298,9 @@ export class PropertyService {
 
     if (!property) throw new NotFoundException('Property not found.');
     if (property.listedById !== userId)
-      throw new ForbiddenException('You do not have permission to modify images for this property.');
+      throw new ForbiddenException(
+        'You do not have permission to modify images for this property.',
+      );
 
     const image = await this.prisma.client.propertyImage.findUnique({
       where: { id: imageId },

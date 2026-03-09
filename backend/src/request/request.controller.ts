@@ -37,7 +37,7 @@ interface UserPayload {
 @ApiTags('Requests')
 @Controller('request')
 export class RequestController {
-  constructor(private readonly requestService: RequestService) { }
+  constructor(private readonly requestService: RequestService) {}
 
   @Post()
   @UseGuards(JwtAuthGuard)
@@ -69,7 +69,9 @@ export class RequestController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Get all public property requests (paginated, filtered)' })
+  @ApiOperation({
+    summary: 'Get all public property requests (paginated, filtered)',
+  })
   @ApiResponse({ status: 200, description: 'List of public requests' })
   @ResponseMessage('Requests fetched successfully')
   async findAll(@Query() dto: ListRequestsDto) {

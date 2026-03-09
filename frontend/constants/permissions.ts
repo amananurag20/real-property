@@ -256,7 +256,7 @@ export const ROUTE_ACCESS = {
 
 // Feature Flags (Phase-based)
 export const FEATURE_FLAGS = {
-  PAYMENT_SYSTEM: false, // Phase 1: Backend ready only
+  PAYMENT_SYSTEM: true, // Phase 1: Test mode active
   IN_APP_CHAT: false,    // Phase 2
   SUBSCRIPTION: false,   // Phase 2
   ESCROW: false,         // Phase 3

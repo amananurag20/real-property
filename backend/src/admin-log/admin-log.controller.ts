@@ -13,7 +13,7 @@ import { Role } from '../auth/guards/roles.guard';
 @Roles(Role.ADMIN)
 @Controller('admin-log')
 export class AdminLogController {
-  constructor(private readonly adminLogService: AdminLogService) { }
+  constructor(private readonly adminLogService: AdminLogService) {}
 
   @Get()
   @ApiOperation({ summary: '[ADMIN] List admin audit logs' })

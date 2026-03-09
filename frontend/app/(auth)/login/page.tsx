@@ -58,7 +58,7 @@ const LoginPage = () => {
         mutationFn: (data: { phone: string; otp: string }) => authServiceApi.verifyOtp(data),
         onSuccess: (response: any) => {
             const data = extractData<any>(response);
-            login(data.user, data.accessToken);
+            login(data.user, data.accessToken, data.refreshToken);
             toast.success('Successfully logged in!');
             router.push('/dashboard');
         },

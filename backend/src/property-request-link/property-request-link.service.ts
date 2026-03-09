@@ -22,7 +22,7 @@ export class PropertyRequestLinkService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly notificationService: NotificationService,
-  ) { }
+  ) {}
 
   async createLink(agentUserId: string, dto: CreateLinkDto) {
     // 1. Find and validate agent profile
@@ -34,8 +34,13 @@ export class PropertyRequestLinkService {
       throw new NotFoundException('Agent profile not found');
     }
 
-    if (!agentProfile.isVerified || agentProfile.approvalStatus !== ApprovalStatus.APPROVED) {
-      throw new ForbiddenException('Agent profile must be verified and approved');
+    if (
+      !agentProfile.isVerified ||
+      agentProfile.approvalStatus !== ApprovalStatus.APPROVED
+    ) {
+      throw new ForbiddenException(
+        'Agent profile must be verified and approved',
+      );
     }
 
     // 2. Check property exists and is valid
@@ -91,7 +96,7 @@ export class PropertyRequestLinkService {
         title: 'New Property Match',
         message: `An agent has matched a property to your request: ${request.title}`,
         actionUrl: `/triangle/${link.id}`,
-      }
+      },
     );
 
     // 6. Increment property inquiry count
@@ -181,7 +186,8 @@ export class PropertyRequestLinkService {
       select: { id: true },
     });
 
-    const requestIds = requests.map((r: { id: string }) => r.id); if (requestIds.length === 0) {
+    const requestIds = requests.map((r: { id: string }) => r.id);
+    if (requestIds.length === 0) {
       return {
         data: [],
         meta: buildPaginationMeta(0, dto.page ?? 1, dto.limit ?? 10),
@@ -286,7 +292,11 @@ export class PropertyRequestLinkService {
     return link;
   }
 
-  async updateAgentNote(agentUserId: string, linkId: string, agentNote: string) {
+  async updateAgentNote(
+    agentUserId: string,
+    linkId: string,
+    agentNote: string,
+  ) {
     // Find agent profile
     const agentProfile = await this.prisma.client.agentProfile.findUnique({
       where: { userId: agentUserId },
@@ -316,7 +326,11 @@ export class PropertyRequestLinkService {
     });
   }
 
-  async updateStatus(agentUserId: string, linkId: string, status: TriangleLinkStatus) {
+  async updateStatus(
+    agentUserId: string,
+    linkId: string,
+    status: TriangleLinkStatus,
+  ) {
     // Find agent profile
     const agentProfile = await this.prisma.client.agentProfile.findUnique({
       where: { userId: agentUserId },
@@ -370,13 +384,17 @@ export class PropertyRequestLinkService {
         title: 'Triangle Match Status Update',
         message: `The status of your property match has been updated to: ${status}`,
         actionUrl: `/triangle/${link.id}`,
-      }
+      },
     );
 
     return updatedLink;
   }
 
-  async buyerRespond(buyerUserId: string, linkId: string, dto: BuyerResponseDto) {
+  async buyerRespond(
+    buyerUserId: string,
+    linkId: string,
+    dto: BuyerResponseDto,
+  ) {
     // Find link
     const link = await this.prisma.client.propertyRequestLink.findUnique({
       where: { id: linkId },
@@ -433,7 +451,7 @@ export class PropertyRequestLinkService {
         title: 'Buyer Response Received',
         message: notificationMessage,
         actionUrl: `/triangle/${link.id}`,
-      }
+      },
     );
 
     return updatedLink;

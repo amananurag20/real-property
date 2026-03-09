@@ -14,7 +14,11 @@ import {
   IsLongitude,
   Max,
 } from 'class-validator';
-import { PropertyType, PropertyCategory, ListerType } from '../../../generated/prisma/enums';
+import {
+  PropertyType,
+  PropertyCategory,
+  ListerType,
+} from '../../../generated/prisma/enums';
 
 export class CreatePropertyDto {
   @ApiProperty({ maxLength: 200 })
@@ -150,7 +154,9 @@ export class CreatePropertyDto {
   @ApiPropertyOptional({ pattern: '^[6-9]\\d{9}$' })
   @IsOptional()
   @IsString()
-  @Matches(/^[6-9]\d{9}$/, { message: 'Contact phone must be a valid 10-digit Indian mobile number' })
+  @Matches(/^[6-9]\d{9}$/, {
+    message: 'Contact phone must be a valid 10-digit Indian mobile number',
+  })
   contactPhone?: string;
 
   @ApiPropertyOptional()

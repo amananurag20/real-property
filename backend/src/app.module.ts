@@ -45,6 +45,11 @@ import { ContactInquiryModule } from './contact-inquiry/contact-inquiry.module';
         // Auth / JWT
         JWT_ACCESS_SECRET: Joi.string().required(),
         JWT_ACCESS_EXPIRES_IN: Joi.string().default('15m'),
+
+        // Razorpay
+        RAZORPAY_KEY_ID: Joi.string().required(),
+        RAZORPAY_KEY_SECRET: Joi.string().required(),
+        RAZORPAY_WEBHOOK_SECRET: Joi.string().optional().default(''),
       }),
     }),
 
@@ -83,4 +88,4 @@ import { ContactInquiryModule } from './contact-inquiry/contact-inquiry.module';
     },
   ],
 })
-export class AppModule { }
+export class AppModule {}

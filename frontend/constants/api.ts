@@ -32,3 +32,30 @@ export const USER_ENDPOINTS = {
         url: '/users/me',
     },
 };
+
+export const PAYMENT_ENDPOINTS = {
+    CONFIG: {
+        method: 'GET' as HttpMethod,
+        url: '/payment/config',
+    },
+    CREATE_ORDER: {
+        method: 'POST' as HttpMethod,
+        url: '/payment/create-order',
+    },
+    VERIFY: {
+        method: 'POST' as HttpMethod,
+        url: '/payment/verify',
+    },
+    LIST_ALL: {
+        method: 'GET' as HttpMethod,
+        url: '/payment',
+    },
+    LIST_MY: {
+        method: 'GET' as HttpMethod,
+        url: '/payment/me',
+    },
+    SYNC_STATUS: (id: string) => ({
+        method: 'POST' as HttpMethod,
+        url: `/payment/${id}/sync`,
+    }),
+};

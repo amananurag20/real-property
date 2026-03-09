@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
@@ -12,13 +17,19 @@ export class ReviewService {
   constructor(
     private prisma: PrismaService,
     private adminLogService: AdminLogService,
-  ) { }
+  ) {}
 
   async create(userId: string, dto: CreateReviewDto) {
     // Validate exactly one target ID is provided
-    const targetIds = [dto.propertyId, dto.agentProfileId, dto.serviceProviderProfileId].filter(Boolean);
+    const targetIds = [
+      dto.propertyId,
+      dto.agentProfileId,
+      dto.serviceProviderProfileId,
+    ].filter(Boolean);
     if (targetIds.length !== 1) {
-      throw new BadRequestException('Exactly one of propertyId, agentProfileId, or serviceProviderProfileId must be provided');
+      throw new BadRequestException(
+        'Exactly one of propertyId, agentProfileId, or serviceProviderProfileId must be provided',
+      );
     }
 
     const review = await this.prisma.client.review.create({
@@ -38,7 +49,14 @@ export class ReviewService {
   }
 
   async findAll(dto: ListReviewsDto) {
-    const { page = 1, limit = 10, propertyId, agentProfileId, serviceProviderProfileId, minRating } = dto;
+    const {
+      page = 1,
+      limit = 10,
+      propertyId,
+      agentProfileId,
+      serviceProviderProfileId,
+      minRating,
+    } = dto;
     const skip = (page - 1) * limit;
 
     const where: any = {
@@ -48,7 +66,8 @@ export class ReviewService {
 
     if (propertyId) where.propertyId = propertyId;
     if (agentProfileId) where.agentProfileId = agentProfileId;
-    if (serviceProviderProfileId) where.serviceProviderProfileId = serviceProviderProfileId;
+    if (serviceProviderProfileId)
+      where.serviceProviderProfileId = serviceProviderProfileId;
     if (minRating) where.rating = { gte: minRating };
 
     const [data, total] = await Promise.all([
@@ -100,7 +119,9 @@ export class ReviewService {
   }
 
   async update(userId: string, id: string, dto: UpdateReviewDto) {
-    const review = await this.prisma.client.review.findUnique({ where: { id } });
+    const review = await this.prisma.client.review.findUnique({
+      where: { id },
+    });
 
     if (!review) {
       throw new NotFoundException('Review not found');
@@ -122,7 +143,9 @@ export class ReviewService {
   }
 
   async softDelete(userId: string, id: string) {
-    const review = await this.prisma.client.review.findUnique({ where: { id } });
+    const review = await this.prisma.client.review.findUnique({
+      where: { id },
+    });
 
     if (!review) {
       throw new NotFoundException('Review not found');
@@ -144,7 +167,9 @@ export class ReviewService {
   }
 
   async approveReview(id: string, adminId: string) {
-    const review = await this.prisma.client.review.findUnique({ where: { id } });
+    const review = await this.prisma.client.review.findUnique({
+      where: { id },
+    });
 
     if (!review) {
       throw new NotFoundException('Review not found');
@@ -158,21 +183,19 @@ export class ReviewService {
     // Recalculate rating for the target entity
     await this.recalculateRating(review);
 
-    await this.adminLogService.createLog(
-      adminId,
-      AdminAction.CONTENT_EDITED,
-      {
-        targetType: 'Review',
-        targetId: id,
-        description: `Approved review ${id}`,
-      }
-    );
+    await this.adminLogService.createLog(adminId, AdminAction.CONTENT_EDITED, {
+      targetType: 'Review',
+      targetId: id,
+      description: `Approved review ${id}`,
+    });
 
     return { message: 'Review approved successfully' };
   }
 
   async rejectReview(id: string, adminId: string) {
-    const review = await this.prisma.client.review.findUnique({ where: { id } });
+    const review = await this.prisma.client.review.findUnique({
+      where: { id },
+    });
 
     if (!review) {
       throw new NotFoundException('Review not found');
@@ -183,15 +206,11 @@ export class ReviewService {
       data: { isApproved: false },
     });
 
-    await this.adminLogService.createLog(
-      adminId,
-      AdminAction.CONTENT_EDITED,
-      {
-        targetType: 'Review',
-        targetId: id,
-        description: `Rejected review ${id}`,
-      }
-    );
+    await this.adminLogService.createLog(adminId, AdminAction.CONTENT_EDITED, {
+      targetType: 'Review',
+      targetId: id,
+      description: `Rejected review ${id}`,
+    });
 
     return { message: 'Review rejected successfully' };
   }
@@ -221,16 +240,21 @@ export class ReviewService {
 
     if (review.propertyId) whereCondition.propertyId = targetId;
     else if (review.agentProfileId) whereCondition.agentProfileId = targetId;
-    else if (review.serviceProviderProfileId) whereCondition.serviceProviderProfileId = targetId;
+    else if (review.serviceProviderProfileId)
+      whereCondition.serviceProviderProfileId = targetId;
 
     const reviews = await this.prisma.client.review.findMany({
       where: whereCondition,
     });
 
     const totalReviews = reviews.length;
-    const averageRating = totalReviews > 0
-      ? reviews.reduce((sum: number, r: { rating: number }) => sum + r.rating, 0) / totalReviews
-      : 0;
+    const averageRating =
+      totalReviews > 0
+        ? reviews.reduce(
+            (sum: number, r: { rating: number }) => sum + r.rating,
+            0,
+          ) / totalReviews
+        : 0;
 
     // Update target entity
     await targetModel.update({

@@ -35,13 +35,19 @@ export class PaginationDto {
   @IsString()
   search?: string;
 
-  toPrismaArgs(): { skip: number; take: number; orderBy: Record<string, string> } {
+  toPrismaArgs(): {
+    skip: number;
+    take: number;
+    orderBy: Record<string, string>;
+  } {
     const page = this.page ?? 1;
     const limit = this.limit ?? 10;
     return {
       skip: (page - 1) * limit,
       take: limit,
-      orderBy: { [this.sortBy ?? 'createdAt']: this.sortOrder ?? SortOrder.DESC },
+      orderBy: {
+        [this.sortBy ?? 'createdAt']: this.sortOrder ?? SortOrder.DESC,
+      },
     };
   }
 }

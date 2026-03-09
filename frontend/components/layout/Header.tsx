@@ -35,6 +35,8 @@ import {
     UserCircle,
     BarChart3,
     Bell,
+    CreditCard,
+    TestTube,
 } from 'lucide-react';
 
 interface NavItem {
@@ -281,6 +283,24 @@ export function Header() {
                                         </Link>
                                     </DropdownMenuItem>
 
+                                    {hasPermission(userRole, PERMISSIONS.VIEW_PAYMENT_LOGS) && (
+                                        <>
+                                            <DropdownMenuSeparator />
+                                            <DropdownMenuItem asChild>
+                                                <Link href="/admin/test-payment" className="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer text-[13px] text-gray-700 hover:bg-gray-50 font-medium">
+                                                    <TestTube className="w-4 h-4 text-gray-400" />
+                                                    Test Payment
+                                                </Link>
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem asChild>
+                                                <Link href="/admin/payments" className="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer text-[13px] text-gray-700 hover:bg-gray-50 font-medium">
+                                                    <CreditCard className="w-4 h-4 text-gray-400" />
+                                                    Payment Orders
+                                                </Link>
+                                            </DropdownMenuItem>
+                                        </>
+                                    )}
+
                                     <DropdownMenuItem onClick={logout} className="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer text-[13px] text-red-500 hover:bg-red-50 font-medium">
                                         <LogOut className="w-4 h-4" />
                                         Sign Out
@@ -398,6 +418,18 @@ export function Header() {
                                                     <Bell className="w-4 h-4" />
                                                     Notifications
                                                 </Link>
+                                                {hasPermission(userRole, PERMISSIONS.VIEW_PAYMENT_LOGS) && (
+                                                    <>
+                                                        <Link href="/admin/test-payment" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-3 py-3 rounded-xl text-[14px] font-medium text-gray-700 hover:bg-gray-100">
+                                                            <TestTube className="w-4 h-4" />
+                                                            Test Payment
+                                                        </Link>
+                                                        <Link href="/admin/payments" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-3 py-3 rounded-xl text-[14px] font-medium text-gray-700 hover:bg-gray-100">
+                                                            <CreditCard className="w-4 h-4" />
+                                                            Payment Orders
+                                                        </Link>
+                                                    </>
+                                                )}
                                             </>
                                         )}
                                     </div>

@@ -13,12 +13,20 @@ export class ListReviewsDto extends PaginationDto {
   @IsUUID()
   agentProfileId?: string;
 
-  @ApiProperty({ description: 'Filter by service provider profile ID', required: false })
+  @ApiProperty({
+    description: 'Filter by service provider profile ID',
+    required: false,
+  })
   @IsOptional()
   @IsUUID()
   serviceProviderProfileId?: string;
 
-  @ApiProperty({ description: 'Minimum rating filter', required: false, minimum: 1, maximum: 5 })
+  @ApiProperty({
+    description: 'Minimum rating filter',
+    required: false,
+    minimum: 1,
+    maximum: 5,
+  })
   @IsOptional()
   @IsInt()
   @Min(1)

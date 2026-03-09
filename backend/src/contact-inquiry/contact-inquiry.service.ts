@@ -6,7 +6,7 @@ import { buildPaginationMeta } from '../common/dto/pagination.dto';
 
 @Injectable()
 export class ContactInquiryService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async create(dto: CreateInquiryDto) {
     const inquiry = await this.prisma.client.contactInquiry.create({

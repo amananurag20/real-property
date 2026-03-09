@@ -27,7 +27,7 @@ export class AuthService {
     private readonly prisma: PrismaService,
     private readonly jwt: JwtService,
     private readonly config: ConfigService,
-  ) { }
+  ) {}
 
   // ── SIGN UP: Register (step 1) ─────────────────────────────────────────
   /**

@@ -15,7 +15,10 @@ import {
 import { ServiceProviderType } from '../../../generated/prisma/enums';
 
 export class CreateServiceProviderProfileDto {
-  @ApiProperty({ enum: ServiceProviderType, description: 'Type of service provider' })
+  @ApiProperty({
+    enum: ServiceProviderType,
+    description: 'Type of service provider',
+  })
   @IsEnum(ServiceProviderType)
   type!: ServiceProviderType;
 
@@ -60,7 +63,10 @@ export class CreateServiceProviderProfileDto {
   @IsString({ each: true })
   services!: string[];
 
-  @ApiPropertyOptional({ description: 'Education qualifications', type: [String] })
+  @ApiPropertyOptional({
+    description: 'Education qualifications',
+    type: [String],
+  })
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
@@ -72,10 +78,14 @@ export class CreateServiceProviderProfileDto {
   @IsString({ each: true })
   languages?: string[];
 
-  @ApiPropertyOptional({ description: 'Contact phone number (10 digits starting with 6-9)' })
+  @ApiPropertyOptional({
+    description: 'Contact phone number (10 digits starting with 6-9)',
+  })
   @IsOptional()
   @IsString()
-  @Matches(/^[6-9]\d{9}$/, { message: 'Contact phone must be a valid 10-digit Indian phone number' })
+  @Matches(/^[6-9]\d{9}$/, {
+    message: 'Contact phone must be a valid 10-digit Indian phone number',
+  })
   contactPhone?: string;
 
   @ApiPropertyOptional({ description: 'Contact email address' })
@@ -83,10 +93,14 @@ export class CreateServiceProviderProfileDto {
   @IsEmail()
   contactEmail?: string;
 
-  @ApiPropertyOptional({ description: 'WhatsApp number (10 digits starting with 6-9)' })
+  @ApiPropertyOptional({
+    description: 'WhatsApp number (10 digits starting with 6-9)',
+  })
   @IsOptional()
   @IsString()
-  @Matches(/^[6-9]\d{9}$/, { message: 'WhatsApp number must be a valid 10-digit Indian phone number' })
+  @Matches(/^[6-9]\d{9}$/, {
+    message: 'WhatsApp number must be a valid 10-digit Indian phone number',
+  })
   whatsappNumber?: string;
 
   @ApiPropertyOptional({ description: 'Profile photo URL' })

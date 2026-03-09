@@ -24,6 +24,7 @@ import {
     FileSpreadsheet,
     CheckSquare,
     ChevronRight,
+    TestTube,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -184,6 +185,12 @@ export function Sidebar({ className }: { className?: string }) {
                 label: 'Payment Logs',
                 href: '/admin/payments',
                 icon: <CreditCard className="w-5 h-5" />,
+                permission: PERMISSIONS.VIEW_PAYMENT_LOGS,
+            },
+            {
+                label: 'Test Payment',
+                href: '/admin/test-payment',
+                icon: <TestTube className="w-5 h-5" />,
                 permission: PERMISSIONS.VIEW_PAYMENT_LOGS,
             },
             {

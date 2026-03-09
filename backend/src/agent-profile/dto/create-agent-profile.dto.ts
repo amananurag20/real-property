@@ -54,10 +54,14 @@ export class CreateAgentProfileDto {
   @IsString({ each: true })
   languages?: string[];
 
-  @ApiPropertyOptional({ description: 'Contact phone number (10 digits starting with 6-9)' })
+  @ApiPropertyOptional({
+    description: 'Contact phone number (10 digits starting with 6-9)',
+  })
   @IsOptional()
   @IsString()
-  @Matches(/^[6-9]\d{9}$/, { message: 'Contact phone must be a valid 10-digit Indian phone number' })
+  @Matches(/^[6-9]\d{9}$/, {
+    message: 'Contact phone must be a valid 10-digit Indian phone number',
+  })
   contactPhone?: string;
 
   @ApiPropertyOptional({ description: 'Contact email address' })
@@ -65,9 +69,13 @@ export class CreateAgentProfileDto {
   @IsEmail()
   contactEmail?: string;
 
-  @ApiPropertyOptional({ description: 'WhatsApp number (10 digits starting with 6-9)' })
+  @ApiPropertyOptional({
+    description: 'WhatsApp number (10 digits starting with 6-9)',
+  })
   @IsOptional()
   @IsString()
-  @Matches(/^[6-9]\d{9}$/, { message: 'WhatsApp number must be a valid 10-digit Indian phone number' })
+  @Matches(/^[6-9]\d{9}$/, {
+    message: 'WhatsApp number must be a valid 10-digit Indian phone number',
+  })
   whatsappNumber?: string;
 }

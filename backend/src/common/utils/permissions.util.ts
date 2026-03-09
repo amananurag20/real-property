@@ -19,7 +19,9 @@ interface UserWithProfiles {
 export function getUserEffectivePermissions(
   user: UserWithProfiles,
 ): PermissionKey[] {
-  const base = [...(ROLE_PERMISSIONS[user.role] ?? ROLE_PERMISSIONS[Role.USER])];
+  const base = [
+    ...(ROLE_PERMISSIONS[user.role] ?? ROLE_PERMISSIONS[Role.USER]),
+  ];
 
   if (user.agentProfile?.approvalStatus === ApprovalStatus.APPROVED) {
     base.push(...AGENT_PROFILE_PERMISSIONS);

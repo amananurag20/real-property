@@ -1,7 +1,17 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsEnum, IsOptional, IsString, IsNumber, IsInt, Min } from 'class-validator';
+import {
+  IsEnum,
+  IsOptional,
+  IsString,
+  IsNumber,
+  IsInt,
+  Min,
+} from 'class-validator';
 import { PaginationDto } from '../../common/dto/pagination.dto';
-import { PropertyType, PropertyCategory } from '../../../generated/prisma/enums';
+import {
+  PropertyType,
+  PropertyCategory,
+} from '../../../generated/prisma/enums';
 
 export class ListPropertiesDto extends PaginationDto {
   @ApiPropertyOptional({ enum: PropertyType })

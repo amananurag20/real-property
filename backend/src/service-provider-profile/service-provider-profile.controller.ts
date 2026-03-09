@@ -73,7 +73,9 @@ export class ServiceProviderProfileController {
 
   /** GET /service-provider-profile — List all profiles (public) */
   @Get()
-  @ApiOperation({ summary: 'List all approved service provider profiles (public)' })
+  @ApiOperation({
+    summary: 'List all approved service provider profiles (public)',
+  })
   findAll(@Query() dto: ListServiceProviderProfilesDto) {
     return this.service.findAll(dto);
   }
@@ -92,10 +94,7 @@ export class ServiceProviderProfileController {
   @ApiBearerAuth()
   @ApiOperation({ summary: '[ADMIN] Verify a service provider' })
   @ResponseMessage('Service provider verified successfully')
-  verifyProvider(
-    @Param('id') id: string,
-    @CurrentUser() user: { id: string },
-  ) {
+  verifyProvider(@Param('id') id: string, @CurrentUser() user: { id: string }) {
     return this.service.verifyProvider(id, user.id);
   }
 

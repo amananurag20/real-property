@@ -46,8 +46,14 @@ export class AdminLogService {
     if (dto.adminId) where.adminId = dto.adminId;
     if (dto.startDate || dto.endDate) {
       where.createdAt = {};
-      if (dto.startDate) (where.createdAt as Record<string, unknown>).gte = new Date(dto.startDate);
-      if (dto.endDate) (where.createdAt as Record<string, unknown>).lte = new Date(dto.endDate);
+      if (dto.startDate)
+        (where.createdAt as Record<string, unknown>).gte = new Date(
+          dto.startDate,
+        );
+      if (dto.endDate)
+        (where.createdAt as Record<string, unknown>).lte = new Date(
+          dto.endDate,
+        );
     }
 
     const [items, total] = await Promise.all([

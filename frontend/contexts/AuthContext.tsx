@@ -18,7 +18,7 @@ interface AuthContextType {
     user: User | null;
     isAuthenticated: boolean;
     isLoading: boolean;
-    login: (userData: User, token?: string) => void;
+    login: (userData: User, token?: string, refreshToken?: string) => void;
     logout: () => void;
 }
 
@@ -43,7 +43,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setIsLoading(false);
     }, []);
 
-    const login = (userData: User, token?: string) => {
+    const login = (userData: User, token?: string, refreshToken?: string) => {
         setUser(userData);
         localStorage.setItem('user', JSON.stringify(userData));
 
@@ -52,12 +52,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             // Ensure middleware detection works by setting a cookie
             document.cookie = `token=${token}; path=/; Max-Age=86400; SameSite=Lax`; // 1 day
         }
+        if (refreshToken) {
+            localStorage.setItem('refresh_token', refreshToken);
+        }
     };
 
     const logout = () => {
         setUser(null);
         localStorage.removeItem('user');
         localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
         document.cookie = 'token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;'; // Clear token cookie
 
         // It's safer to redirect via window.location here to fully force context/middleware reset

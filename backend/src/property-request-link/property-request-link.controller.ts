@@ -28,7 +28,9 @@ export class PropertyRequestLinkController {
   ) {}
 
   @Post()
-  @ApiOperation({ summary: 'Create a triangle link (agent matches property to request)' })
+  @ApiOperation({
+    summary: 'Create a triangle link (agent matches property to request)',
+  })
   @ResponseMessage('Triangle link created successfully')
   async createLink(
     @CurrentUser('id') userId: string,
@@ -48,13 +50,18 @@ export class PropertyRequestLinkController {
   }
 
   @Get('my-matches')
-  @ApiOperation({ summary: 'Get buyer matches (properties matched to buyer requests)' })
+  @ApiOperation({
+    summary: 'Get buyer matches (properties matched to buyer requests)',
+  })
   @ResponseMessage('Buyer matches retrieved successfully')
   async findBuyerMatches(
     @CurrentUser('id') userId: string,
     @Query() listLinksDto: ListLinksDto,
   ) {
-    return this.propertyRequestLinkService.findBuyerMatches(userId, listLinksDto);
+    return this.propertyRequestLinkService.findBuyerMatches(
+      userId,
+      listLinksDto,
+    );
   }
 
   @Get(':id')

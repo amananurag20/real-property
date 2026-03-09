@@ -65,7 +65,7 @@ const RegisterPage = () => {
             authServiceApi.verifyOtp(data),
         onSuccess: (response: any) => {
             const data = extractData<any>(response);
-            login(data.user, data.accessToken);
+            login(data.user, data.accessToken, data.refreshToken);
             toast.success('Registration completed successfully!');
             router.push('/dashboard');
         },
