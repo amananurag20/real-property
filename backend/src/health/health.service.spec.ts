@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { HealthCheckService, HealthCheckResult } from '@nestjs/terminus';
 import { HealthService } from './health.service';
-import { RedisHealthIndicator } from '../redis';
+import { PrismaService } from '../prisma';
 
 describe('HealthService', () => {
   let service: HealthService;
   let healthCheckService: HealthCheckService;
-  let redisHealthIndicator: RedisHealthIndicator;
+  let prismaService: PrismaService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -19,9 +19,11 @@ describe('HealthService', () => {
           },
         },
         {
-          provide: RedisHealthIndicator,
+          provide: PrismaService,
           useValue: {
-            isHealthy: jest.fn(),
+            client: {
+              $queryRaw: jest.fn().mockResolvedValue([{}]),
+            },
           },
         },
       ],
@@ -29,8 +31,7 @@ describe('HealthService', () => {
 
     service = module.get<HealthService>(HealthService);
     healthCheckService = module.get<HealthCheckService>(HealthCheckService);
-    redisHealthIndicator =
-      module.get<RedisHealthIndicator>(RedisHealthIndicator);
+    prismaService = module.get<PrismaService>(PrismaService);
   });
 
   it('should be defined', () => {
@@ -41,9 +42,9 @@ describe('HealthService', () => {
     it('should return health check result', async () => {
       const mockResult: HealthCheckResult = {
         status: 'ok',
-        info: { redis: { status: 'up' } },
+        info: { database: { status: 'up' } },
         error: {},
-        details: { redis: { status: 'up' } },
+        details: { database: { status: 'up' } },
       };
 
       jest
@@ -55,7 +56,7 @@ describe('HealthService', () => {
       expect(healthCheckService.check).toHaveBeenCalled();
     });
 
-    it('should call redis health indicator', async () => {
+    it('should call prisma health indicator', async () => {
       // Mock the implementation of healthCheckService.check to execute the callback
       jest
         .spyOn(healthCheckService, 'check')
@@ -66,7 +67,9 @@ describe('HealthService', () => {
         });
 
       await service.check();
-      expect(redisHealthIndicator.isHealthy).toHaveBeenCalledWith('redis');
+      expect(prismaService.client.$queryRaw).toHaveBeenCalledWith(
+        expect.anything()
+      );
     });
   });
 });

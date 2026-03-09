@@ -8,9 +8,8 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { v4 as uuidv4 } from 'uuid';
-import Redis from 'ioredis';
 import { PrismaService } from '../prisma';
-import { REDIS_CLIENT } from '../redis';
+import { memoryCache } from '../common/utils/memory-cache.util';
 import { RegisterDto } from './dto/register.dto';
 import { SendOtpDto } from './dto/send-otp.dto';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
@@ -26,10 +25,9 @@ const REFRESH_TTL_SECONDS = 2592000; // 30 days
 export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
-    @Inject(REDIS_CLIENT) private readonly redis: Redis,
     private readonly jwt: JwtService,
     private readonly config: ConfigService,
-  ) {}
+  ) { }
 
   // ── SIGN UP: Register (step 1) ─────────────────────────────────────────
   /**
@@ -50,7 +48,7 @@ export class AuthService {
 
     // Store pending registration data so verifyOtp() can create the full profile
     const pendingKey = `pending_register:${dto.phone}`;
-    await this.redis.set(
+    await memoryCache.set(
       pendingKey,
       JSON.stringify({
         name: dto.name,
@@ -62,7 +60,7 @@ export class AuthService {
     );
 
     // Store OTP
-    await this.redis.set(
+    await memoryCache.set(
       `otp:${dto.phone}`,
       HARDCODED_OTP,
       'EX',
@@ -93,7 +91,7 @@ export class AuthService {
       throw new UnauthorizedException('Your account has been suspended.');
     }
 
-    await this.redis.set(
+    await memoryCache.set(
       `otp:${dto.phone}`,
       HARDCODED_OTP,
       'EX',
@@ -111,24 +109,24 @@ export class AuthService {
    */
   async verifyOtp(dto: VerifyOtpDto) {
     const otpKey = `otp:${dto.phone}`;
-    const stored = await this.redis.get(otpKey);
+    const stored = await memoryCache.get(otpKey);
 
     if (!stored || stored !== dto.otp) {
       throw new BadRequestException('Invalid or expired OTP.');
     }
 
     // OTP consumed — delete immediately
-    await this.redis.del(otpKey);
+    await memoryCache.del(otpKey);
 
     // Check for a pending registration
     const pendingKey = `pending_register:${dto.phone}`;
-    const pendingRaw = await this.redis.get(pendingKey);
+    const pendingRaw = await memoryCache.get(pendingKey);
 
     let user: { id: string; role: string; isSuspended: boolean };
 
     if (pendingRaw) {
       // ── SIGN UP path ──────────────────────────────────────────────────
-      await this.redis.del(pendingKey);
+      await memoryCache.del(pendingKey);
       const { name, email, role } = JSON.parse(pendingRaw) as {
         name: string;
         email: string;
@@ -168,14 +166,14 @@ export class AuthService {
 
   // ── Refresh tokens ─────────────────────────────────────────────────────
   async refresh(dto: RefreshTokenDto) {
-    const keys = await this.redis.keys('refresh:*');
+    const keys = await memoryCache.keys('refresh:*');
     let userId: string | null = null;
 
     for (const k of keys) {
-      const val = await this.redis.get(k);
+      const val = await memoryCache.get(k);
       if (val === dto.refreshToken) {
         userId = k.split(':')[1];
-        await this.redis.del(k); // rotate
+        await memoryCache.del(k); // rotate
         break;
       }
     }
@@ -197,14 +195,14 @@ export class AuthService {
   // ── Logout ─────────────────────────────────────────────────────────────
   async logout(userId: string): Promise<{ message: string }> {
     // Revoke refresh token
-    await this.redis.del(`refresh:${userId}`);
+    await memoryCache.del(`refresh:${userId}`);
 
     // Invalidate all current access tokens for this user:
     // Any token with iat <= now will be rejected by JwtStrategy.
     // TTL matches access token lifetime so the key self-cleans.
     const nowSeconds = Math.floor(Date.now() / 1000);
     const accessTokenTtl = 60 * 16; // 16 min — slightly longer than 15m token lifetime
-    await this.redis.set(
+    await memoryCache.set(
       `invalidated_before:${userId}`,
       String(nowSeconds),
       'EX',
@@ -228,7 +226,7 @@ export class AuthService {
     );
 
     const refreshToken = uuidv4();
-    await this.redis.set(
+    await memoryCache.set(
       `refresh:${userId}`,
       refreshToken,
       'EX',

@@ -2,8 +2,7 @@ import { Injectable, UnauthorizedException, Inject } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
-import Redis from 'ioredis';
-import { REDIS_CLIENT } from '../../redis';
+import { memoryCache } from '../../common/utils/memory-cache.util';
 
 export interface JwtPayload {
   sub: string;
@@ -15,7 +14,6 @@ export interface JwtPayload {
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(
     config: ConfigService,
-    @Inject(REDIS_CLIENT) private readonly redis: Redis,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -31,7 +29,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
    * This makes logout and account suspension take effect immediately.
    */
   async validate(payload: JwtPayload) {
-    const invalidatedAt = await this.redis.get(
+    const invalidatedAt = await memoryCache.get(
       `invalidated_before:${payload.sub}`,
     );
 

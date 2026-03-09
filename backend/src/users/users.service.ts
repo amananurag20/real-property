@@ -1,7 +1,6 @@
-import { Injectable, NotFoundException, Inject } from '@nestjs/common';
-import Redis from 'ioredis';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { memoryCache } from '../common/utils/memory-cache.util';
 import { PrismaService } from '../prisma';
-import { REDIS_CLIENT } from '../redis';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { getUserSelect, AGENT_PROFILE_SUMMARY_SELECT, SERVICE_PROVIDER_PROFILE_SUMMARY_SELECT } from '../common/utils/user-select.util';
 import { getUserEffectivePermissions } from '../common/utils/permissions.util';
@@ -11,8 +10,7 @@ import { Role } from '../../generated/prisma/enums';
 export class UsersService {
   constructor(
     private readonly prisma: PrismaService,
-    @Inject(REDIS_CLIENT) private readonly redis: Redis,
-  ) {}
+  ) { }
 
   /** Get own profile — role-aware field selection with profile relations */
   async findMe(userId: string, requesterRole: string) {
@@ -88,14 +86,14 @@ export class UsersService {
     // When suspending, immediately invalidate all active access tokens
     if (suspended) {
       const nowSeconds = Math.floor(Date.now() / 1000);
-      await this.redis.set(
+      await memoryCache.set(
         `invalidated_before:${targetId}`,
         String(nowSeconds),
         'EX',
         60 * 16, // 16 min — covers any in-flight 15m access token
       );
       // Also revoke the refresh token so they can't re-login silently
-      await this.redis.del(`refresh:${targetId}`);
+      await memoryCache.del(`refresh:${targetId}`);
     }
 
     return updated;
